@@ -1,4 +1,4 @@
-package com.teamside.aproject.common.configuration;
+package com.teamside.project.common.configuration;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

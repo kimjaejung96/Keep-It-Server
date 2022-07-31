@@ -1,4 +1,4 @@
-package com.teamside.aproject.member.model.entity;
+package com.teamside.project.member.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
