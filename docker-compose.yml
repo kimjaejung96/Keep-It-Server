@@ -16,5 +16,5 @@ services:
       - alpha
 
 networks:
-  dike:
+  alpha:
     driver: bridge
