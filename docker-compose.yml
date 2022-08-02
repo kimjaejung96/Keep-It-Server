@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  dike-api:
+    image: alpha-api:latest
+    container_name: alpha-api
+    #    ports:
+    #     - "48888:8080"
+    #    privileged: true
+    #    volumes:
+    #      - /root/.gradle:/root/.gradle/
+    user: alpha
+    environment:
+      - TZ="Asia/Seoul"
+    networks:
+      - alpha
+
+networks:
+  dike:
+    driver: bridge
