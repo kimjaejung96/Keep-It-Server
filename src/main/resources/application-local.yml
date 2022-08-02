@@ -1,0 +1,24 @@
+server:
+  port: 1111
+
+spring:
+  # Set the master node of the PCI-AD Database as the primary database for ATP Project to handle the "CUD" for it.
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://person.jjhserverworld.pe.kr:3316/alpha?characterEncoding=utf8&serverTimezone=Asia/Seoul
+    username: alpha
+    password: alpha#!12
+    hikari:
+      maximum-pool-size: 1
+      connection-test-query: SELECT 1
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create # When you launch the application for the first time - switch "none" at "create"
+      database: mysql
+      database-platform: org.hibernate.dialect.MySQL8InnoDBDialect
+      generate-ddl: true
+      format_sql: true
+      generate_statistics: true
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
