@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  dike-api:
+  alpha-api:
     image: alpha-api:latest
     container_name: alpha-api
     #    ports:

@@ -19,5 +19,5 @@ ADD ${JAR_FILE} /alpha/alpha-api.jar
 WORKDIR /alpha
 
 ## profiles 설정 버전
-## ENTRYPOINT ["javar", "-jar", "-Dspring.profiles.active=dev", "dike-api-0.0.1-SNAPSHOT.jar"]
+## ENTRYPOINT ["javar", "-jar", "-Dspring.profiles.active=dev", "alpha-api-0.0.1-SNAPSHOT.jar"]
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=dev","alpha-api.jar"]
