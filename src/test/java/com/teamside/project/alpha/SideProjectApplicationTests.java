@@ -1,7 +1,7 @@
 package com.teamside.project.alpha;
 
-import com.teamside.project.common.exception.CustomException;
-import com.teamside.project.common.model.dto.ResponseObject;
+import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;

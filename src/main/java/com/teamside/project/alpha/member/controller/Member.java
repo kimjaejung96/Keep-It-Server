@@ -1,4 +1,4 @@
-package com.teamside.project.member.controller;
+package com.teamside.project.alpha.member.controller;
 
 import com.teamside.project.alpha.sms.event.SMSEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Random;
 
 @RestController
-@RequestMapping("/user")
-public class User {
+@RequestMapping("/member")
+public class Member {
 
     private final ApplicationEventPublisher smsEventPublisher;
 
     @Autowired
-    public User(ApplicationEventPublisher smsEventPublisher) {
+    public Member(ApplicationEventPublisher smsEventPublisher) {
         this.smsEventPublisher = smsEventPublisher;
     }
 

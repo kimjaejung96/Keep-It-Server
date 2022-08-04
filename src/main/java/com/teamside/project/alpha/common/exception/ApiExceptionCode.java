@@ -1,4 +1,4 @@
-package com.teamside.project.common.exception;
+package com.teamside.project.alpha.common.exception;
 
 import lombok.Getter;
 

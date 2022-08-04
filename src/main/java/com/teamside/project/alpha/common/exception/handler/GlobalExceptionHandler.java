@@ -1,7 +1,7 @@
-package com.teamside.project.common.exception.handler;
+package com.teamside.project.alpha.common.exception.handler;
 
-import com.teamside.project.common.exception.CustomException;
-import com.teamside.project.common.model.dto.ApiExceptionDto;
+import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.model.dto.ApiExceptionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

@@ -1,4 +1,4 @@
-package com.teamside.project.common.model.dto;
+package com.teamside.project.alpha.common.model.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

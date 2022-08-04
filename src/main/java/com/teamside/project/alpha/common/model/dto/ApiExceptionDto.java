@@ -1,6 +1,6 @@
-package com.teamside.project.common.model.dto;
+package com.teamside.project.alpha.common.model.dto;
 
-import com.teamside.project.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import lombok.Getter;
 
 @Getter

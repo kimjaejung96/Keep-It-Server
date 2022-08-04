@@ -1,7 +1,6 @@
 package com.teamside.project.alpha.common.exception;
 
-import com.teamside.project.common.exception.CustomException;
-import com.teamside.project.common.model.dto.ResponseObject;
+import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
