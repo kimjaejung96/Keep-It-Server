@@ -33,7 +33,7 @@ public class SMSAsyncConfig  {
         executor.setMaxPoolSize(10);  // Use When queue max size is
         executor.setQueueCapacity(10);   // Ready Queue Size
         executor.setKeepAliveSeconds(60); // Alive Secondes
-        executor.setThreadNamePrefix("SMSRequestWorker");  // Thread Worker Prefix-Name
+        executor.setThreadNamePrefix("SMS-Executor");  // Thread Worker Prefix-Name
         executor.initialize();
 
         log.debug("SMS Event Async 쓰레드 풀 생성 완료");

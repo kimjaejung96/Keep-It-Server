@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -24,7 +25,7 @@ public class ApiLog {
         this.service = service;
     }
 
-    @Around(value = "within(com.teamside.project.alpha..*)")
+    @Around("execution(* com.teamside.project.alpha..controller..*(..))" )
     public void logging(ProceedingJoinPoint joinPoint) throws Throwable {
         long startAt = System.currentTimeMillis();
         String params = getRequestParams();
@@ -34,8 +35,6 @@ public class ApiLog {
         long endAt = System.currentTimeMillis();
 
         log.info("<======= RESPONSE : {} / METHOD : {} / RESULT : {} / PROCESS_TIME =  {}ms", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), result, endAt - startAt);
-
-
     }
 
     private String getRequestParams() throws JsonProcessingException {
