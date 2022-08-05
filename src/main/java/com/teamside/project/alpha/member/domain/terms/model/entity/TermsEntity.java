@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Terms {
+public class TermsEntity {
     @Id
     @Column(name = "MID")
     private String mid;
