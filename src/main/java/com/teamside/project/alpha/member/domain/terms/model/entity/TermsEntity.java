@@ -1,21 +1,29 @@
 package com.teamside.project.alpha.member.domain.terms.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
+import com.teamside.project.alpha.member.model.entity.MemberEntity;
+
+import javax.persistence.*;
 
 @Entity
-public class TermsEntity {
+@Table(name = "TERMS")
+public class TermsEntity extends TimeEntity {
     @Id
     @Column(name = "MID")
     private String mid;
+
+    @MapsId
+    @OneToOne(targetEntity = MemberEntity.class)
+    @JoinColumn(name = "MID", referencedColumnName = "MID")
+    private MemberEntity member;
+
     @Column(name = "TERMS")
-    private char terms;
+    private boolean terms;
     @Column(name = "COLLECT")
-    private char collect;
+    private boolean collect;
     @Column(name = "MARKETING")
-    private char marketing;
-
-
+    private boolean marketing;
+    @Column(name = "ALARM")
+    private boolean alarm;
 
 }

@@ -3,6 +3,7 @@ package com.teamside.project.alpha.common.aop.model.entity;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "API_LOG")
 public class ApiLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
