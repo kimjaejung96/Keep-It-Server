@@ -1,10 +1,15 @@
 package com.teamside.project.alpha.common.aop.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "API_LOG")
-public class ApiLog {
+@NoArgsConstructor
+public class ApiLogEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SEQ")
@@ -20,8 +25,16 @@ public class ApiLog {
     private String description;
 
     @Column(name = "STATUS")
-    private char status;
+    private String status;
 
     @Column(name = "PROCESS_TIME")
     private float processTime;
+
+    public ApiLogEntity(String mid, String name, String description, String status, float processTime) {
+        this.mid = mid;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.processTime = processTime;
+    }
 }

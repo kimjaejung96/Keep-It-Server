@@ -1,7 +1,11 @@
 package com.teamside.project.alpha.member.controller;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
+import com.teamside.project.alpha.member.service.AuthService;
+import com.teamside.project.alpha.member.service.MemberService;
 import com.teamside.project.alpha.sms.event.SMSEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,19 +21,28 @@ import java.util.Random;
 public class MemberController {
 
     private final ApplicationEventPublisher smsEventPublisher;
+    private final MemberService memberService;
+    private final AuthService authService;
 
-    @Autowired
-    public MemberController(ApplicationEventPublisher smsEventPublisher) {
+    public MemberController(ApplicationEventPublisher smsEventPublisher, MemberService memberService, AuthService authService) {
         this.smsEventPublisher = smsEventPublisher;
+        this.memberService = memberService;
+        this.authService = authService;
     }
 
 
+
     @PostMapping("/sign-up")
-    public ResponseEntity<ResponseObject> signUp(@RequestBody @Validated MemberDto.SignUpDto member) {
+    public ResponseEntity<ResponseObject> signUp(@RequestBody @Validated MemberDto.SignUpDto signUpDto) throws CustomException {
+        if(memberService.checkId(signUpDto.getMember().getName())) {
+            throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
+        }
         ResponseObject responseObject = new ResponseObject();
+        //회원가입
+        //jwt 생성, refresh 저장
+        //jwt 반환 (암호화 여부 확인)
 
-
-        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
 
 

@@ -18,15 +18,15 @@ public class MemberDto {
     private String profileUrl;
     private String pinProfileUrl;
 
+    @Getter
     public static class SignUpDto {
-        @Pattern(regexp = "(?=.*[-_A-Za-z0-9])(?=.*[^-_]).{4,20}",
-                message = "이름이 올바르지 않습니다.")
-        private String name;
-        @Pattern(regexp = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$",
-                message = "핸드폰 번호가 올바르지 않습니다.")
-        private String phone;
-        private String profileUrl;
-        private String pinProfileUrl;
-
+        private Terms terms;
+        private MemberDto member;
+        private class Terms {
+            private boolean terms;
+            private boolean collect;
+            private boolean marketing;
+            private boolean alarm;
+        }
     }
 }

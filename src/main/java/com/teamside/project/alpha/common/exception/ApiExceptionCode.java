@@ -11,6 +11,7 @@ public enum ApiExceptionCode {
     UNAUTHORIZED(401, "Unauthorized"),
     FORBIDDEN(403, "Forbidden"),
     INTERNAL_ERROR(500, "Internal Error"),
+    DUPLICATE_NAME(600, "Name is Duplicated"),
     SYSTEM_ERROR(999, "System Error"),
     ;
 
