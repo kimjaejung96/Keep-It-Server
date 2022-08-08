@@ -1,11 +1,12 @@
 server:
-  port: 11122
+  port: 1111
 
 spring:
   # Set the master node of the PCI-AD Database as the primary database for ATP Project to handle the "CUD" for it.
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://person.jjhserverworld.pe.kr:3316/alpha?characterEncoding=utf8&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://person.jjhserverworld.pe.kr:3316/alpha-jj?characterEncoding=utf8&serverTimezone=Asia/Seoul
+    #    url: jdbc:mysql://person.jjhserverworld.pe.kr:3316/alpha?characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: alpha
     password: alpha#!12
     hikari:
@@ -23,23 +24,7 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 
-alpha:
-  sens:
-    svc_id: "ncp:sms:kr:258742391636:alpha_sms"
-    host: "https://sens.apigw.ntruss.com"
-    url: "/sms/v2/services/"
-    type: "/messages"
-    accessKey: "pSuxFzS1tdb81FrrrCyx"
-    secretKey: "iPzyFEUdCsDFTI2JqLBV9IlvUMDLPiUnIL8MnClY"
-    message:
-      type: "SMS"
-      content_type: "COMM"
-      country_code: "82"
-      message: "[Keep it 회원가입]\n인증번호 [%s] 를 입력해주세요."
-      expireTime: 180000
-      
-      
-      
+
 jwt:
   accessToken:
     validTime: 1

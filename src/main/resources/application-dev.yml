@@ -22,3 +22,11 @@ spring:
       generate_statistics: true
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+      
+      
+jwt:
+  accessToken:
+    validTime: 1
+  refreshToken:
+    validTime: 3000
+  secret: kimjaejungtestsecretskey01050641406

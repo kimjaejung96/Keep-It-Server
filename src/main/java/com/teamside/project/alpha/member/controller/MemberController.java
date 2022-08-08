@@ -7,7 +7,6 @@ import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.member.service.MemberService;
 import com.teamside.project.alpha.sms.event.SMSEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,16 +38,19 @@ public class MemberController {
         }
         ResponseObject responseObject = new ResponseObject();
         //회원가입
+        String accessToken = authService.createTokens("tests");
         //jwt 생성, refresh 저장
         //jwt 반환 (암호화 여부 확인)
-
+        responseObject.setBody(accessToken);
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
 
 
     @GetMapping("/ping")
-    public ResponseEntity<String> ping() {
-        return ResponseEntity.status(HttpStatus.OK).body("pong!~");
+    public ResponseEntity<ResponseObject> ping() {
+        ResponseObject responseObject = new ResponseObject();
+        responseObject.setBody("zzz");
+        return new ResponseEntity<>(responseObject, HttpStatus.ACCEPTED);
     }
 
 

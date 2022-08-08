@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -28,19 +29,28 @@ public class ApiLog {
 
     @Around("execution(* com.teamside.project.alpha..controller..*(..))" )
     public void logging(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startAt = System.currentTimeMillis();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         String params = getRequestParams();
         log.info("=======> REQUEST : {} / METHOD : {} / PARAMS : {}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), params);
 
         ResponseEntity response = (ResponseEntity) joinPoint.proceed();
-        long endAt = System.currentTimeMillis();
+        stopWatch.stop();
 
-        String desc = "[REQUEST] METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "-"+ joinPoint.getSignature().getName() + " PARAMS : " + params + "\n"
-        + "[RESPONSE] " + response.getBody() + " - " + response.getStatusCode();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        log.info("<======= RESPONSE : {} / METHOD : {} / RESULT : {} / PROCESS_TIME =  {}ms", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), response, endAt - startAt);
 
-        ApiLogEntity apiLogEntity = new ApiLogEntity("mId", "mName", desc, response.getStatusCode().toString(),endAt - startAt);
+        String[] packagedMethodName = joinPoint.getTarget().getClass().getName().split("\\.");
+        String methodName = packagedMethodName[packagedMethodName.length-1];
+
+        String desc = "[REQUEST] METHOD : " + methodName + "{"+ joinPoint.getSignature().getName() + "} PARAMS : " + params + "\n"
+        + "[RESPONSE] " + objectMapper.writeValueAsString(response.getBody()) + " - " + response.getStatusCode();
+
+        log.info("<======= RESPONSE : {} / METHOD : {} / RESULT : {} / PROCESS_TIME =  {}s", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), objectMapper.writeValueAsString(response.getBody()), (float) stopWatch.getTotalTimeMillis()*0.001);
+
+        // TODO: 2022/08/08 임시데이터 MID  secret context에서 꺼내와야함.
+        ApiLogEntity apiLogEntity = new ApiLogEntity("mId", joinPoint.getSignature().getName(), desc, response.getStatusCode().toString(), (float) (stopWatch.getTotalTimeMillis()*0.001));
         logService.insertLog(apiLogEntity);
     }
 
