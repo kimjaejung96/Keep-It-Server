@@ -1,12 +1,15 @@
 package com.teamside.project.alpha.member.model.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Pattern;
 
 @Getter
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberDto {
     private String mid;
     @Pattern(regexp = "(?=.*[-_A-Za-z0-9])(?=.*[^-_]).{4,20}",
@@ -19,10 +22,15 @@ public class MemberDto {
     private String pinProfileUrl;
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class SignUpDto {
         private Terms terms;
         private MemberDto member;
-        private class Terms {
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        private static class Terms {
             private boolean terms;
             private boolean collect;
             private boolean marketing;

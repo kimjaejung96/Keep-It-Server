@@ -1,9 +1,11 @@
 package com.teamside.project.alpha.common.aop;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.aop.model.entity.ApiLogEntity;
 import com.teamside.project.alpha.common.aop.service.LogService;
+import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -22,13 +24,15 @@ import java.util.Map;
 @Slf4j
 public class ApiLog {
     private final LogService logService;
+    private final ObjectMapper objectMapper;
 
-    public ApiLog(LogService logService) {
+    public ApiLog(LogService logService, ObjectMapper objectMapper) {
         this.logService = logService;
+        this.objectMapper = objectMapper;
     }
 
     @Around("execution(* com.teamside.project.alpha..controller..*(..))" )
-    public void logging(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
@@ -37,8 +41,6 @@ public class ApiLog {
 
         ResponseEntity response = (ResponseEntity) joinPoint.proceed();
         stopWatch.stop();
-
-        ObjectMapper objectMapper = new ObjectMapper();
 
 
         String[] packagedMethodName = joinPoint.getTarget().getClass().getName().split("\\.");
@@ -52,11 +54,14 @@ public class ApiLog {
         // TODO: 2022/08/08 임시데이터 MID  secret context에서 꺼내와야함.
         ApiLogEntity apiLogEntity = new ApiLogEntity("mId", joinPoint.getSignature().getName(), desc, response.getStatusCode().toString(), (float) (stopWatch.getTotalTimeMillis()*0.001));
         logService.insertLog(apiLogEntity);
+
+
+        return response;
     }
 
 
     private String getRequestParams() throws JsonProcessingException {
-        String params = "NULL";
+        String params = "PARAM IS NULL";
 
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 

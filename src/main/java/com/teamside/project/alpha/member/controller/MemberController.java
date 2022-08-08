@@ -49,7 +49,7 @@ public class MemberController {
     @GetMapping("/ping")
     public ResponseEntity<ResponseObject> ping() {
         ResponseObject responseObject = new ResponseObject();
-        responseObject.setBody("zzz");
+        responseObject.setBody("PONG~");
         return new ResponseEntity<>(responseObject, HttpStatus.ACCEPTED);
     }
 
