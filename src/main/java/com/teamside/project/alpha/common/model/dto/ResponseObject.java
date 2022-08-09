@@ -1,8 +1,8 @@
 package com.teamside.project.alpha.common.model.dto;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 
@@ -10,9 +10,13 @@ import java.io.Serializable;
 @Getter
 public class ResponseObject implements Serializable {
     private Object data;
-    private final HttpStatus apiStatus = HttpStatus.OK;
+    private ApiExceptionCode apiCode = ApiExceptionCode.OK;
 
     public void setBody(Object data) {
         this.data = data;
+    }
+
+    public ResponseObject(ApiExceptionCode apiExceptionCode) {
+        this.apiCode = apiExceptionCode;
     }
 }

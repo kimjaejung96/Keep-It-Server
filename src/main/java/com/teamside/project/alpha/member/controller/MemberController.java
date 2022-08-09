@@ -3,6 +3,7 @@ package com.teamside.project.alpha.member.controller;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
+import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.member.service.MemberService;
@@ -10,9 +11,10 @@ import com.teamside.project.alpha.sms.event.SMSEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Random;
 
 @RestController
@@ -32,16 +34,15 @@ public class MemberController {
 
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ResponseObject> signUp(@RequestBody @Validated MemberDto.SignUpDto signUpDto) throws CustomException {
+    public ResponseEntity<ResponseObject> signUp(@RequestBody @Valid MemberDto.SignUpDto signUpDto, Errors errors) throws CustomException {
         if(memberService.checkId(signUpDto.getMember().getName())) {
             throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
         }
-        ResponseObject responseObject = new ResponseObject();
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         //회원가입
-        String accessToken = authService.createTokens("tests");
-        //jwt 생성, refresh 저장
-        //jwt 반환 (암호화 여부 확인)
-        responseObject.setBody(accessToken);
+//        String accessToken = memberService.sigunUp(signUpDto);
+//
+//        responseObject.setBody(Map.of("accessToken", accessToken));
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
 

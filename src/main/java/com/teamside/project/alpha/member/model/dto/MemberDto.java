@@ -11,7 +11,6 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberDto {
-    private String mid;
     @Pattern(regexp = "(?=.*[-_A-Za-z0-9])(?=.*[^-_]).{4,20}",
             message = "이름이 올바르지 않습니다.")
     private String name;
@@ -20,6 +19,7 @@ public class MemberDto {
     private String phone;
     private String profileUrl;
     private String pinProfileUrl;
+    private String fcmToken;
 
     @Getter
     @NoArgsConstructor
@@ -27,14 +27,16 @@ public class MemberDto {
     public static class SignUpDto {
         private Terms terms;
         private MemberDto member;
-        @Getter
-        @NoArgsConstructor
-        @AllArgsConstructor
-        private static class Terms {
-            private boolean terms;
-            private boolean collect;
-            private boolean marketing;
-            private boolean alarm;
-        }
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Terms {
+        private boolean terms;
+        private boolean collect;
+        private boolean marketing;
+        private boolean alarm;
+    }
+
 }

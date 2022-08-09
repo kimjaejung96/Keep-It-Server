@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.aop.model.entity.ApiLogEntity;
 import com.teamside.project.alpha.common.aop.service.LogService;
-import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -31,32 +30,35 @@ public class ApiLog {
         this.objectMapper = objectMapper;
     }
 
-    @Around("execution(* com.teamside.project.alpha..controller..*(..))" )
+    @Around("execution(* com.teamside.project.alpha..controller..*(..))")
     public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+        Object result = null;
 
-        String params = getRequestParams();
-        log.info("=======> REQUEST : {} / METHOD : {} / PARAMS : {}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), params);
+        try {
 
-        ResponseEntity response = (ResponseEntity) joinPoint.proceed();
-        stopWatch.stop();
+            String params = getRequestParams();
+            log.info("=======> REQUEST : {} / METHOD : {} / PARAMS : {}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), params);
+
+            result = joinPoint.proceed();
+            ResponseEntity response = (ResponseEntity) result;
+            stopWatch.stop();
+
+            String[] packagedMethodName = joinPoint.getTarget().getClass().getName().split("\\.");
+            String methodName = packagedMethodName[packagedMethodName.length - 1];
+
+            String desc = "[REQUEST] METHOD : " + methodName + "{" + joinPoint.getSignature().getName() + "} PARAMS : " + params + "\n" + "[RESPONSE] " + objectMapper.writeValueAsString(response.getBody()) + " - " + response.getStatusCode();
+            // TODO: 2022/08/08 임시데이터 MID  secret context에서 꺼내와야함.
+            log.info("<======= RESPONSE : {} / METHOD : {} / RESULT : {} / PROCESS_TIME =  {}s", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), objectMapper.writeValueAsString(response.getBody()), (float) stopWatch.getTotalTimeMillis() * 0.001);
+            ApiLogEntity apiLogEntity = new ApiLogEntity("mId", joinPoint.getSignature().getName(), desc, response.getStatusCode().toString(), (float) (stopWatch.getTotalTimeMillis() * 0.001));
+            logService.insertLog(apiLogEntity);
+        } catch (Exception ex) {
+            throw ex;
+        }
 
 
-        String[] packagedMethodName = joinPoint.getTarget().getClass().getName().split("\\.");
-        String methodName = packagedMethodName[packagedMethodName.length-1];
-
-        String desc = "[REQUEST] METHOD : " + methodName + "{"+ joinPoint.getSignature().getName() + "} PARAMS : " + params + "\n"
-        + "[RESPONSE] " + objectMapper.writeValueAsString(response.getBody()) + " - " + response.getStatusCode();
-
-        log.info("<======= RESPONSE : {} / METHOD : {} / RESULT : {} / PROCESS_TIME =  {}s", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(), objectMapper.writeValueAsString(response.getBody()), (float) stopWatch.getTotalTimeMillis()*0.001);
-
-        // TODO: 2022/08/08 임시데이터 MID  secret context에서 꺼내와야함.
-        ApiLogEntity apiLogEntity = new ApiLogEntity("mId", joinPoint.getSignature().getName(), desc, response.getStatusCode().toString(), (float) (stopWatch.getTotalTimeMillis()*0.001));
-        logService.insertLog(apiLogEntity);
-
-
-        return response;
+        return result;
     }
 
 

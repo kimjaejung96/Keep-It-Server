@@ -21,7 +21,7 @@ public class ApiLogEntity {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR(5000)")
     private String description;
 
     @Column(name = "STATUS")

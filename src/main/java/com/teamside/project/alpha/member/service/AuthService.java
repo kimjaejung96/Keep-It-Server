@@ -1,9 +1,9 @@
 package com.teamside.project.alpha.member.service;
 
-import org.springframework.stereotype.Service;
+import com.teamside.project.alpha.member.model.dto.JwtTokens;
 
 public interface AuthService {
-    String createTokens(String mid);
+    JwtTokens getTokens(String mid);
     String createAccessToken(String mid);
     String createRefreshToken(String mid);
 }

@@ -11,11 +11,11 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "TERMS")
+@Table(name = "REFRESH_TOKEN")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TermsEntity extends TimeEntity {
+public class RefreshTokenEntity extends TimeEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(16)")
     private String mid;
@@ -25,16 +25,8 @@ public class TermsEntity extends TimeEntity {
     @JoinColumn(name = "MID", referencedColumnName = "MID")
     private MemberEntity member;
 
-    @Column(name = "TERMS", columnDefinition = "boolean")
-    private boolean terms;
-
-    @Column(name = "COLLECT", columnDefinition = "boolean")
-    private boolean collect;
-
-    @Column(name = "MARKETING", columnDefinition = "boolean")
-    private boolean marketing;
-
-    @Column(name = "ALARM", columnDefinition = "boolean")
-    private boolean alarm;
+    @Column(name = "TOKEN")
+    private String refreshToken;
 
 }
+

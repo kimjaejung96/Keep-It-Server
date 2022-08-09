@@ -14,12 +14,14 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create # When you launch the application for the first time - switch "none" at "create"
+      ddl-auto: none # When you launch the application for the first time - switch "none" at "create"
       database: mysql
       database-platform: org.hibernate.dialect.MySQL8InnoDBDialect
       generate-ddl: true
       format_sql: true
       generate_statistics: true
+      naming:
+        physical-strategy: com.teamside.project.alpha.common.configuration.JpaNaming
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 
@@ -44,5 +46,6 @@ jwt:
   accessToken:
     validTime: 1
   refreshToken:
-    validTime: 3000
-  secret: kimjaejungtestsecretskey01050641406
+    validTime: 5
+  secret: a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDZraW1qYWVqdW5ndGVzdHNlY3JldHNrZXkwMTA1MDY0MTQwNmtpbWphZWp1bmd0ZXN0c2VjcmV0c2tleTAxMDUwNjQxNDA2a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDY=
+#  secret: kimjaejungtestsecretskey01050641406  * 4
