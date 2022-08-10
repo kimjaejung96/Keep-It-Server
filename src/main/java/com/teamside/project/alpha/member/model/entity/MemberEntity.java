@@ -15,7 +15,7 @@ import java.util.Objects;
 @Table(name = "MEMBER")
 public class MemberEntity extends TimeEntity {
     @Id
-    @Column(name = "MID", columnDefinition = "char(16)")
+    @Column(name = "MID", columnDefinition = "char(36)")
     private String mid;
 
     @Column(name = "NAME", columnDefinition = "varchar(20)")
@@ -34,6 +34,7 @@ public class MemberEntity extends TimeEntity {
     private String fcmToken;
 
     @Column(name="TYPE", columnDefinition = "varchar(50)")
+    @Enumerated(EnumType.STRING)
     private SignUpType type;
 
     @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL)

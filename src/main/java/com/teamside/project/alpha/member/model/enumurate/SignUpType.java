@@ -9,6 +9,6 @@ public enum SignUpType {
 
     private String type;
 
-    SignUpType(String phone) {
+    SignUpType(String type) {
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -39,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) {
         MemberEntity member = new MemberEntity(
-                generateMid(signUpDto.getMember().getPhone()),
+                UUID.randomUUID().toString(),
                 signUpDto.getMember().getName(),
                 signUpDto.getMember().getPhone(),
                 signUpDto.getMember().getProfileUrl(),
@@ -63,7 +64,7 @@ public class MemberServiceImpl implements MemberService {
         return jwtTokens;
     }
 
-    private String generateMid(String phone) {
-        return "PH" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")) + phone.substring(3);
-    }
+//    private String generateMid(String phone) {
+//        return "PH" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")) + phone.substring(3);
+//    }
 }
