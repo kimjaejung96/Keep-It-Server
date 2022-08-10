@@ -56,10 +56,7 @@ public class MemberServiceImpl implements MemberService {
 
         JwtTokens jwtTokens = authService.getTokens(member.getMid());
 
-        member.changeRefreshToken(RefreshTokenEntity.builder()
-                        .member(member)
-                        .refreshToken(jwtTokens.getRefreshToken())
-                .build());
+        member.changeRefreshToken(jwtTokens.getRefreshToken());
 
         memberRepo.save(member);
 

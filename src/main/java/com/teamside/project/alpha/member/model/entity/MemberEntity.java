@@ -62,8 +62,8 @@ public class MemberEntity extends TimeEntity {
         this.termsEntity = termsEntity;
     }
 
-    public void changeRefreshToken(RefreshTokenEntity refreshTokenEntity) {
-        this.refreshTokenEntity = refreshTokenEntity;
+    public void changeRefreshToken(String refreshToken) {
+        this.refreshTokenEntity = new RefreshTokenEntity(this, refreshToken);
     }
 
 }

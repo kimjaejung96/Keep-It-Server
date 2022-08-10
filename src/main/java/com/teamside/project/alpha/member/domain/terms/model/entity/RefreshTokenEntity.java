@@ -12,9 +12,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Table(name = "REFRESH_TOKEN")
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class RefreshTokenEntity extends TimeEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(16)")
@@ -28,5 +25,13 @@ public class RefreshTokenEntity extends TimeEntity {
     @Column(name = "TOKEN")
     private String refreshToken;
 
+    public RefreshTokenEntity(MemberEntity member, String refreshToken) {
+        this.member = member;
+        this.refreshToken = refreshToken;
+    }
+
+    public RefreshTokenEntity() {
+
+    }
 }
 
