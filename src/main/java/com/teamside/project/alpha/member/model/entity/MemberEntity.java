@@ -4,10 +4,8 @@ package com.teamside.project.alpha.member.model.entity;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.member.domain.terms.model.entity.RefreshTokenEntity;
 import com.teamside.project.alpha.member.domain.terms.model.entity.TermsEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.teamside.project.alpha.member.model.enumurate.SignUpType;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -35,6 +33,9 @@ public class MemberEntity extends TimeEntity {
     @Column(name="FCM_TOKEN", columnDefinition = "varchar(170)")
     private String fcmToken;
 
+    @Column(name="TYPE", columnDefinition = "varchar(50)")
+    private SignUpType type;
+
     @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL)
     private TermsEntity termsEntity;
 
@@ -42,13 +43,14 @@ public class MemberEntity extends TimeEntity {
     @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL)
     private RefreshTokenEntity refreshTokenEntity;
 
-    public MemberEntity(String mid, String name, String phone, String profileUrl, String pinProfileUrl, String fcmToken) {
+    public MemberEntity(String mid, String name, String phone, String profileUrl, String pinProfileUrl, String fcmToken, SignUpType type) {
         this.mid = mid;
         this.name = name;
         this.phone = phone;
         this.profileUrl = Objects.requireNonNullElse(profileUrl, "");
         this.pinProfileUrl = Objects.requireNonNullElse(pinProfileUrl, "");
         this.fcmToken = Objects.requireNonNullElse(fcmToken, "");
+        this.type = Objects.requireNonNullElse(type, SignUpType.PHONE);
     }
 
 
@@ -63,4 +65,5 @@ public class MemberEntity extends TimeEntity {
     public void changeRefreshToken(RefreshTokenEntity refreshTokenEntity) {
         this.refreshTokenEntity = refreshTokenEntity;
     }
+
 }

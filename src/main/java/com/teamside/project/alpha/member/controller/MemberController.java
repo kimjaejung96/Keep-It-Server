@@ -4,6 +4,7 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
+import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.member.service.MemberService;
@@ -43,8 +44,8 @@ public class MemberController {
         }
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         //회원가입
-        String accessToken = memberService.sigunUp(signUpDto);
-        responseObject.setBody(Map.of(KeepitConstant.ACCESS_TOKEN, accessToken));
+        JwtTokens jwtTokens = memberService.sigunUp(signUpDto);
+        responseObject.setBody(jwtTokens);
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
 

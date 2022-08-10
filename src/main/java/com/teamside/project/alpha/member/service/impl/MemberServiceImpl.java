@@ -5,6 +5,7 @@ import com.teamside.project.alpha.member.domain.terms.model.entity.TermsEntity;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
+import com.teamside.project.alpha.member.model.enumurate.SignUpType;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.member.service.MemberService;
@@ -36,14 +37,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public String sigunUp(MemberDto.SignUpDto signUpDto) {
+    public JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) {
         MemberEntity member = new MemberEntity(
                 generateMid(signUpDto.getMember().getPhone()),
                 signUpDto.getMember().getName(),
                 signUpDto.getMember().getPhone(),
                 signUpDto.getMember().getProfileUrl(),
                 signUpDto.getMember().getPinProfileUrl(),
-                signUpDto.getMember().getFcmToken());
+                signUpDto.getMember().getFcmToken(),
+                SignUpType.PHONE);
 
 
         member.changeTerms(new TermsEntity(member,
@@ -61,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepo.save(member);
 
-        return jwtTokens.getAccessToken();
+        return jwtTokens;
     }
 
     private String generateMid(String phone) {
