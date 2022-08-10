@@ -25,29 +25,32 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean checkId(String name)  {
+    public boolean existName(String name)  {
         return memberRepo.existsByName(name);
     }
 
+    @Override
+    public boolean existPhone(String phone) {
+        return memberRepo.existsByPhone(phone);
+    }
 
     @Override
     @Transactional
     public String sigunUp(MemberDto.SignUpDto signUpDto) {
-        MemberEntity member = MemberEntity.builder()
-                .mid(generateMid(signUpDto.getMember().getPhone()))
-                .name(signUpDto.getMember().getName())
-                .phone(signUpDto.getMember().getPhone())
-                .profileUrl(signUpDto.getMember().getProfileUrl())
-                .pinProfileUrl(signUpDto.getMember().getPinProfileUrl())
-                .build();
+        MemberEntity member = new MemberEntity(
+                generateMid(signUpDto.getMember().getPhone()),
+                signUpDto.getMember().getName(),
+                signUpDto.getMember().getPhone(),
+                signUpDto.getMember().getProfileUrl(),
+                signUpDto.getMember().getPinProfileUrl(),
+                signUpDto.getMember().getFcmToken());
 
-        member.changeTerms(TermsEntity.builder()
-                .member(member)
-                        .terms(signUpDto.getTerms().isTerms())
-                        .collect(signUpDto.getTerms().isCollect())
-                        .marketing(signUpDto.getTerms().isMarketing())
-                        .alarm(signUpDto.getTerms().isAlarm())
-                .build());
+
+        member.changeTerms(new TermsEntity(member,
+                signUpDto.getTerms().getTerms(),
+                signUpDto.getTerms().getCollect(),
+                signUpDto.getTerms().getMarketing(),
+                signUpDto.getTerms().getAlarm()));
 
         JwtTokens jwtTokens = authService.getTokens(member.getMid());
 

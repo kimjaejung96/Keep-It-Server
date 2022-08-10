@@ -10,12 +10,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "MEMBER")
 public class MemberEntity extends TimeEntity {
     @Id
@@ -43,6 +41,20 @@ public class MemberEntity extends TimeEntity {
 
     @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL)
     private RefreshTokenEntity refreshTokenEntity;
+
+    public MemberEntity(String mid, String name, String phone, String profileUrl, String pinProfileUrl, String fcmToken) {
+        this.mid = mid;
+        this.name = name;
+        this.phone = phone;
+        this.profileUrl = Objects.requireNonNullElse(profileUrl, "");
+        this.pinProfileUrl = Objects.requireNonNullElse(pinProfileUrl, "");
+        this.fcmToken = Objects.requireNonNullElse(fcmToken, "");
+    }
+
+
+    public MemberEntity() {
+
+    }
 
     public void changeTerms(TermsEntity termsEntity) {
         this.termsEntity = termsEntity;

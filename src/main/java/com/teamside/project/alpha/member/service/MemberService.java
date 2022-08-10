@@ -4,6 +4,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 
 public interface MemberService {
-    boolean checkId(String name) throws CustomException;
+    boolean existName(String name) throws CustomException;
+    boolean existPhone(String phone) throws CustomException;
     String sigunUp(MemberDto.SignUpDto signUpDto);
 }

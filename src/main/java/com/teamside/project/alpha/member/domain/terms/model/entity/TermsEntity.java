@@ -2,19 +2,13 @@ package com.teamside.project.alpha.member.domain.terms.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Table(name = "TERMS")
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class TermsEntity extends TimeEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(16)")
@@ -37,4 +31,15 @@ public class TermsEntity extends TimeEntity {
     @Column(name = "ALARM", columnDefinition = "boolean")
     private boolean alarm;
 
+    public TermsEntity(MemberEntity member, boolean terms, boolean collect, boolean marketing, boolean alarm) {
+        this.member = member;
+        this.terms = terms;
+        this.collect = collect;
+        this.marketing = marketing;
+        this.alarm = alarm;
+    }
+
+    public TermsEntity() {
+
+    }
 }

@@ -12,6 +12,8 @@ public enum ApiExceptionCode {
     FORBIDDEN(403, "Forbidden"),
     INTERNAL_ERROR(500, "Internal Error"),
     DUPLICATE_NAME(600, "Name is Duplicated"),
+    DUPLICATE_PHONE(601, "Phone Number is Duplicated"),
+    VALIDATION_ERROR(900, "Validation Error"),
     SYSTEM_ERROR(999, "System Error"),
     ;
 

@@ -2,8 +2,8 @@ package com.teamside.project.alpha.member.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
-import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.member.service.MemberService;
@@ -11,10 +11,10 @@ import com.teamside.project.alpha.sms.event.SMSEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 import java.util.Random;
 
 @RestController
@@ -34,22 +34,24 @@ public class MemberController {
 
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ResponseObject> signUp(@RequestBody @Valid MemberDto.SignUpDto signUpDto, Errors errors) throws CustomException {
-        if(memberService.checkId(signUpDto.getMember().getName())) {
+    public ResponseEntity<ResponseObject> signUp(@RequestBody @Valid MemberDto.SignUpDto signUpDto) throws CustomException {
+        if(memberService.existName(signUpDto.getMember().getName())) {
             throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
+        }
+        if (memberService.existPhone(signUpDto.getMember().getPhone())) {
+            throw new CustomException(ApiExceptionCode.DUPLICATE_PHONE);
         }
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         //회원가입
-//        String accessToken = memberService.sigunUp(signUpDto);
-//
-//        responseObject.setBody(Map.of("accessToken", accessToken));
+        String accessToken = memberService.sigunUp(signUpDto);
+        responseObject.setBody(Map.of(KeepitConstant.ACCESS_TOKEN, accessToken));
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
 
 
     @GetMapping("/ping")
     public ResponseEntity<ResponseObject> ping() {
-        ResponseObject responseObject = new ResponseObject();
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody("PONG~");
         return new ResponseEntity<>(responseObject, HttpStatus.ACCEPTED);
     }

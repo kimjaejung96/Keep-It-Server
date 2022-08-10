@@ -10,13 +10,20 @@ import java.io.Serializable;
 @Getter
 public class ResponseObject implements Serializable {
     private Object data;
-    private ApiExceptionCode apiCode = ApiExceptionCode.OK;
+    private ApiStatus apiStatus;
 
     public void setBody(Object data) {
         this.data = data;
     }
 
     public ResponseObject(ApiExceptionCode apiExceptionCode) {
-        this.apiCode = apiExceptionCode;
+        this.apiStatus = new ApiStatus();
+        this.apiStatus.apiCode = apiExceptionCode.getApiCode();
+        this.apiStatus.message = apiExceptionCode.getMessage();
+    }
+    @Getter
+    private static class ApiStatus {
+        private int apiCode;
+        private String message;
     }
 }

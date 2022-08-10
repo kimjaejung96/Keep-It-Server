@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.common.aop.model.entity;
 
+import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "API_LOG")
 @NoArgsConstructor
-public class ApiLogEntity {
+public class ApiLogEntity extends CreateDtEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SEQ")
