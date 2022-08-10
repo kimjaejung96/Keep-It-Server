@@ -1,5 +1,7 @@
 package com.teamside.project.alpha.member.service.impl;
 
+import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.member.domain.terms.model.entity.RefreshTokenEntity;
 import com.teamside.project.alpha.member.domain.terms.model.entity.TermsEntity;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
@@ -38,11 +40,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) {
+    public JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException {
         MemberEntity member = new MemberEntity(
                 UUID.randomUUID().toString(),
                 signUpDto.getMember().getName(),
-                signUpDto.getMember().getPhone(),
+                CryptUtils.encrypt(signUpDto.getMember().getPhone()),
                 signUpDto.getMember().getProfileUrl(),
                 signUpDto.getMember().getPinProfileUrl(),
                 signUpDto.getMember().getFcmToken(),

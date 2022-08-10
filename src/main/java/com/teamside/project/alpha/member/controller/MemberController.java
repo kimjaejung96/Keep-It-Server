@@ -2,11 +2,9 @@ package com.teamside.project.alpha.member.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
-import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
-import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.member.service.MemberService;
 import com.teamside.project.alpha.sms.event.SMSEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Map;
 import java.util.Random;
 
 @RestController
@@ -24,12 +21,10 @@ public class MemberController {
 
     private final ApplicationEventPublisher smsEventPublisher;
     private final MemberService memberService;
-    private final AuthService authService;
 
-    public MemberController(ApplicationEventPublisher smsEventPublisher, MemberService memberService, AuthService authService) {
+    public MemberController(ApplicationEventPublisher smsEventPublisher, MemberService memberService) {
         this.smsEventPublisher = smsEventPublisher;
         this.memberService = memberService;
-        this.authService = authService;
     }
 
 
