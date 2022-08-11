@@ -7,6 +7,8 @@ public enum ApiExceptionCode {
     NONE (0,""),
     OK(200, "OK"),
     CREATED(201, "Created"),
+    USER_NOT_FOUND(209, "User not found"),
+    AUTH_FAIL(210, "Auth fail"),
     BAD_REQUEST(400, "Bad Request"),
     UNAUTHORIZED(401, "Unauthorized"),
     FORBIDDEN(403, "Forbidden"),
