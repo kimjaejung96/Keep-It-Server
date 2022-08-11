@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -32,28 +34,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseObject> handleException(Exception ex) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.SYSTEM_ERROR);
-        log.error("RuntimeExceptionHandler : {} \n StackTrace : " , ex.getMessage(), ex.getStackTrace());
+        log.error("RuntimeExceptionHandler : {} \n StackTrace : ", ex.getMessage(), ex.getStackTrace());
         return new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.BAD_REQUEST);
-        log.error("NotReadable Exception : {} \n StackTrace : " , ex.getMessage(), ex.getStackTrace());
+        log.error("NotReadable Exception : {} \n StackTrace : ", ex.getMessage(), ex.getStackTrace());
         return new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
     }
 
     // @RequestBody, @RequestHeader 유효성 실패.
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ResponseObject> handleConstraintViolationException(ConstraintViolationException ex) {
-        log.error("파라미터 유효성 체크 실패. : {}" , ex.getMessage());
+        log.error("파라미터 유효성 체크 실패. : {}", ex.getMessage());
         ResponseObject response = new ResponseObject(ApiExceptionCode.SYSTEM_ERROR);
 
-        if(ex.getConstraintViolations().isEmpty() == false)
-        {
-            String exceptionMsg = ex.getConstraintViolations().stream()
-                    .map(v1 -> v1.getMessage())
-                    .collect(Collectors.joining(","));
+        if (!ex.getConstraintViolations().isEmpty()) {
+            String exceptionMsg = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(","));
             response.setBody(exceptionMsg);
         }
 
@@ -61,18 +60,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-
     // @RequestBody 유효성 실패.
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers,
-                                                                  HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-        log.error("파라미터 유효성 체크 실패. : {}" , ex.getMessage());
-        ResponseObject response = new ResponseObject(ApiExceptionCode.VALIDATION_ERROR);
+        log.error("밸리데이션 유효성 체크 실패. : {}", ex.getMessage());
+        ResponseObject response = new ResponseObject(ApiExceptionCode.SYSTEM_ERROR);
 
-        if(ex.getBindingResult().hasErrors())
-            response.setBody(ex.getBindingResult().getFieldError().getDefaultMessage());
+        if (ex.getBindingResult().hasErrors())
+            response.setBody(Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
