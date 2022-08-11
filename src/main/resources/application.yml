@@ -24,6 +24,9 @@ spring:
         physical-strategy: com.teamside.project.alpha.common.configuration.JpaNaming
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 alpha:
   sens:

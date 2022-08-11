@@ -10,13 +10,16 @@ import com.teamside.project.alpha.sms.event.SMSEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.Random;
 
+@Validated
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/members")
 public class MemberController {
 
     private final ApplicationEventPublisher smsEventPublisher;
@@ -31,18 +34,43 @@ public class MemberController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<ResponseObject> signUp(@RequestBody @Valid MemberDto.SignUpDto signUpDto) throws CustomException {
-        if(memberService.existName(signUpDto.getMember().getName())) {
-            throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
-        }
-        if (memberService.existPhone(signUpDto.getMember().getPhone())) {
-            throw new CustomException(ApiExceptionCode.DUPLICATE_PHONE);
-        }
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         //회원가입
         JwtTokens jwtTokens = memberService.sigunUp(signUpDto);
         responseObject.setBody(jwtTokens);
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
+
+    @GetMapping("/{name}/exists")
+    public ResponseEntity<ResponseObject> checkExistName(
+             @Pattern(regexp = "(?=.*[-_A-Za-z0-9])(?=.*[^-_]).{4,20}",
+            message = "이름이 올바르지 않습니다.") @PathVariable String name) throws CustomException {
+        memberService.checkExistsName(name);
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     @GetMapping("/ping")

@@ -5,7 +5,7 @@ import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 
 public interface MemberService {
-    boolean existName(String name) throws CustomException;
-    boolean existPhone(String phone) throws CustomException;
     JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException;
+    void checkExistsName(String name) throws CustomException;
+
 }

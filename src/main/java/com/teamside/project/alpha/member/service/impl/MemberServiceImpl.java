@@ -1,8 +1,8 @@
 package com.teamside.project.alpha.member.service.impl;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.util.CryptUtils;
-import com.teamside.project.alpha.member.domain.terms.model.entity.RefreshTokenEntity;
 import com.teamside.project.alpha.member.domain.terms.model.entity.TermsEntity;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
@@ -14,8 +14,6 @@ import com.teamside.project.alpha.member.service.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
@@ -29,18 +27,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean existName(String name)  {
-        return memberRepo.existsByName(name);
-    }
-
-    @Override
-    public boolean existPhone(String phone) {
-        return memberRepo.existsByPhone(phone);
-    }
-
-    @Override
     @Transactional
     public JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException {
+        checkExistName(signUpDto.getMember().getName());
+        checkExistPhone(signUpDto.getMember().getPhone());
+
         MemberEntity member = new MemberEntity(
                 UUID.randomUUID().toString(),
                 signUpDto.getMember().getName(),
@@ -61,12 +52,24 @@ public class MemberServiceImpl implements MemberService {
 
         member.changeRefreshToken(jwtTokens.getRefreshToken());
 
-        memberRepo.save(member);
-
         return jwtTokens;
     }
 
-//    private String generateMid(String phone) {
-//        return "PH" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd")) + phone.substring(3);
-//    }
+    @Override
+    public void checkExistsName(String name) throws CustomException {
+        checkExistName(name);
+    }
+
+
+    private void checkExistName(String name) throws CustomException {
+        if (memberRepo.existsByName(name)) {
+            throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
+        }
+    }
+
+    private void checkExistPhone(String phone) throws CustomException {
+        if (memberRepo.existsByPhone(phone)) {
+            throw new CustomException(ApiExceptionCode.DUPLICATE_PHONE);
+        }
+    }
 }
