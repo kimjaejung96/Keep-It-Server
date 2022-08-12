@@ -1,8 +1,6 @@
 package com.teamside.project.alpha.common.aop.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -25,17 +23,21 @@ public class ApiLogEntity extends CreateDtEntity {
     @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR(5000)")
     private String description;
 
-    @Column(name = "STATUS")
+    @Column(name = "API_STATUS")
     private String status;
+
+    @Column(name = "API_CODE")
+    private int code;
 
     @Column(name = "PROCESS_TIME")
     private float processTime;
 
-    public ApiLogEntity(String mid, String name, String description, String status, float processTime) {
+    public ApiLogEntity(String mid, String name, String description, String status, float processTime, int code) {
         this.mid = mid;
         this.name = name;
         this.description = description;
         this.status = status;
         this.processTime = processTime;
+        this.code = code;
     }
 }

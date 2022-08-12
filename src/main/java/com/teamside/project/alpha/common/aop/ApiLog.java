@@ -38,10 +38,11 @@ public class ApiLog {
 
         Object result;
         String desc = "";
-        String status = KeepitConstant.SUCCESS;
+        String apiStatus = KeepitConstant.SUCCESS;
         String methodName = "";
         String controllerName = "";
         String mid = CryptUtils.getMid();
+        int apiCode = 0;
         try {
             methodName = joinPoint.getSignature().getName();
 
@@ -54,19 +55,19 @@ public class ApiLog {
             desc += "[REQUEST] METHOD : " + controllerName + "{" + methodName + "} PARAMS : " + params + "\n";
 
             result = joinPoint.proceed();
+            apiCode = ((ResponseEntity) result).getStatusCodeValue();
             stopWatch.stop();
-
             ResponseEntity<?> response = (ResponseEntity<?>) result;
             desc += "[RESPONSE] " + objectMapper.writeValueAsString(response.getBody());
 
             log.info("<======= RESPONSE : {} / METHOD : {} / RESULT : {} / PROCESS_TIME =  {}s", joinPoint.getSignature().getDeclaringTypeName(), methodName, objectMapper.writeValueAsString(response.getBody()), stopWatch.getTotalTimeMillis() * 0.001);
         } catch (Exception ex) {
             stopWatch.stop();
-            status = KeepitConstant.FAIL;
+            apiStatus = KeepitConstant.FAIL;
             throw ex;
         }
         finally {
-            ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc, status, (float) (stopWatch.getTotalTimeMillis() * 0.001));
+            ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc, apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
             logService.insertLog(apiLogEntity);
         }
 
