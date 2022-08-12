@@ -57,6 +57,13 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/withdrawal")
+    public ResponseEntity<ResponseObject> withdrawal() throws CustomException {
+        ResponseObject response = new ResponseObject(ApiExceptionCode.OK);
+        memberService.withdrawal();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 
 

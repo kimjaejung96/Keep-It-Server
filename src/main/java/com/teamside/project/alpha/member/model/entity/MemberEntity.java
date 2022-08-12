@@ -74,4 +74,5 @@ public class MemberEntity extends TimeEntity {
         changeRefreshToken("");
         changeFcmToken("");
     }
+
 }

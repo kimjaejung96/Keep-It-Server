@@ -13,7 +13,7 @@ public enum ApiExceptionCode {
     INTERNAL_ERROR(500, "Internal Error"),
     DUPLICATE_NAME(600, "Name is Duplicated"),
     DUPLICATE_PHONE(601, "Phone Number is Duplicated"),
-    USER_NOT_FOUND(700, "User not found"),
+    MEMBER_NOT_FOUND(700, "Member not found"),
     AUTH_FAIL(701, "Auth fail"),
     SYSTEM_ERROR(999, "System Error"),
     ;

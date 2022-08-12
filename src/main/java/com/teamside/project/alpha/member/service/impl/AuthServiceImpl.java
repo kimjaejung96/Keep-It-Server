@@ -141,7 +141,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtTokens checkMember(String phone) throws CustomException {
         MemberEntity member = memberRepo.findByPhoneAndType(CryptUtils.encrypt(phone), SignUpType.PHONE)
-                .orElseThrow(() -> new CustomException(ApiExceptionCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
         JwtTokens jwtTokens = this.getTokens(member.getMid());
 

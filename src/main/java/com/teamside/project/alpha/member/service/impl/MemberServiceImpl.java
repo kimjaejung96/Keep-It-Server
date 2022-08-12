@@ -69,6 +69,15 @@ public class MemberServiceImpl implements MemberService {
         member.ifPresent(MemberEntity::logout);
     }
 
+    @Override
+    public void withdrawal() throws CustomException {
+        Optional<MemberEntity> member = memberRepo.findByMid(CryptUtils.getMid());
+        if (member.isPresent()) {
+            memberRepo.delete(member.get());
+        } else throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
+
+    }
+
     private void checkExistName(String name) throws CustomException {
         if (memberRepo.existsByName(name)) {
             throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
