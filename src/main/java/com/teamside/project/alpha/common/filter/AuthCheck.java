@@ -33,18 +33,18 @@ public class AuthCheck extends OncePerRequestFilter {
         this.objectMapper = objectMapper;
     }
 
-    private static final String[] EXCLUDE_URL = {
-            "/members/**/exists",
-            "/members/sign-up",
-            "/ping",
-    };
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        AntPathMatcher pathMatcher = new AntPathMatcher();
-        String url = request.getRequestURI();
-        return Stream.of(EXCLUDE_URL).anyMatch(x -> pathMatcher.match(x, url));
-    }
+//    private static final String[] EXCLUDE_URL = {
+//            "/members/**/exists",
+//            "/members/sign-up",
+//            "/ping",
+//    };
+//
+//    @Override
+//    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+//        AntPathMatcher pathMatcher = new AntPathMatcher();
+//        String url = request.getRequestURI();
+//        return Stream.of(EXCLUDE_URL).anyMatch(x -> pathMatcher.match(x, url));
+//    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

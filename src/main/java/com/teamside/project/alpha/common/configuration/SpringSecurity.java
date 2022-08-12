@@ -42,12 +42,12 @@ public class SpringSecurity {
                         .and()
                         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-//                        .authorizeRequests()
-//                        .antMatchers(HttpMethod.POST,"/members/sign-up**").permitAll()
-//                        .antMatchers(HttpMethod.GET,"/members/**/exists").permitAll()
-//                        .anyRequest().authenticated()
-//                        .and()
-//                .addFilterBefore(new AuthCheck(authService, objectMapper), UsernamePasswordAuthenticationFilter.class)
+                        .authorizeRequests()
+                        .antMatchers(HttpMethod.POST,"/members/sign-up/**").permitAll()
+                        .antMatchers(HttpMethod.GET,"/members/**/exists").permitAll()
+                        .anyRequest().authenticated()
+                        .and()
+                .addFilterBefore(new AuthCheck(authService, objectMapper), UsernamePasswordAuthenticationFilter.class)
         ;
         return http.build();
     }
