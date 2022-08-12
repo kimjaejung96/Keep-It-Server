@@ -6,6 +6,7 @@ import com.teamside.project.alpha.member.model.dto.MemberDto;
 
 public interface MemberService {
     JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException;
+    void logout();
     void checkExistsName(String name) throws CustomException;
 
 }

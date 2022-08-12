@@ -52,6 +52,7 @@ public class MemberServiceImpl implements MemberService {
 
         member.changeRefreshToken(jwtTokens.getRefreshToken());
 
+        memberRepo.save(member);
         return jwtTokens;
     }
 
@@ -60,6 +61,10 @@ public class MemberServiceImpl implements MemberService {
         checkExistName(name);
     }
 
+    @Override
+    public void logout() {
+
+    }
 
     private void checkExistName(String name) throws CustomException {
         if (memberRepo.existsByName(name)) {

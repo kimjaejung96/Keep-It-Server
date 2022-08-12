@@ -50,6 +50,12 @@ public class MemberController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<ResponseObject> logout() {
+        ResponseObject response = new ResponseObject(ApiExceptionCode.OK);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 
 

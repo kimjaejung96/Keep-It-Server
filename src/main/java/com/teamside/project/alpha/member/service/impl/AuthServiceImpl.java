@@ -1,17 +1,25 @@
 package com.teamside.project.alpha.member.service.impl;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.service.AuthService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
+import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidParameterException;
+import java.security.Key;
 import java.util.Date;
 
 @Service
+@Slf4j
 public class AuthServiceImpl implements AuthService {
     @Value("${jwt.accessToken.validTime}")
     private long accessTokenValidTime;
@@ -35,6 +43,40 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String createRefreshToken(String mid) {
         return null;
+    }
+
+    private Key getSigninKey(String secretKey) {
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public void tokenValidationCheck(String token) throws CustomException {
+        try {
+            Jwts.parserBuilder()
+                .setSigningKey(getSigninKey(secretKey)).build()
+                .parseClaimsJws(token)
+                .getBody();
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.error("잘못된 JWT 서명입니다.");
+            throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
+        } catch (ExpiredJwtException e) {
+            log.error("만료된 JWT 토큰입니다.");
+            throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
+        } catch (UnsupportedJwtException e) {
+            log.error("지원되지 않는 JWT 토큰입니다.");
+            throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
+        } catch (IllegalArgumentException e) {
+            log.error("JWT 토큰이 잘못되었습니다.");
+            throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
+        }
+    }
+
+    @Override
+    public String getAuthPayload(String token)  {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigninKey(secretKey)).build()
+                .parseClaimsJws(token)
+                .getBody().get("sub", String.class);
     }
 
     private JwtTokens createTokens(String mid) {
