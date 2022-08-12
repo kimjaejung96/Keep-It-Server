@@ -85,7 +85,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private void checkExistPhone(String phone) throws CustomException {
-        if (memberRepo.existsByPhone(phone)) {
+        if (memberRepo.existsByPhone(CryptUtils.encrypt(phone))) {
             throw new CustomException(ApiExceptionCode.DUPLICATE_PHONE);
         }
     }
