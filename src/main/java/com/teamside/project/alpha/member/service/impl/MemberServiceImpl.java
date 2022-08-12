@@ -14,6 +14,7 @@ import com.teamside.project.alpha.member.service.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -62,8 +63,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void logout() {
-
+        Optional<MemberEntity> member = memberRepo.findByMid(CryptUtils.getMid());
+        member.ifPresent(MemberEntity::logout);
     }
 
     private void checkExistName(String name) throws CustomException {

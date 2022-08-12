@@ -2,8 +2,6 @@ package com.teamside.project.alpha.member.service.impl;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
-import com.teamside.project.alpha.common.exception.ApiExceptionCode;
-import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.SmsAuthDto;
@@ -15,15 +13,11 @@ import com.teamside.project.alpha.member.repository.SmsLogRepo;
 import com.teamside.project.alpha.member.service.AuthService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidParameterException;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -150,6 +144,8 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new CustomException(ApiExceptionCode.USER_NOT_FOUND));
 
         JwtTokens jwtTokens = this.getTokens(member.getMid());
+
+        member.changeRefreshToken(jwtTokens.getRefreshToken());
 
         return jwtTokens;
     }

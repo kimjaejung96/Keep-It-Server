@@ -7,14 +7,14 @@ public enum ApiExceptionCode {
     NONE (0,""),
     OK(200, "OK"),
     CREATED(201, "Created"),
-    USER_NOT_FOUND(209, "User not found"),
-    AUTH_FAIL(210, "Auth fail"),
     BAD_REQUEST(400, "Bad Request"),
     UNAUTHORIZED(401, "Unauthorized"),
     FORBIDDEN(403, "Forbidden"),
     INTERNAL_ERROR(500, "Internal Error"),
     DUPLICATE_NAME(600, "Name is Duplicated"),
     DUPLICATE_PHONE(601, "Phone Number is Duplicated"),
+    USER_NOT_FOUND(700, "User not found"),
+    AUTH_FAIL(701, "Auth fail"),
     SYSTEM_ERROR(999, "System Error"),
     ;
 

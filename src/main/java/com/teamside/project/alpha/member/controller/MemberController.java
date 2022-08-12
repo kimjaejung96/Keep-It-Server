@@ -53,7 +53,7 @@ public class MemberController {
     @PostMapping("/logout")
     public ResponseEntity<ResponseObject> logout() {
         ResponseObject response = new ResponseObject(ApiExceptionCode.OK);
-
+        memberService.logout();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

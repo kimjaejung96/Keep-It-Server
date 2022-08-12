@@ -64,7 +64,14 @@ public class MemberEntity extends TimeEntity {
     }
 
     public void changeRefreshToken(String refreshToken) {
-        this.refreshTokenEntity = new RefreshTokenEntity(this, refreshToken);
+        this.refreshTokenEntity.changeRefreshToken(refreshToken);
     }
 
+    public void changeFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+    public void logout() {
+        changeRefreshToken("");
+        changeFcmToken("");
+    }
 }

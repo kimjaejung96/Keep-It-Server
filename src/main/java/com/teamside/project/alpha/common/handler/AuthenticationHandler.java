@@ -30,7 +30,7 @@ public class AuthenticationHandler implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest httpServletRequest,
                          HttpServletResponse httpServletResponse,
                          AuthenticationException e) throws IOException, ServletException {
-        log.error("UnAuthorizaed!!! message : " + e.getMessage());
+        log.error("UnAuthorizaed : " + e.getMessage());
 
         httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
         httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());

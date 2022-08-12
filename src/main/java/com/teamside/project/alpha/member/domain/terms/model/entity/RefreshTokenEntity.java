@@ -2,10 +2,7 @@ package com.teamside.project.alpha.member.domain.terms.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -32,6 +29,10 @@ public class RefreshTokenEntity extends TimeEntity {
 
     public RefreshTokenEntity() {
 
+    }
+
+    public void changeRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
 

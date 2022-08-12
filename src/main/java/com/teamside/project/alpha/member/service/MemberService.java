@@ -8,5 +8,4 @@ public interface MemberService {
     JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException;
     void logout();
     void checkExistsName(String name) throws CustomException;
-
 }

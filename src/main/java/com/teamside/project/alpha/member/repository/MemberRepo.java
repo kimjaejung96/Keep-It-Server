@@ -12,4 +12,5 @@ public interface MemberRepo extends JpaRepository<MemberEntity, Long> {
     boolean existsByName(String name);
     boolean existsByPhone(String phone);
     Optional<MemberEntity> findByPhoneAndType(String phone, SignUpType signUpType);
+    Optional<MemberEntity> findByMid(String mid);
 }

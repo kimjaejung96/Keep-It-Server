@@ -2,7 +2,6 @@ package com.teamside.project.alpha.common.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
-import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ public class AuthorizationHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.error("Forbidden!!! message : " + accessDeniedException.getMessage());
+        log.error("Forbidden : " + accessDeniedException.getMessage());
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.FORBIDDEN.value());

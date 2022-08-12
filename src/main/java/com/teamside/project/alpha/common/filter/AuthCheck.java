@@ -6,13 +6,11 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,8 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 public class AuthCheck extends OncePerRequestFilter {
     private final AuthService authService;
@@ -49,10 +45,13 @@ public class AuthCheck extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            authService.tokenValidationCheck(getAccessToken(request));
-            String mid = authService.getAuthPayload(getAccessToken(request));
-            Authentication authentication = new UsernamePasswordAuthenticationToken(mid, getAccessToken(request),null);;
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = getAccessToken(request);
+            if(token != null){
+                authService.tokenValidationCheck(token);
+                String mid = authService.getAuthPayload(getAccessToken(request));
+                Authentication authentication = new UsernamePasswordAuthenticationToken(mid, getAccessToken(request),null);;
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
             filterChain.doFilter(request, response);
         } catch (CustomException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
