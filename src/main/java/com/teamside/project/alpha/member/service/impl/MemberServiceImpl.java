@@ -46,6 +46,7 @@ public class MemberServiceImpl implements MemberService {
         member.changeTerms(new TermsEntity(member,
                 signUpDto.getTerms().getTerms(),
                 signUpDto.getTerms().getCollect(),
+                signUpDto.getTerms().getGps(),
                 signUpDto.getTerms().getMarketing(),
                 signUpDto.getTerms().getAlarm()));
 

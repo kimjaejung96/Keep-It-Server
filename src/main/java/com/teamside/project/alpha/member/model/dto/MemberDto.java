@@ -1,7 +1,6 @@
 package com.teamside.project.alpha.member.model.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,6 +40,8 @@ public class MemberDto {
     public static class Terms {
         @NotNull
         private Boolean terms;
+        @NotNull
+        private Boolean gps;
         @NotNull
         private Boolean collect;
         @NotNull

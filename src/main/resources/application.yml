@@ -24,10 +24,10 @@ spring:
         physical-strategy: com.teamside.project.alpha.common.configuration.JpaNaming
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: off
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
 alpha:
   sens:
     svc_id: "ncp:sms:kr:258742391636:alpha_sms"

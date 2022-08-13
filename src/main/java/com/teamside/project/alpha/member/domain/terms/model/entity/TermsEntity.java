@@ -25,16 +25,19 @@ public class TermsEntity extends TimeEntity {
     @Column(name = "COLLECT", columnDefinition = "boolean")
     private boolean collect;
 
+    @Column(name = "GPS", columnDefinition = "boolean")
+    private boolean gps;
     @Column(name = "MARKETING", columnDefinition = "boolean")
     private boolean marketing;
 
     @Column(name = "ALARM", columnDefinition = "boolean")
     private boolean alarm;
 
-    public TermsEntity(MemberEntity member, boolean terms, boolean collect, boolean marketing, boolean alarm) {
+    public TermsEntity(MemberEntity member, boolean terms, boolean collect, boolean gps, boolean marketing, boolean alarm) {
         this.member = member;
         this.terms = terms;
         this.collect = collect;
+        this.gps = gps;
         this.marketing = marketing;
         this.alarm = alarm;
     }
