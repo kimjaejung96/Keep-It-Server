@@ -5,20 +5,19 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.SmsAuthDto;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
-import com.teamside.project.alpha.member.model.enumurate.SignUpType;
-import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.sms.event.SMSEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Map;
+import javax.validation.constraints.Pattern;
 import java.util.Random;
 
+@Validated
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -31,20 +30,19 @@ public class AuthController {
         this.smsEventPublisher = smsEventPublisher;
     }
 
-    @PostMapping(value = "/sms")
-    public ResponseEntity<ResponseObject> sms(@RequestBody @Valid SmsAuthDto smsAuthDto) throws CustomException {
+    @PostMapping(value = "/sms/{phone}")
+    public ResponseEntity<ResponseObject> sms(
+            @Pattern(regexp = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$",
+                    message = "핸드폰 번호가 올바르지 않습니다.") @PathVariable String phone) throws CustomException {
         String number = generateCertificationNumber();
 
         // authNum publish
-        smsEventPublisher.publishEvent(new SMSEvent(smsAuthDto.getPhone(), number));
+        smsEventPublisher.publishEvent(new SMSEvent(phone, number));
 
         // save smsLog
-        authService.saveSmsLog(smsAuthDto.getPhone(), number);
+        authService.saveSmsLog(phone, number);
 
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(number);
-
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity(new ResponseObject(ApiExceptionCode.OK), HttpStatus.OK);
     }
 
     @PostMapping(value = "/sms/sign-up")

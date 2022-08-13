@@ -16,7 +16,8 @@ public class SmsAuthDto {
             message = "핸드폰 번호가 올바르지 않습니다.")
     private String phone;
 
-    @Size(min = 6, max = 6)
+    @Pattern(regexp = "^([0-9]{6})$",
+            message = "인증번호가 올바르지 않습니다.")
     private String authNum;
 
 }
