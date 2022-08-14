@@ -77,13 +77,10 @@ public class AuthServiceImpl implements AuthService {
 
         String mid = getAuthPayload(refreshToken);
 
-        Optional<MemberEntity> member = memberRepo.findByMid(mid);
-        if (member.isEmpty()) {
-            throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
-        }
+        MemberEntity member = memberRepo.findByMid(mid).orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
-        if (refreshToken.equals(member.get().getRefreshTokenEntity().getRefreshToken())) {
-            Claims claims = Jwts.claims().setSubject(member.get().getMid());
+        if (refreshToken.equals(member.getRefreshTokenEntity().getRefreshToken())) {
+            Claims claims = Jwts.claims().setSubject(member.getMid());
             Date now = new Date();
 
             return Jwts.builder()
@@ -100,11 +97,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public String refreshRefreshToken() throws CustomException {
+        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
-        Optional<MemberEntity> member = memberRepo.findByMid(CryptUtils.getMid());
-        if (member.isEmpty()) {
-            throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
-        } else {
         Date now = new Date();
         Claims claims = Jwts.claims().setSubject(CryptUtils.getMid());
 
@@ -115,10 +109,9 @@ public class AuthServiceImpl implements AuthService {
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
 
-        member.get().getRefreshTokenEntity().changeRefreshToken(refreshToken);
+        member.getRefreshTokenEntity().changeRefreshToken(refreshToken);
 
         return refreshToken;
-        }
     }
 
     private Key getSigninKey(String secretKey) {
