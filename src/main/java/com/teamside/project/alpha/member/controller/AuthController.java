@@ -94,31 +94,6 @@ public class AuthController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/refresh/refresh-token")
-    public ResponseEntity<ResponseObject> refreshRefreshToken() throws CustomException {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-
-        JwtTokens jwtTokens = JwtTokens.builder()
-                .refreshToken(authService.refreshRefreshToken())
-                .build();
-
-        responseObject.setBody(jwtTokens);
-        return new ResponseEntity(responseObject, HttpStatus.OK);
-    }
-
-
-    @PostMapping(value = "/refresh/access-token")
-    public ResponseEntity<ResponseObject> refreshAccessToken(@RequestHeader(value = AuthCheck.REFRESH_TOKEN, required = false) @Valid @NotBlank(message = "리프레시 토큰이 널이거나 빈값입니다.") String refreshToken) throws CustomException {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        authService.tokenValidationCheck(refreshToken);
-
-        JwtTokens jwtTokens = JwtTokens.builder()
-                .accessToken(authService.refreshAccessToken(refreshToken))
-                .build();
-        responseObject.setBody(jwtTokens);
-        return new ResponseEntity(responseObject, HttpStatus.OK);
-    }
-
 
 
     private String generateCertificationNumber() {
