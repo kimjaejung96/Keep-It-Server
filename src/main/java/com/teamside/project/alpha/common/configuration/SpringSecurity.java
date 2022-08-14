@@ -50,6 +50,7 @@ public class SpringSecurity {
 
                         .antMatchers(HttpMethod.POST,"/members/sign-up/**").permitAll()
                         .antMatchers(HttpMethod.GET,"/members/**/exists").permitAll()
+                        .antMatchers(HttpMethod.POST, "/members/inquiry").permitAll()
                         .antMatchers(HttpMethod.POST,"/auth/sms/**").permitAll()
 
 
