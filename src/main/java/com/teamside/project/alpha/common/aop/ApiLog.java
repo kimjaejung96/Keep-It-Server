@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.aop.model.entity.ApiLogEntity;
 import com.teamside.project.alpha.common.aop.service.LogService;
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +17,11 @@ import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Aspect
 @Component
@@ -49,12 +53,14 @@ public class ApiLog {
             String[] packagedMethodName = joinPoint.getTarget().getClass().getName().split("\\.");
             controllerName = packagedMethodName[packagedMethodName.length - 1];
 
-            String params = getRequestParams();
+            String params = getRequestParams().replace("\\", "");
 
-            log.info("=======> REQUEST : {} / METHOD : {} / PARAMS : {}", joinPoint.getSignature().getDeclaringTypeName(), methodName, params);
-            desc += "[REQUEST] METHOD : " + controllerName + "{" + methodName + "} PARAMS : " + params + "\n";
+
+            log.info("=======> REQUEST : {} / METHOD : {}  PARAMS : {}", joinPoint.getSignature().getDeclaringTypeName(), methodName, params);
+            desc += "[REQUEST] METHOD : " + controllerName + "{" + methodName + "}\nPARAMS : " + params + "\n";
 
             result = joinPoint.proceed();
+
             apiCode = ((ResponseEntity) result).getStatusCodeValue();
             stopWatch.stop();
             ResponseEntity<?> response = (ResponseEntity<?>) result;
@@ -63,6 +69,15 @@ public class ApiLog {
             log.info("<======= RESPONSE : {} / METHOD : {} / RESULT : {} / PROCESS_TIME =  {}s", joinPoint.getSignature().getDeclaringTypeName(), methodName, objectMapper.writeValueAsString(response.getBody()), stopWatch.getTotalTimeMillis() * 0.001);
         } catch (Exception ex) {
             stopWatch.stop();
+            if (ex instanceof CustomException) {
+                apiCode = ((CustomException) ex).getApiExceptionCode().getApiCode();
+                desc += "[RESPONSE] " + objectMapper.writeValueAsString(((CustomException) ex).getErrorDetail());
+            }
+            if (ex instanceof ConstraintViolationException) {
+                apiCode = 999;
+                desc += "[RESPONSE] " + ((ConstraintViolationException) ex).getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate).collect(Collectors.joining());;
+
+            }
             apiStatus = KeepitConstant.FAIL;
             throw ex;
         }

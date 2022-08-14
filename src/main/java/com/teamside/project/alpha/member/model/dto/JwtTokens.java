@@ -1,11 +1,13 @@
 package com.teamside.project.alpha.member.model.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class JwtTokens {
-    private String accessToken;
-    private String refreshToken;
+    private final String accessToken;
+    private final String refreshToken;
 
     public JwtTokens(String accessToken, String refreshToken) {
         this.accessToken = accessToken;

@@ -2,6 +2,7 @@ package com.teamside.project.alpha.member.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.filter.AuthCheck;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.SmsAuthDto;
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.Random;
 
@@ -66,6 +68,33 @@ public class AuthController {
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
+
+    @PostMapping(value = "/refresh/refresh-token")
+    public ResponseEntity<ResponseObject> refreshRefreshToken() throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+
+        JwtTokens jwtTokens = JwtTokens.builder()
+                .refreshToken(authService.refreshRefreshToken())
+                .build();
+
+        responseObject.setBody(jwtTokens);
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
+
+    @PostMapping(value = "/refresh/access-token")
+    public ResponseEntity<ResponseObject> refreshAccessToken(@RequestHeader(value = AuthCheck.REFRESH_TOKEN, required = false) @Valid @NotBlank(message = "리프레시 토큰이 널이거나 빈값입니다.") String refreshToken) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        authService.tokenValidationCheck(refreshToken);
+
+        JwtTokens jwtTokens = JwtTokens.builder()
+                .accessToken(authService.refreshAccessToken(refreshToken))
+                .build();
+        responseObject.setBody(jwtTokens);
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
+
 
     private String generateCertificationNumber() {
         Random random = new Random();

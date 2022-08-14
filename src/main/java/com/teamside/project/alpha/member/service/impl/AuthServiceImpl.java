@@ -16,11 +16,14 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -44,18 +47,78 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public JwtTokens getTokens(String mid) {
-        return createTokens(mid);
+    public JwtTokens createTokens(String mid) {
+        Claims claims = Jwts.claims().setSubject(mid);
+        Date now = new Date();
+
+        String accessToken = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(System.currentTimeMillis()+accessTokenValidTime*1000*60*60*24))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
+
+        String refreshToken = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(System.currentTimeMillis()+refreshTokenValidTime*1000*60*60*24))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
+
+
+        return new JwtTokens(accessToken, refreshToken);
     }
 
     @Override
-    public String createAccessToken(String mid) {
-        return null;
+    public String refreshAccessToken(String refreshToken) throws CustomException {
+        if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
+
+        String mid = getAuthPayload(refreshToken);
+
+        Optional<MemberEntity> member = memberRepo.findByMid(mid);
+        if (member.isEmpty()) {
+            throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
+        }
+
+        if (refreshToken.equals(member.get().getRefreshTokenEntity().getRefreshToken())) {
+            Claims claims = Jwts.claims().setSubject(member.get().getMid());
+            Date now = new Date();
+
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(now)
+                    .setExpiration(new Date(System.currentTimeMillis()+accessTokenValidTime*1000*60*60*24))
+                    .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+                    .compact();
+        } else {
+            throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
+        }
     }
 
     @Override
-    public String createRefreshToken(String mid) {
-        return null;
+    @Transactional
+    public String refreshRefreshToken() throws CustomException {
+
+        Optional<MemberEntity> member = memberRepo.findByMid(CryptUtils.getMid());
+        if (member.isEmpty()) {
+            throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
+        } else {
+        Date now = new Date();
+        Claims claims = Jwts.claims().setSubject(CryptUtils.getMid());
+
+        String refreshToken = Jwts.builder()
+                .setIssuedAt(now)
+                .setClaims(claims)
+                .setExpiration(new Date(System.currentTimeMillis()+refreshTokenValidTime*1000*60*60*24))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
+
+        member.get().getRefreshTokenEntity().changeRefreshToken(refreshToken);
+
+        return refreshToken;
+        }
     }
 
     private Key getSigninKey(String secretKey) {
@@ -64,6 +127,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public void tokenValidationCheck(String token) throws CustomException {
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            token =  token.substring(7);
+        }
         try {
             Jwts.parserBuilder()
                 .setSigningKey(getSigninKey(secretKey)).build()
@@ -92,26 +158,6 @@ public class AuthServiceImpl implements AuthService {
                 .getBody().get("sub", String.class);
     }
 
-    private JwtTokens createTokens(String mid) {
-        Claims claims = Jwts.claims().setSubject(mid);
-        Date now = new Date();
-
-        String accessToken = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+accessTokenValidTime*1000*60*60*24))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
-                .compact();
-
-        String refreshToken = Jwts.builder()
-                .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+refreshTokenValidTime*1000*60*60*24))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
-                .compact();
-
-
-        return new JwtTokens(accessToken, refreshToken);
-    }
 
     @Override
     public void saveSmsLog(String requestPhoneNum, String number) throws CustomException {
@@ -143,9 +189,9 @@ public class AuthServiceImpl implements AuthService {
         MemberEntity member = memberRepo.findByPhoneAndType(CryptUtils.encrypt(phone), SignUpType.PHONE)
                 .orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
-        JwtTokens jwtTokens = this.getTokens(member.getMid());
+        JwtTokens jwtTokens = this.createTokens(member.getMid());
 
-        member.changeRefreshToken(jwtTokens.getRefreshToken());
+        member.createRefreshToken(jwtTokens.getRefreshToken());
 
         return jwtTokens;
     }

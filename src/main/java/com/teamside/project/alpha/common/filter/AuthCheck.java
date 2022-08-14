@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AuthCheck extends OncePerRequestFilter {
+    public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private final AuthService authService;
     private final ObjectMapper objectMapper;
 
@@ -28,19 +30,6 @@ public class AuthCheck extends OncePerRequestFilter {
         this.authService = authService;
         this.objectMapper = objectMapper;
     }
-
-//    private static final String[] EXCLUDE_URL = {
-//            "/members/**/exists",
-//            "/members/sign-up",
-//            "/ping",
-//    };
-//
-//    @Override
-//    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-//        AntPathMatcher pathMatcher = new AntPathMatcher();
-//        String url = request.getRequestURI();
-//        return Stream.of(EXCLUDE_URL).anyMatch(x -> pathMatcher.match(x, url));
-//    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

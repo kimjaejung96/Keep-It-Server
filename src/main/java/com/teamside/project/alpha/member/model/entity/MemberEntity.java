@@ -37,11 +37,11 @@ public class MemberEntity extends TimeEntity {
     @Enumerated(EnumType.STRING)
     private SignUpType type;
 
-    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private TermsEntity termsEntity;
 
 
-    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RefreshTokenEntity refreshTokenEntity;
 
     public MemberEntity(String mid, String name, String phone, String profileUrl, String pinProfileUrl, String fcmToken, SignUpType type) {
@@ -59,11 +59,11 @@ public class MemberEntity extends TimeEntity {
 
     }
 
-    public void changeTerms(TermsEntity termsEntity) {
+    public void createTerms(TermsEntity termsEntity) {
         this.termsEntity = termsEntity;
     }
 
-    public void changeRefreshToken(String refreshToken) {
+    public void createRefreshToken(String refreshToken) {
         this.refreshTokenEntity = new RefreshTokenEntity(this, refreshToken);
     }
 

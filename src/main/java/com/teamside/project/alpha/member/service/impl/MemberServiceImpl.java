@@ -43,16 +43,16 @@ public class MemberServiceImpl implements MemberService {
                 SignUpType.PHONE);
 
 
-        member.changeTerms(new TermsEntity(member,
+        member.createTerms(new TermsEntity(member,
                 signUpDto.getTerms().getTerms(),
                 signUpDto.getTerms().getCollect(),
                 signUpDto.getTerms().getGps(),
                 signUpDto.getTerms().getMarketing(),
                 signUpDto.getTerms().getAlarm()));
 
-        JwtTokens jwtTokens = authService.getTokens(member.getMid());
+        JwtTokens jwtTokens = authService.createTokens(member.getMid());
 
-        member.changeRefreshToken(jwtTokens.getRefreshToken());
+        member.createRefreshToken(jwtTokens.getRefreshToken());
 
         memberRepo.save(member);
         return jwtTokens;
