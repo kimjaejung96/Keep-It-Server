@@ -4,10 +4,13 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.member.domain.terms.model.entity.TermsEntity;
+import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
+import com.teamside.project.alpha.member.model.entity.InquiryEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
+import com.teamside.project.alpha.member.repository.InquiryRepo;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.member.service.MemberService;
@@ -21,10 +24,11 @@ import java.util.UUID;
 public class MemberServiceImpl implements MemberService {
     private final MemberRepo memberRepo;
     private final AuthService authService;
-
-    public MemberServiceImpl(MemberRepo memberRepo, AuthService authService) {
+    private final InquiryRepo inquiryRepo;
+    public MemberServiceImpl(MemberRepo memberRepo, AuthService authService, InquiryRepo inquiryRepo) {
         this.memberRepo = memberRepo;
         this.authService = authService;
+        this.inquiryRepo = inquiryRepo;
     }
 
     @Override
@@ -89,5 +93,18 @@ public class MemberServiceImpl implements MemberService {
         if (memberRepo.existsByPhone(CryptUtils.encrypt(phone))) {
             throw new CustomException(ApiExceptionCode.DUPLICATE_PHONE);
         }
+    }
+
+    @Override
+    public void inquiry(InquiryDto inquiryDto) {
+        InquiryEntity inquiry = new InquiryEntity(
+                inquiryDto.getEmail(),
+                inquiryDto.getName(),
+                inquiryDto.getPlace(),
+                inquiryDto.getWorld(),
+                inquiryDto.getEtc()
+        );
+
+        inquiryRepo.save(inquiry);
     }
 }

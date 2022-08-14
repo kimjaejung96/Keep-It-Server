@@ -3,6 +3,7 @@ package com.teamside.project.alpha.member.controller;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
+import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.service.MemberService;
@@ -63,9 +64,11 @@ public class MemberController {
         memberService.withdrawal();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
-
+    @PostMapping("/inquiry")
+    public ResponseEntity<ResponseObject> inquiry(@RequestBody @Valid InquiryDto inquiryDto) {
+        memberService.inquiry(inquiryDto);
+        return new ResponseEntity<>(new ResponseObject(ApiExceptionCode.OK), HttpStatus.CREATED);
+    }
 
 
 

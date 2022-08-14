@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.member.service;
 
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 
@@ -9,4 +10,5 @@ public interface MemberService {
     void logout();
     void withdrawal() throws CustomException;
     void checkExistsName(String name) throws CustomException;
+    void inquiry(InquiryDto inquiryDto);
 }
