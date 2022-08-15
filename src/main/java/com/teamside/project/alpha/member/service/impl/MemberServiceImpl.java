@@ -42,7 +42,6 @@ public class MemberServiceImpl implements MemberService {
                 signUpDto.getMember().getName(),
                 CryptUtils.encrypt(signUpDto.getMember().getPhone()),
                 signUpDto.getMember().getProfileUrl(),
-                signUpDto.getMember().getPinProfileUrl(),
                 signUpDto.getMember().getFcmToken(),
                 SignUpType.PHONE);
 
