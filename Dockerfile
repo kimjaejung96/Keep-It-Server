@@ -5,14 +5,15 @@ FROM openjdk:11
 LABEL service="alpha-api" jdk-ver="11"
 
 RUN mkdir -p /alpha
-
+#RUN apk update
 ## openjdk 8 tz 설정.
-RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
+ENV TZ=Asia/Seoul
+
+RUN apt-get install -y tzdata
+##RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 RUN groupadd -g 998 alpha
 RUN useradd -r -u 998 -g alpha alpha
-
-
 
 ARG JAR_FILE=target/*.jar
 
