@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.HandlerMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
@@ -29,10 +31,12 @@ import java.util.stream.Collectors;
 public class ApiLog {
     private final LogService logService;
     private final ObjectMapper objectMapper;
+    private final HttpServletRequest httpServletRequest;
 
-    public ApiLog(LogService logService, ObjectMapper objectMapper) {
+    public ApiLog(LogService logService, ObjectMapper objectMapper, HttpServletRequest httpServletRequest) {
         this.logService = logService;
         this.objectMapper = objectMapper;
+        this.httpServletRequest = httpServletRequest;
     }
 
     @Around("execution(* com.teamside.project.alpha..controller..*(..))")
@@ -41,7 +45,7 @@ public class ApiLog {
         stopWatch.start();
 
         Object result;
-        String desc = "";
+        StringBuilder desc = new StringBuilder();
         String apiStatus = KeepitConstant.SUCCESS;
         String methodName = "";
         String controllerName = "";
@@ -55,34 +59,42 @@ public class ApiLog {
 
             String params = getRequestParams().replace("\\", "");
 
+            desc.append("[REQUEST] METHOD : ").append(controllerName).append("{").append(methodName).append("}\nDATA : ").append(params);
 
-            log.info("=======> REQUEST : {} / METHOD : {}  PARAMS : {}", joinPoint.getSignature().getDeclaringTypeName(), methodName, params);
-            desc += "[REQUEST] METHOD : " + controllerName + "{" + methodName + "}\nPARAMS : " + params + "\n";
+            Map<String, String> pathVariablesMap = (Map<String, String>)httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+            StringBuilder pathVariables = new StringBuilder();
+            if (pathVariablesMap.size() >= 1) {
+                for (Map.Entry<String, String> entry : pathVariablesMap.entrySet()) {
+                    pathVariables.append("\n").append(entry.getKey()).append(" -> ").append(entry.getValue());
+                }
+                desc.append("\nPATHVARIABLES : ").append(pathVariables).append("\n");
+            }
 
             result = joinPoint.proceed();
 
             apiCode = ((ResponseEntity) result).getStatusCodeValue();
             stopWatch.stop();
             ResponseEntity<?> response = (ResponseEntity<?>) result;
-            desc += "[RESPONSE] " + objectMapper.writeValueAsString(response.getBody());
+            desc.append("[RESPONSE] ").append(objectMapper.writeValueAsString(response.getBody()));
 
-            log.info("<======= RESPONSE : {} / METHOD : {} / RESULT : {} / PROCESS_TIME =  {}s", joinPoint.getSignature().getDeclaringTypeName(), methodName, objectMapper.writeValueAsString(response.getBody()), stopWatch.getTotalTimeMillis() * 0.001);
         } catch (Exception ex) {
             stopWatch.stop();
             if (ex instanceof CustomException) {
                 apiCode = ((CustomException) ex).getApiExceptionCode().getApiCode();
-                desc += "[RESPONSE] " + objectMapper.writeValueAsString(((CustomException) ex).getErrorDetail());
+                desc.append("[RESPONSE] ").append(objectMapper.writeValueAsString(((CustomException) ex).getErrorDetail()));
             }
             if (ex instanceof ConstraintViolationException) {
                 apiCode = 999;
-                desc += "[RESPONSE] " + ((ConstraintViolationException) ex).getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate).collect(Collectors.joining());;
+                desc.append("[RESPONSE] ").append(((ConstraintViolationException) ex).getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate).collect(Collectors.joining()))  ;
 
             }
             apiStatus = KeepitConstant.FAIL;
             throw ex;
         }
         finally {
-            ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc, apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
+            desc.append("\n").append("PROCESS_TIME : ").append(stopWatch.getTotalTimeMillis() * 0.001);
+            log.info("\n" + desc);
+            ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc.toString(), apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
             logService.insertLog(apiLogEntity);
         }
 
@@ -92,7 +104,7 @@ public class ApiLog {
 
 
     private String getRequestParams() throws JsonProcessingException {
-        String params = "PARAM IS NULL";
+        String params = "{}";
 
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
