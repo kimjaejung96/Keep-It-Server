@@ -10,10 +10,11 @@ RUN mkdir -p /alpha
 
 ##RUN
 RUN apt update
-RUN apt install -y tzdata
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 ENV TZ Asia/Seoul
+
+RUN apt install -y tzdata
 
 
 RUN groupadd -g 998 alpha
