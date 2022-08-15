@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -54,14 +53,14 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+accessTokenValidTime*1000*60*60*24))
+                .setExpiration(new Date(System.currentTimeMillis()+accessTokenValidTime*1000*60))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
 
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+refreshTokenValidTime*1000*60*60*24))
+                .setExpiration(new Date(System.currentTimeMillis()+refreshTokenValidTime*1000*60))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
 
@@ -86,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
             return Jwts.builder()
                     .setClaims(claims)
                     .setIssuedAt(now)
-                    .setExpiration(new Date(System.currentTimeMillis()+accessTokenValidTime*1000*60*60*24))
+                    .setExpiration(new Date(System.currentTimeMillis()+accessTokenValidTime*1000*60))
                     .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                     .compact();
         } else {
@@ -105,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken = Jwts.builder()
                 .setIssuedAt(now)
                 .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis()+refreshTokenValidTime*1000*60*60*24))
+                .setExpiration(new Date(System.currentTimeMillis()+refreshTokenValidTime*1000*60))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
 
