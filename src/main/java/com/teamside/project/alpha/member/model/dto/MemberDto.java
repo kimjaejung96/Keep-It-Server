@@ -21,7 +21,6 @@ public class MemberDto {
     @NotNull
     private String phone;
     private String profileUrl;
-    private String pinProfileUrl;
     private String fcmToken;
 
     @Getter
