@@ -35,7 +35,7 @@ public class AuthController {
     public ResponseEntity<ResponseObject> sms(
             @Pattern(regexp = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$",
                     message = "핸드폰 번호가 올바르지 않습니다.") @PathVariable String phone) throws CustomException {
-        String number = "0000000";
+        String number = "000000";
 //        String number = generateCertificationNumber();
 
         // authNum publish
