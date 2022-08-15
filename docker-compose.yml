@@ -4,9 +4,6 @@ services:
   alpha-api:
     image: alpha-api:latest
     container_name: alpha-api
-    volumes:
-      - /etc/timezone:/etc/timezone
-      - /etc/localtime:/etc/localtime
     #    ports:
     #     - "48888:8080"
     #    privileged: true
