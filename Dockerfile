@@ -8,10 +8,13 @@ RUN mkdir -p /alpha
 #RUN apk update
 ## openjdk 8 tz 설정.
 
-ENV TZ=Asia/Seoul
+##RUN apt-get install -y tzdata
+##RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
-RUN apt-get install -y tzdata
-RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+RUN apk add --no-cache tzdata
+ENV TZ Asia/Seoul
+
+
 RUN groupadd -g 998 alpha
 RUN useradd -r -u 998 -g alpha alpha
 
