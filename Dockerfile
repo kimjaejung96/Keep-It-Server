@@ -9,12 +9,9 @@ RUN mkdir -p /alpha
 ## openjdk 8 tz 설정.
 
 ##RUN
-RUN apt update
-
-RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
-ENV TZ Asia/Seoul
-
-RUN apt install -y tzdata
+RUN apt-get install -y tzdata && \
+        cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
+        echo "Asia/Seoul" > /etc/timezone
 
 
 RUN groupadd -g 998 alpha
