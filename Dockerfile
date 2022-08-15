@@ -11,7 +11,7 @@ RUN mkdir -p /alpha
 ENV TZ=Asia/Seoul
 
 RUN apt-get install -y tzdata
-##RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 RUN groupadd -g 998 alpha
 RUN useradd -r -u 998 -g alpha alpha
 
