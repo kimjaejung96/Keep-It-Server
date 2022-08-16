@@ -17,7 +17,7 @@ public class GroupMemberMapping {
     private String mid;
 
     @MapsId
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "MID", referencedColumnName = "MID")
     private MemberEntity member;
 
@@ -26,8 +26,14 @@ public class GroupMemberMapping {
     private String groupId;
 
     @MapsId
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "GROUP_ID", referencedColumnName = "GROUP_ID")
     private GroupEntity group;
+
+    @Column(name = "ORD", columnDefinition = "int")
+    private Integer ord;
+
+    @Column(name = "IS_FAVORITE", columnDefinition = "boolean")
+    private Boolean isFavorite;
 
 }
