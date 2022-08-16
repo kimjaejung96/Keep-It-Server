@@ -3,7 +3,7 @@ package com.teamside.project.alpha.member.service.impl;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.util.CryptUtils;
-import com.teamside.project.alpha.member.domain.terms.model.entity.TermsEntity;
+import com.teamside.project.alpha.member.domain.TermsEntity;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -38,7 +37,6 @@ public class MemberServiceImpl implements MemberService {
         checkExistPhone(signUpDto.getMember().getPhone());
 
         MemberEntity member = new MemberEntity(
-                UUID.randomUUID().toString(),
                 signUpDto.getMember().getName(),
                 CryptUtils.encrypt(signUpDto.getMember().getPhone()),
                 signUpDto.getMember().getProfileUrl(),

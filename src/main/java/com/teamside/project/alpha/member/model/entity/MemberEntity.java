@@ -2,13 +2,14 @@ package com.teamside.project.alpha.member.model.entity;
 
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
-import com.teamside.project.alpha.member.domain.terms.model.entity.RefreshTokenEntity;
-import com.teamside.project.alpha.member.domain.terms.model.entity.TermsEntity;
+import com.teamside.project.alpha.member.domain.RefreshTokenEntity;
+import com.teamside.project.alpha.member.domain.TermsEntity;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,7 +17,7 @@ import java.util.Objects;
 public class MemberEntity extends TimeEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")
-    private String mid;
+    private final String mid = UUID.randomUUID().toString();
 
     @Column(name = "NAME", columnDefinition = "varchar(20)")
     private String name;
@@ -41,8 +42,7 @@ public class MemberEntity extends TimeEntity {
     @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RefreshTokenEntity refreshTokenEntity;
 
-    public MemberEntity(String mid, String name, String phone, String profileUrl, String fcmToken, SignUpType type) {
-        this.mid = mid;
+    public MemberEntity(String name, String phone, String profileUrl, String fcmToken, SignUpType type) {
         this.name = name;
         this.phone = phone;
         this.profileUrl = Objects.requireNonNullElse(profileUrl, "");
