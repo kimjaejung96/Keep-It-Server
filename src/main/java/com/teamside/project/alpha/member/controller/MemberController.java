@@ -44,7 +44,7 @@ public class MemberController {
 
     @GetMapping("/{name}/exists")
     public ResponseEntity<ResponseObject> checkExistName(
-             @Pattern(regexp = "(?=.*[-_A-Za-z0-9])(?=.*[^-_]).{4,20}",
+             @Pattern(regexp = "(?=.*[-_A-Za-z0-9ㄱ-ㅎ가-힣])(?=.*[^-_]).{4,20}",
             message = "이름이 올바르지 않습니다.") @PathVariable String name) throws CustomException {
         memberService.checkExistsName(name);
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

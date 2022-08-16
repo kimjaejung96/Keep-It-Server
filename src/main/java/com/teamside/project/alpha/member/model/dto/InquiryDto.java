@@ -19,7 +19,7 @@ public class InquiryDto {
     private String email;
 
     @NotNull
-    @Pattern(regexp = "(?=.*[-_A-Za-z0-9])(?=.*[^-_]).{4,20}",
+    @Pattern(regexp = "(?=.*[-_A-Za-z0-9ㄱ-ㅎ가-힣])(?=.*[^-_]).{4,20}",
             message = "이름이 올바르지 않습니다.")
     private String name;
 
