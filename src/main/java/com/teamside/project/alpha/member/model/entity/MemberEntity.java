@@ -22,7 +22,7 @@ public class MemberEntity extends TimeEntity {
     @Column(name = "NAME", columnDefinition = "varchar(20)")
     private String name;
 
-    @Column(name = "PHONE", columnDefinition = "char(24)")
+    @Column(name = "PHONE", columnDefinition = "char(64)")
     private String phone;
 
     @Column(name = "PROFILE_URL", columnDefinition = "varchar(255)")
