@@ -1,6 +1,6 @@
 package com.teamside.project.alpha.group.domain;
 
-import com.teamside.project.alpha.group.domain.compositeKeys.GroupMemberMappingkeys;
+import com.teamside.project.alpha.group.domain.compositeKeys.GroupMemberMappingKeys;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Table(name = "GROUP_MEMBER_MAPPING")
-@IdClass(GroupMemberMappingkeys.class)
+@IdClass(GroupMemberMappingKeys.class)
 public class GroupMemberMapping {
     @Id
     @Column(name = "MID", columnDefinition = "char(16)")
