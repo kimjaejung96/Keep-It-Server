@@ -18,7 +18,7 @@ public class SmsLogEntity extends TimeEntity {
     @Column(name = "seq", columnDefinition = "bigint")
     private Long seq;
 
-    @Column(name = "phone", columnDefinition = "char(24)")
+    @Column(name = "phone", columnDefinition = "char(64)")
     private String phone;
 
     @Column(name = "authNum", columnDefinition = "char(6)")

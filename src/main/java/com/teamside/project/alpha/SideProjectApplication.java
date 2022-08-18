@@ -5,11 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.retry.annotation.EnableRetry;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = "com.teamside.project")
 @EnableJpaAuditing
+@EnableRetry
 public class SideProjectApplication {
 
 	public static void main(String[] args) {

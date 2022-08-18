@@ -1,6 +1,8 @@
 package com.teamside.project.alpha.sms.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.sms.dto.SmsDto;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -14,6 +16,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -79,7 +83,8 @@ public class SMSSender {
      * Author      : 조 준 희
      * History     : [2022-08-03] - 조 준 희 - Create
      */
-    public void sendAuthMessage(String sendPhoneNum, String smsAuthNum) throws IOException, InterruptedException {
+    @Retryable(value = CustomException.class, maxAttempts = 3, backoff = @Backoff(1000))
+    public void sendAuthMessage(String sendPhoneNum, String smsAuthNum) throws IOException, CustomException {
         int resultCode = 0;
         long executeTimer;
         StopWatch stopWatch = new StopWatch();
@@ -118,7 +123,7 @@ public class SMSSender {
             httpPost.setHeader("Content-Type", "application/json; charset=utf-8");
             httpPost.addHeader("Connection", "keep-alive");
             httpPost.addHeader("x-ncp-apigw-timestamp", timeStamp);
-            httpPost.addHeader("x-ncp-iam-access-key", SENS_ACCESSKEY);
+            httpPost.addHeader("x-ncp-iam-access-key", "SENS_ACCESSKEY");
             httpPost.addHeader("x-ncp-apigw-signature-v2", makeSignature(timeStamp));
 
 
@@ -131,6 +136,7 @@ public class SMSSender {
             stopWatch.stop();
             executeTimer = stopWatch.getTotalTimeMillis();
             logger.error("SMS 전송 Error - {}에 전송을 실패 : {}", sendPhoneNum, e.getMessage());
+            throw new CustomException(ApiExceptionCode.SYSTEM_ERROR);
         }
 
         stopWatch.stop();
@@ -140,6 +146,7 @@ public class SMSSender {
             logger.info("SMS 전송 Success - {}에 전송 성공", sendPhoneNum);
         } else {
             logger.error("SMS 전송 Error - {}에 전송을 실패. ResultCode : {}", sendPhoneNum, resultCode);
+            throw new CustomException(ApiExceptionCode.SYSTEM_ERROR);
         }
     }
 

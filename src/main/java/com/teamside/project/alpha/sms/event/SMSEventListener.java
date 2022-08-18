@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.sms.event;
 
 
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.sms.component.SMSSender;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,7 @@ public class SMSEventListener {
         try {
             smsSender.sendAuthMessage(event.getPhoneNum(), event.getSmsAuthNum());
 
-        } catch (IOException e) {
-            log.error("SMS Send Exception : {}", e.toString());
-            return ;
-        } catch (InterruptedException e) {
+        } catch (IOException | CustomException e) {
             log.error("SMS Send Exception : {}", e.toString());
             return ;
         }
