@@ -83,7 +83,9 @@ public class AuthController {
 
 
     @PostMapping(value = "/refresh/access-token")
-    public ResponseEntity<ResponseObject> refreshAccessToken(@RequestHeader(value = AuthCheck.REFRESH_TOKEN, required = false) @Valid @NotBlank(message = "리프레시 토큰이 널이거나 빈값입니다.") String refreshToken) throws CustomException {
+    public ResponseEntity<ResponseObject> refreshAccessToken(@RequestHeader(value = AuthCheck.REFRESH_TOKEN, required = false) @Valid @NotBlank(message = "리프레시 토큰이 널이거나 빈값입니다.")  String refreshToken) throws CustomException {
+        if (!refreshToken.startsWith("Bearer ")) throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
+
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         authService.tokenValidationCheck(refreshToken);
 
