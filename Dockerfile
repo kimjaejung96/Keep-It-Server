@@ -5,7 +5,7 @@ FROM openjdk:11
 LABEL service="alpha-api" jdk-ver="11"
 
 
-RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtimez
+RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 RUN apt-get clean
 RUN apt-get update
 RUN apt-get install tzdata

@@ -4,14 +4,6 @@ services:
   alpha-api:
     image: alpha-api:latest
     container_name: alpha-api
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    #    ports:
-    #     - "48888:8080"
-    #    privileged: true
-    #    volumes:
-    #      - /root/.gradle:/root/.gradle/
     user: alpha
     environment:
       - TZ="Asia/Seoul"
