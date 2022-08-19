@@ -4,10 +4,13 @@ FROM openjdk:11
 
 LABEL service="alpha-api" jdk-ver="11"
 
-RUN mkdir -p /alpha
-#RUN apk update
-## openjdk 8 tz 설정.
 
+RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtimez
+RUN apt-get clean
+RUN apt-get update
+RUN date
+
+RUN mkdir -p /alpha
 RUN groupadd -g 998 alpha
 RUN useradd -r -u 998 -g alpha alpha
 
