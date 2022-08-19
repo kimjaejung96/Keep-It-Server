@@ -8,6 +8,8 @@ LABEL service="alpha-api" jdk-ver="11"
 RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtimez
 RUN apt-get clean
 RUN apt-get update
+RUN apt-get install tzdata
+
 RUN date
 
 RUN mkdir -p /alpha
