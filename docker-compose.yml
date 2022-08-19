@@ -6,7 +6,7 @@ services:
     container_name: alpha-api
     user: alpha
     environment:
-      - TZ="Asia/Seoul"
+      - TZ=Asia/Seoul
     networks:
       - alpha
 
