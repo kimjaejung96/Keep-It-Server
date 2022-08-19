@@ -2,6 +2,11 @@ server:
   port: 11122
 
 spring:
+  data:
+    jdbc:
+      repositories:
+        enabled: false
+  
   # Set the master node of the PCI-AD Database as the primary database for ATP Project to handle the "CUD" for it.
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -43,13 +48,13 @@ alpha:
       message: "[Keep it 회원가입]\n인증번호 [%s] 를 입력해주세요."
       expireTime: 180000
       
-      
+
       
 jwt:
   accessToken:
     #단위 : 분
     validTime: 1
   refreshToken:
-    validTime: 2
+    validTime: 3
   secret: a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDZraW1qYWVqdW5ndGVzdHNlY3JldHNrZXkwMTA1MDY0MTQwNmtpbWphZWp1bmd0ZXN0c2VjcmV0c2tleTAxMDUwNjQxNDA2a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDY=
 #  secret: kimjaejungtestsecretskey01050641406  * 4
