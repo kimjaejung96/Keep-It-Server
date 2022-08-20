@@ -15,6 +15,7 @@ public enum ApiExceptionCode {
     DUPLICATE_PHONE(601, "Phone Number is Duplicated"),
     MEMBER_NOT_FOUND(700, "Member not found"),
     AUTH_FAIL(701, "Auth fail"),
+    MEMBER_ALREADY_EXIST(702, "Member already exists"),
     SYSTEM_ERROR(999, "System Error"),
     ;
 

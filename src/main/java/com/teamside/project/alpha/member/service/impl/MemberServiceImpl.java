@@ -65,7 +65,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
     public void logout() {
         Optional<MemberEntity> member = memberRepo.findByMid(CryptUtils.getMid());
         member.ifPresent(MemberEntity::logout);

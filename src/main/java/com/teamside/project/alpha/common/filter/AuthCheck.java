@@ -3,6 +3,7 @@ package com.teamside.project.alpha.common.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.service.AuthService;
@@ -40,7 +41,7 @@ public class AuthCheck extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             filterChain.doFilter(request, response);
-        } catch (CustomException e) {
+        } catch (CustomException | CustomRuntimeException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             objectMapper.writeValue(response.getWriter(), new ResponseObject(ApiExceptionCode.UNAUTHORIZED));

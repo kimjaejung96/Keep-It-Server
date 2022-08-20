@@ -50,6 +50,8 @@ public class AuthController {
     @PostMapping(value = "/sms/sign-up")
     public ResponseEntity<ResponseObject> smsSignUp(@RequestBody @Valid SmsAuthDto smsAuthDto) throws CustomException {
         // auth sms
+        authService.isExistsPhone(smsAuthDto);
+
         authService.checkAuthNum(smsAuthDto);
 
         return new ResponseEntity(new ResponseObject(ApiExceptionCode.OK), HttpStatus.OK);

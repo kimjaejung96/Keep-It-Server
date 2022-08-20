@@ -13,4 +13,5 @@ public interface AuthService {
     void saveSmsLog(String requestPhoneNum, String number) throws CustomException;
     void checkAuthNum(SmsAuthDto smsAuthDto) throws CustomException;
     JwtTokens checkMember(String phone) throws CustomException;
+    void isExistsPhone(SmsAuthDto phone) throws CustomException;
 }

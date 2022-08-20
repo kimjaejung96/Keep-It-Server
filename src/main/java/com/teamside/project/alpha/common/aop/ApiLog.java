@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.aop.model.entity.ApiLogEntity;
 import com.teamside.project.alpha.common.aop.service.LogService;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -82,6 +83,10 @@ public class ApiLog {
             if (ex instanceof CustomException) {
                 apiCode = ((CustomException) ex).getApiExceptionCode().getApiCode();
                 desc.append("[RESPONSE] ").append(objectMapper.writeValueAsString(((CustomException) ex).getErrorDetail()));
+            }
+            if (ex instanceof CustomRuntimeException) {
+                apiCode = ((CustomRuntimeException) ex).getApiExceptionCode().getApiCode();
+                desc.append("[RESPONSE] ").append(objectMapper.writeValueAsString(((CustomRuntimeException) ex).getErrorDetail()));
             }
             if (ex instanceof ConstraintViolationException) {
                 apiCode = 999;

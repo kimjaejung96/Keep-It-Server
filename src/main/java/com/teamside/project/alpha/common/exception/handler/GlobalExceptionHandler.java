@@ -2,7 +2,7 @@ package com.teamside.project.alpha.common.exception.handler;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
-import com.teamside.project.alpha.common.model.dto.ApiExceptionDto;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +26,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({CustomException.class})
     public ResponseEntity<ResponseObject> handleCustomException(CustomException ex) {
+        ResponseObject responseObject = new ResponseObject(ex.getApiExceptionCode());
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+    @ExceptionHandler({CustomRuntimeException.class})
+    public ResponseEntity<ResponseObject> handleCustomRuntimeException(CustomRuntimeException ex) {
         ResponseObject responseObject = new ResponseObject(ex.getApiExceptionCode());
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }

@@ -2,6 +2,7 @@ package com.teamside.project.alpha.member.service.impl;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.SmsAuthDto;
@@ -174,6 +175,12 @@ public class AuthServiceImpl implements AuthService {
         if (!smsLogEntity.getAuthNum().equals(smsAuthDto.getAuthNum())) {
             throw new CustomException(ApiExceptionCode.AUTH_FAIL);
         }
+    }
+
+    @Override
+    public void isExistsPhone(SmsAuthDto smsAuthDto) throws CustomException {
+        memberRepo.findByPhoneAndType(CryptUtils.encrypt(smsAuthDto.getPhone()), SignUpType.PHONE)
+                .ifPresent(member -> {throw new CustomRuntimeException(ApiExceptionCode.MEMBER_ALREADY_EXIST);});
     }
 
     @Override
