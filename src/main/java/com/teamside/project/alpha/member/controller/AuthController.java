@@ -2,7 +2,7 @@ package com.teamside.project.alpha.member.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
-import com.teamside.project.alpha.common.filter.AuthCheck;
+import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.SmsAuthDto;
@@ -83,7 +83,7 @@ public class AuthController {
 
 
     @PostMapping(value = "/refresh/access-token")
-    public ResponseEntity<ResponseObject> refreshAccessToken(@RequestHeader(value = AuthCheck.REFRESH_TOKEN, required = false) @Valid @NotBlank(message = "리프레시 토큰이 널이거나 빈값입니다.")  String refreshToken) throws CustomException {
+    public ResponseEntity<ResponseObject> refreshAccessToken(@RequestHeader(value = KeepitConstant.REFRESH_TOKEN, required = false) @Valid @NotBlank(message = "리프레시 토큰이 널이거나 빈값입니다.")  String refreshToken) throws CustomException {
         if (!refreshToken.startsWith("Bearer ")) throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
 
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
