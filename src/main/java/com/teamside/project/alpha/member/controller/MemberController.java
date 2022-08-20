@@ -2,6 +2,7 @@ package com.teamside.project.alpha.member.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
@@ -44,7 +45,7 @@ public class MemberController {
 
     @GetMapping("/{name}/exists")
     public ResponseEntity<ResponseObject> checkExistName(
-             @Pattern(regexp = "(?=.*[-_A-Za-z0-9ㄱ-ㅎ가-힣])(?=.*[^-_]).{4,20}",
+             @Pattern(regexp = KeepitConstant.REGEXP_NAME,
             message = "이름이 올바르지 않습니다.") @PathVariable String name) throws CustomException {
         memberService.checkExistsName(name);
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

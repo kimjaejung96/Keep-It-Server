@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.member.model.dto;
 
+import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 public class MemberDto {
     @NotNull
-    @Pattern(regexp = "(?=.*[-_A-Za-z0-9ㄱ-ㅎ가-힣])(?=.*[^-_]).{4,20}",
+    @Pattern(regexp = KeepitConstant.REGEXP_NAME,
             message = "이름이 올바르지 않습니다.")
     private String name;
     @Pattern(regexp = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$",
