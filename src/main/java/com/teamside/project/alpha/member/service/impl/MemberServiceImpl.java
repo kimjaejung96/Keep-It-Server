@@ -15,7 +15,6 @@ import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.member.service.MemberService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -31,7 +30,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
     public JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException {
         checkExistName(signUpDto.getMember().getName());
         checkExistPhone(signUpDto.getMember().getPhone());

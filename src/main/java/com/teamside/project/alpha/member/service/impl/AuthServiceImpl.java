@@ -17,7 +17,6 @@ import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -95,7 +94,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional
     public String refreshRefreshToken() throws CustomException {
         MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
@@ -110,6 +108,7 @@ public class AuthServiceImpl implements AuthService {
                 .compact();
 
         member.getRefreshTokenEntity().changeRefreshToken(refreshToken);
+        memberRepo.save(member);
 
         return refreshToken;
     }
