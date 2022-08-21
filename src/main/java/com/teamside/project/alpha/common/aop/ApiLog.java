@@ -68,7 +68,7 @@ public class ApiLog {
                 for (Map.Entry<String, String> entry : pathVariablesMap.entrySet()) {
                     pathVariables.append("\n").append(entry.getKey()).append(" -> ").append(entry.getValue());
                 }
-                desc.append("\nPATHVARIABLES : ").append(pathVariables).append("\n");
+                desc.append("\nPATHVARIABLES : ").append(pathVariables);
             }
 
             result = joinPoint.proceed();
@@ -76,7 +76,7 @@ public class ApiLog {
             apiCode = ((ResponseEntity) result).getStatusCodeValue();
             stopWatch.stop();
             ResponseEntity<?> response = (ResponseEntity<?>) result;
-            desc.append("[RESPONSE] ").append(objectMapper.writeValueAsString(response.getBody()));
+            desc.append("\n").append("[RESPONSE] ").append(objectMapper.writeValueAsString(response.getBody()));
 
         } catch (Exception ex) {
             stopWatch.stop();
