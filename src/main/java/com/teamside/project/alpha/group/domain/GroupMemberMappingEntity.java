@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "GROUP_MEMBER_MAPPING")
 @IdClass(GroupMemberKeys.class)
-public class GroupMemberMapping {
+public class GroupMemberMappingEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(16)")
     private String mid;

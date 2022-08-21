@@ -1,7 +1,7 @@
 package com.teamside.project.alpha.group.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
-import com.teamside.project.alpha.group.domain.GroupMemberMapping;
+import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.Getter;
 
@@ -43,6 +43,6 @@ public class GroupEntity extends TimeEntity {
     private MemberEntity master;
 
     @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<GroupMemberMapping> groupMemberMapping;
+    private List<GroupMemberMappingEntity> groupMemberMappingEntity;
 
 }
