@@ -26,11 +26,11 @@ public class GroupEntity extends TimeEntity {
     @Column(name = "PASSWORD", columnDefinition = "varchar(8)")
     private String password;
 
-    @Column(name = "IS_PRIVATE")
+    @Column(name = "IS_PRIVATE", columnDefinition = "boolean")
     private Boolean isPrivate;
 
-    @Column(name = "MEMBER_QUANTITY")
-    private Long memberQuantity;
+    @Column(name = "MEMBER_QUANTITY", columnDefinition = "int")
+    private Integer memberQuantity;
 
     @Column(name = "PROFILE_URL", columnDefinition = "varchar(255)")
     private String profileUrl;
