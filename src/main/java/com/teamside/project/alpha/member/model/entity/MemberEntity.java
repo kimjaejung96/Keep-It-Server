@@ -6,6 +6,7 @@ import com.teamside.project.alpha.member.domain.RefreshTokenEntity;
 import com.teamside.project.alpha.member.domain.TermsEntity;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Table(name = "MEMBER")
+@DynamicUpdate
 public class MemberEntity extends TimeEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")

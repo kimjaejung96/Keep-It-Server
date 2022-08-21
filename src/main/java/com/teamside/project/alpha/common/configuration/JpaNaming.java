@@ -34,10 +34,10 @@ public class JpaNaming implements PhysicalNamingStrategy {
         if (identifier == null)
             return Identifier.toIdentifier("");
 
-        final String regex = "([a-z])([A-Z])";
+        final String regexp = "([a-z])([A-Z])";
         final String replacement = "$1_$2";
         final String newName = identifier.getText()
-                .replaceAll(regex, replacement)
+                .replaceAll(regexp, replacement)
                 //.toLowerCase();
                 .toUpperCase();
         return Identifier.toIdentifier(newName);
