@@ -189,7 +189,7 @@ public class AuthServiceImpl implements AuthService {
 
         JwtTokens jwtTokens = this.createTokens(member.getMid());
 
-        member.createRefreshToken(jwtTokens.getRefreshToken());
+        member.getRefreshTokenEntity().changeRefreshToken(jwtTokens.getRefreshToken());
 
         return jwtTokens;
     }
