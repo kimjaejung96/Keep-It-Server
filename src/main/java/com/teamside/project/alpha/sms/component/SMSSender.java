@@ -123,7 +123,7 @@ public class SMSSender {
             httpPost.setHeader("Content-Type", "application/json; charset=utf-8");
             httpPost.addHeader("Connection", "keep-alive");
             httpPost.addHeader("x-ncp-apigw-timestamp", timeStamp);
-            httpPost.addHeader("x-ncp-iam-access-key", "SENS_ACCESSKEY");
+            httpPost.addHeader("x-ncp-iam-access-key", SENS_ACCESSKEY);
             httpPost.addHeader("x-ncp-apigw-signature-v2", makeSignature(timeStamp));
 
 
