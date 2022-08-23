@@ -6,6 +6,7 @@ import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.SmsAuthDto;
+import com.teamside.project.alpha.member.model.enumurate.AuthType;
 import com.teamside.project.alpha.member.service.AuthService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -33,9 +34,12 @@ public class AuthController {
 
     @PostMapping(value = "/sms/{phone}")
     public ResponseEntity<ResponseObject> sms(
-            @Pattern(regexp = KeepitConstant.REGEXP_PHONE,
-                    message = "핸드폰 번호가 올바르지 않습니다.") @PathVariable String phone) throws CustomException {
+            @Pattern(regexp = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$",
+                    message = "핸드폰 번호가 올바르지 않습니다.") @PathVariable String phone, @RequestParam String authType) throws CustomException {
         String number = "000000";
+        // check phone
+        authService.checkPhone(phone, authType);
+
 //        String number = generateCertificationNumber();
 
         // authNum publish
@@ -50,7 +54,7 @@ public class AuthController {
     @PostMapping(value = "/sms/sign-up")
     public ResponseEntity<ResponseObject> smsSignUp(@RequestBody @Valid SmsAuthDto smsAuthDto) throws CustomException {
         // auth sms
-        authService.isExistsPhone(smsAuthDto);
+        authService.checkPhone(smsAuthDto.getPhone(), AuthType.SIGN_UP.getType());
 
         authService.checkAuthNum(smsAuthDto);
 

@@ -8,6 +8,7 @@ import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.SmsAuthDto;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.SmsLogEntity;
+import com.teamside.project.alpha.member.model.enumurate.AuthType;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.member.repository.SmsLogRepo;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -178,12 +180,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void isExistsPhone(SmsAuthDto smsAuthDto) throws CustomException {
-        memberRepo.findByPhoneAndType(CryptUtils.encrypt(smsAuthDto.getPhone()), SignUpType.PHONE)
-                .ifPresent(member -> {throw new CustomRuntimeException(ApiExceptionCode.MEMBER_ALREADY_EXIST);});
-    }
-
-    @Override
     @Transactional
     public JwtTokens checkMember(String phone) throws CustomException {
         MemberEntity member = memberRepo.findByPhoneAndType(CryptUtils.encrypt(phone), SignUpType.PHONE)
@@ -194,5 +190,18 @@ public class AuthServiceImpl implements AuthService {
         member.getRefreshTokenEntity().changeRefreshToken(jwtTokens.getRefreshToken());
 
         return jwtTokens;
+    }
+
+    @Override
+    public void checkPhone(String phone, String authType) throws CustomException {
+        Optional<MemberEntity> member = memberRepo.findByPhoneAndType(CryptUtils.encrypt(phone), SignUpType.PHONE);
+
+        if (authType.equals(AuthType.SIGN_UP.getType())) {
+            member.ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.MEMBER_ALREADY_EXIST);});
+        } else if (authType.equals(AuthType.SIGN_IN.getType())) {
+            member.orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        } else {
+            throw new CustomException(ApiExceptionCode.INVALID_AUTH_TYPE);
+        }
     }
 }

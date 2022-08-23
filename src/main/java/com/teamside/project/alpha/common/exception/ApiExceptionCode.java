@@ -16,6 +16,7 @@ public enum ApiExceptionCode {
     MEMBER_NOT_FOUND(700, "Member not found"),
     AUTH_FAIL(701, "Auth fail"),
     MEMBER_ALREADY_EXIST(702, "Member already exists"),
+    INVALID_AUTH_TYPE(703, "Invalid auth type"),
     SYSTEM_ERROR(999, "System Error"),
     ;
 
