@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 public class InquiryDto {
 
     @NotNull
-    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$",
+    @Pattern(regexp = KeepitConstant.REGEXP_EMAIL,
             message = "올바른 이메일 주소를 입력해주세요.")
     private String email;
 

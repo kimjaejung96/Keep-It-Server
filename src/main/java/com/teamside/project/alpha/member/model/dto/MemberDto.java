@@ -17,7 +17,7 @@ public class MemberDto {
     @Pattern(regexp = KeepitConstant.REGEXP_NAME,
             message = "이름이 올바르지 않습니다.")
     private String name;
-    @Pattern(regexp = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$",
+    @Pattern(regexp = KeepitConstant.REGEXP_PHONE,
             message = "핸드폰 번호가 올바르지 않습니다.")
     @NotNull
     private String phone;
