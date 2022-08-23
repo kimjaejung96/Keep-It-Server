@@ -3,7 +3,7 @@ package com.teamside.project.alpha.member.model.enumurate;
 public enum AuthType {
 
     SIGN_UP("sign-up"),
-    SIGN_IN("sing-in");
+    SIGN_IN("sign-in");
 
     private String type;
 
