@@ -1,0 +1,8 @@
+package com.teamside.project.alpha.group.service;
+
+import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.group.model.dto.GroupDto;
+
+public interface GroupService {
+    void createGroup(GroupDto group) throws CustomException;
+}

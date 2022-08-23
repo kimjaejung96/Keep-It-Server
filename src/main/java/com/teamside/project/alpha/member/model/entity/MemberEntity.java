@@ -5,7 +5,10 @@ import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.member.domain.RefreshTokenEntity;
 import com.teamside.project.alpha.member.domain.TermsEntity;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -16,10 +19,13 @@ import java.util.UUID;
 @Getter
 @Table(name = "MEMBER")
 @DynamicUpdate
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberEntity extends TimeEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")
-    private final String mid = UUID.randomUUID().toString();
+    private String mid = UUID.randomUUID().toString();
 
     @Column(name = "NAME", columnDefinition = "varchar(20)")
     private String name;
@@ -52,10 +58,6 @@ public class MemberEntity extends TimeEntity {
         this.type = Objects.requireNonNullElse(type, SignUpType.PHONE);
     }
 
-
-    public MemberEntity() {
-
-    }
 
     public void createTerms(TermsEntity termsEntity) {
         this.termsEntity = termsEntity;

@@ -37,9 +37,9 @@ public class AuthServiceImpl implements AuthService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private SmsLogRepo smsLogRepo;
+    private final SmsLogRepo smsLogRepo;
 
-    private MemberRepo memberRepo;
+    private final MemberRepo memberRepo;
 
     public AuthServiceImpl(SmsLogRepo smsLogRepo, MemberRepo memberRepo) {
         this.smsLogRepo = smsLogRepo;

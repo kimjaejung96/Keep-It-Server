@@ -36,7 +36,7 @@ public class MemberController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<ResponseObject> signUp(@RequestBody @Valid MemberDto.SignUpDto signUpDto) throws CustomException {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         //회원가입
         JwtTokens jwtTokens = memberService.sigunUp(signUpDto);
         responseObject.setBody(jwtTokens);
