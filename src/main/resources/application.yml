@@ -53,8 +53,8 @@ alpha:
 jwt:
   accessToken:
     #단위 : 분
-    validTime: 5000
+    validTime: 10
   refreshToken:
-    validTime: 6000
+    validTime: 30
   secret: a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDZraW1qYWVqdW5ndGVzdHNlY3JldHNrZXkwMTA1MDY0MTQwNmtpbWphZWp1bmd0ZXN0c2VjcmV0c2tleTAxMDUwNjQxNDA2a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDY=
 #  secret: kimjaejungtestsecretskey01050641406  * 4

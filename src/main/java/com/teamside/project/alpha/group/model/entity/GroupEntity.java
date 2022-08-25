@@ -2,12 +2,14 @@ package com.teamside.project.alpha.group.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.converter.CategoryConverter;
 import com.teamside.project.alpha.group.model.enumurate.Category;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +40,7 @@ public class GroupEntity extends TimeEntity {
     @Column(name = "PROFILE_URL", columnDefinition = "varchar(255)")
     private String profileUrl;
 
+    @Convert(converter = CategoryConverter.class)
     @Column(name = "CATEGORY", columnDefinition = "varchar(50)")
     private Category category;
 
@@ -60,5 +63,16 @@ public class GroupEntity extends TimeEntity {
 
     public void setMasterMember(MemberEntity master){
         this.master = master;
+        addMember(master);
+    }
+    private void addMember(MemberEntity member) {
+        this.groupMemberMappingEntity = new ArrayList<>();
+        this.groupMemberMappingEntity.add(
+                GroupMemberMappingEntity.builder()
+                        .mid(member.getMid())
+                        .groupId(this.groupId)
+                        .favorite(Boolean.FALSE)
+                        .build()
+        );
     }
 }

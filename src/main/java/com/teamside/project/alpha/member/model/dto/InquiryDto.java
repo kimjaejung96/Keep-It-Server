@@ -20,7 +20,7 @@ public class InquiryDto {
     private String email;
 
     @NotNull
-    @Pattern(regexp = KeepitConstant.REGEXP_NAME,
+    @Pattern(regexp = KeepitConstant.REGEXP_MEMBER_NAME,
             message = "이름이 올바르지 않습니다.")
     private String name;
 

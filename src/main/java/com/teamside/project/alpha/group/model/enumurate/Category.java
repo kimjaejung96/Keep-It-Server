@@ -1,5 +1,8 @@
 package com.teamside.project.alpha.group.model.enumurate;
 
+import lombok.Getter;
+
+@Getter
 public enum Category {
     MEETING("MEETING"),
     RESTAURANT("RESTAURANT"),

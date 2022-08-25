@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/groups")
 public class GroupController {
@@ -23,7 +25,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseObject> createGroup(@RequestBody GroupDto group) throws CustomException {
+    public ResponseEntity<ResponseObject> createGroup(@RequestBody @Valid GroupDto group) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         groupService.createGroup(group);
 

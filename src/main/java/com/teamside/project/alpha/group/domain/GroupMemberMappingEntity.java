@@ -3,7 +3,10 @@ package com.teamside.project.alpha.group.domain;
 import com.teamside.project.alpha.group.domain.compositeKeys.GroupMemberKeys;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -11,9 +14,12 @@ import javax.persistence.*;
 @Getter
 @Table(name = "GROUP_MEMBER_MAPPING")
 @IdClass(GroupMemberKeys.class)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class GroupMemberMappingEntity {
     @Id
-    @Column(name = "MID", columnDefinition = "char(16)")
+    @Column(name = "MID", columnDefinition = "char(36)")
     private String mid;
 
     @MapsId
@@ -22,7 +28,7 @@ public class GroupMemberMappingEntity {
     private MemberEntity member;
 
     @Id
-    @Column(name = "GROUP_ID", columnDefinition = "char(16)")
+    @Column(name = "GROUP_ID", columnDefinition = "char(36)")
     private String groupId;
 
     @MapsId
@@ -33,7 +39,7 @@ public class GroupMemberMappingEntity {
     @Column(name = "ORD", columnDefinition = "int")
     private Integer ord;
 
-    @Column(name = "IS_FAVORITE", columnDefinition = "boolean")
-    private Boolean isFavorite;
+    @Column(name = "FAVORITE", columnDefinition = "boolean")
+    private Boolean favorite;
 
 }

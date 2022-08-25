@@ -23,7 +23,7 @@ public class GroupKeepEntity extends TimeEntity {
     private MemberEntity member;
 
     @Id
-    @Column(name = "GROUP_ID", columnDefinition = "char(16)")
+    @Column(name = "GROUP_ID", columnDefinition = "char(36)")
     private String groupId;
 
     @MapsId
