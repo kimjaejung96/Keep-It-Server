@@ -5,4 +5,5 @@ import com.teamside.project.alpha.group.model.dto.GroupDto;
 
 public interface GroupService {
     void createGroup(GroupDto group) throws CustomException;
+    void updateGroup(GroupDto group) throws CustomException;
 }

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
@@ -18,7 +17,7 @@ public class GroupDto {
     @Pattern(regexp = KeepitConstant.REGEXP_GROUP_NAME, message = "그룹 이름이 올바르지 않습니다.")
     private String name;
     @NotNull
-    @Size(min = 10, max = 200, message = "description 벨리데이션이 올바르지 않습니다.")
+    @Pattern(regexp = KeepitConstant.REGEXP_GROUP_DESCRIPTION, message = "그룹설명 벨리데이션이 올바르지 않습니다.")
     private String description;
     @NotNull
     @Pattern(regexp = KeepitConstant.REGEXP_GROUP_PASSWORD, message = "password가 올바르지 않습니다.")

@@ -3,13 +3,11 @@ package com.teamside.project.alpha.member.service.impl;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.util.CryptUtils;
-import com.teamside.project.alpha.member.domain.TermsEntity;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.entity.InquiryEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
-import com.teamside.project.alpha.member.model.enumurate.SignUpType;
 import com.teamside.project.alpha.member.repository.InquiryRepo;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.member.service.AuthService;
@@ -34,23 +32,9 @@ public class MemberServiceImpl implements MemberService {
         checkExistName(signUpDto.getMember().getName());
         checkExistPhone(signUpDto.getMember().getPhone());
 
-        MemberEntity member = new MemberEntity(
-                signUpDto.getMember().getName(),
-                CryptUtils.encrypt(signUpDto.getMember().getPhone()),
-                signUpDto.getMember().getProfileUrl(),
-                signUpDto.getMember().getFcmToken(),
-                SignUpType.PHONE);
-
-
-        member.createTerms(new TermsEntity(member,
-                signUpDto.getTerms().getTerms(),
-                signUpDto.getTerms().getCollect(),
-                signUpDto.getTerms().getGps(),
-                signUpDto.getTerms().getMarketing(),
-                signUpDto.getTerms().getAlarm()));
+        MemberEntity member = new MemberEntity(signUpDto);
 
         JwtTokens jwtTokens = authService.createTokens(member.getMid());
-
         member.createRefreshToken(jwtTokens.getRefreshToken());
 
         memberRepo.save(member);

@@ -1,9 +1,12 @@
 package com.teamside.project.alpha.member.model.entity;
 
 
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
+import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.member.domain.RefreshTokenEntity;
 import com.teamside.project.alpha.member.domain.TermsEntity;
+import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +28,7 @@ import java.util.UUID;
 public class MemberEntity extends TimeEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")
-    private String mid = UUID.randomUUID().toString();
+    private String mid;
 
     @Column(name = "NAME", columnDefinition = "varchar(20)")
     private String name;
@@ -50,17 +53,29 @@ public class MemberEntity extends TimeEntity {
     @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RefreshTokenEntity refreshTokenEntity;
 
-    public MemberEntity(String name, String phone, String profileUrl, String fcmToken, SignUpType type) {
-        this.name = name;
-        this.phone = phone;
-        this.profileUrl = Objects.requireNonNullElse(profileUrl, "");
-        this.fcmToken = Objects.requireNonNullElse(fcmToken, "");
+    public MemberEntity(String mid) {
+        this.mid = mid;
+    }
+
+    public MemberEntity(MemberDto.SignUpDto signUpDto) throws CustomException {
+        this.mid = UUID.randomUUID().toString();
+        this.name = signUpDto.getMember().getName();
+        this.phone = CryptUtils.encrypt(signUpDto.getMember().getPhone());
+        this.profileUrl = Objects.requireNonNullElse(signUpDto.getMember().getProfileUrl(), "");
+        this.fcmToken = Objects.requireNonNullElse(signUpDto.getMember().getFcmToken(), "");
         this.type = Objects.requireNonNullElse(type, SignUpType.PHONE);
+
+        createTerms(signUpDto.getTerms());
     }
 
 
-    public void createTerms(TermsEntity termsEntity) {
-        this.termsEntity = termsEntity;
+    private void createTerms(MemberDto.Terms terms) {
+        this.termsEntity = new TermsEntity(this,
+                terms.getTerms(),
+                terms.getCollect(),
+                terms.getGps(),
+                terms.getMarketing(),
+                terms.getAlarm());
     }
 
     public void createRefreshToken(String refreshToken) {

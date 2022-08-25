@@ -1,12 +1,15 @@
 package com.teamside.project.alpha.group.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
+import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.converter.CategoryConverter;
+import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.enumurate.Category;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,10 +20,11 @@ import java.util.UUID;
 @Getter
 @Table(name = "GROUP_LIST")
 @NoArgsConstructor
+@DynamicUpdate
 public class GroupEntity extends TimeEntity {
     @Id
     @Column(name = "GROUP_ID", columnDefinition = "char(36)")
-    private final String groupId = UUID.randomUUID().toString();
+    private String groupId;
 
     @Column(name = "NAME", columnDefinition = "varchar(20)")
     private String name;
@@ -51,22 +55,26 @@ public class GroupEntity extends TimeEntity {
     @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupMemberMappingEntity> groupMemberMappingEntity;
 
-    public GroupEntity(String name, String description, String password, Boolean usePrivate, Integer memberQuantity, String profileUrl, Category category) {
-        this.name = name;
-        this.description = description;
-        this.password = password;
-        this.usePrivate = usePrivate;
-        this.memberQuantity = memberQuantity;
-        this.profileUrl = profileUrl;
-        this.category = category;
+    public GroupEntity(GroupDto group) {
+        this.groupId = UUID.randomUUID().toString();
+        this.name = group.getName();
+        this.description = group.getDescription();
+        this.password = group.getPassword();
+        this.usePrivate = group.getUsePrivate();
+        this.memberQuantity = group.getMemberQuantity();
+        this.profileUrl = group.getProfileUrl();
+        this.category = group.getCategory();
+
+        this.groupMemberMappingEntity = new ArrayList<>();
+        setMasterMember();
+        addMember(this.master);
     }
 
-    public void setMasterMember(MemberEntity master){
-        this.master = master;
-        addMember(master);
+    private void setMasterMember(){
+        this.master = new MemberEntity(CryptUtils.getMid());
     }
     private void addMember(MemberEntity member) {
-        this.groupMemberMappingEntity = new ArrayList<>();
+
         this.groupMemberMappingEntity.add(
                 GroupMemberMappingEntity.builder()
                         .mid(member.getMid())
