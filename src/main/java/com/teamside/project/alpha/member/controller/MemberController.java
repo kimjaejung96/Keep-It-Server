@@ -85,19 +85,6 @@ public class MemberController {
 
 
 
-
-
-
-
-
-    @GetMapping("/ping")
-    public ResponseEntity<ResponseObject> ping() {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody("PONG~");
-        return new ResponseEntity<>(responseObject, HttpStatus.ACCEPTED);
-    }
-
-
     @PostMapping("/sms")
     public ResponseEntity<String> smsTest(@RequestParam(value = "phone") String receiver) {
         String number = generateCertificationNumber();
