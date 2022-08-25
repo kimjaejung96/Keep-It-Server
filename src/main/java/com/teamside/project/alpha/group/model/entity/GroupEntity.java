@@ -59,7 +59,7 @@ public class GroupEntity extends TimeEntity {
         this.groupId = UUID.randomUUID().toString();
         this.name = group.getName();
         this.description = group.getDescription();
-        this.password = group.getPassword();
+        this.password = group.getUsePrivate() ?  group.getPassword() : "";
         this.usePrivate = group.getUsePrivate();
         this.memberQuantity = group.getMemberQuantity();
         this.profileUrl = group.getProfileUrl();
@@ -82,5 +82,13 @@ public class GroupEntity extends TimeEntity {
                         .favorite(Boolean.FALSE)
                         .build()
         );
+    }
+
+    public void updateGroup(GroupDto group) {
+        this.name = group.getName();
+        this.description = group.getDescription();
+        this.password = group.getUsePrivate() ? group.getPassword() : "";
+        this.memberQuantity = group.getMemberQuantity();
+        this.profileUrl = group.getProfileUrl();
     }
 }

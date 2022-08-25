@@ -17,6 +17,7 @@ public enum ApiExceptionCode {
     AUTH_FAIL(701, "Auth fail"),
     MEMBER_ALREADY_EXIST(702, "Member already exists"),
     INVALID_AUTH_TYPE(703, "Invalid auth type"),
+    GROUP_NOT_FOUND(800, "Group Not Found"),
     SYSTEM_ERROR(999, "System Error"),
     ;
 
