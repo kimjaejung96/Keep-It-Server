@@ -1,9 +1,6 @@
 package com.teamside.project.alpha.group.repository.dsl.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamside.project.alpha.common.exception.ApiExceptionCode;
-import com.teamside.project.alpha.common.exception.CustomException;
-import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
@@ -26,22 +23,21 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 //        }
 //    }
 
-    @Override
-    public void groupNameCheck(String groupName, String preName) throws CustomException {
-        QGroupEntity groupEntity1 = new QGroupEntity("group1");
-        QGroupEntity groupEntity2 = new QGroupEntity("group2");
-
-        boolean exists = jpaQueryFactory
-                .select(groupEntity1.name)
-                .from(groupEntity1)
-                .innerJoin(groupEntity2)
-                .on(groupEntity2.groupId.eq(groupEntity1.groupId)
-                        .and(groupEntity2.name.ne(preName)))
-                .where(groupEntity1.name.eq(groupName))
-                .fetchFirst() != null;
-        if (exists) {
-            throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
-        }
-
-    }
+//    @Override
+//    public void groupNameCheck(String groupName) throws CustomException {
+//        QGroupEntity groupEntity1 = new QGroupEntity("group1");
+//        QGroupEntity groupEntity2 = new QGroupEntity("group2");
+//
+//        boolean exists = jpaQueryFactory
+//                .select(groupEntity1.name)
+//                .from(groupEntity1)
+//                .innerJoin(groupEntity2)
+//                .on(groupEntity2.groupId.eq(groupEntity1.groupId))
+//                .where(groupEntity1.name.eq(groupName))
+//                .fetchFirst() != null;
+//        if (exists) {
+//            throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
+//        }
+//
+//    }
 }

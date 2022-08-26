@@ -21,7 +21,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void createGroup(GroupDto group) throws CustomException {
-        isExistGroupName(group.getName(), "create");
+        isExistGroupName(group.getName());
         GroupEntity groupEntity = new GroupEntity(group);
 
         groupRepository.save(groupEntity);
@@ -29,7 +29,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void updateGroup(GroupDto group) throws CustomException {
-        isExistGroupName(group.getName(), "update");
+        isExistGroupName(group.getName());
 
         GroupEntity groupEntity = groupRepository.findByGroupId(group.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         creatorCheck(groupEntity.getMaster().getMid());
@@ -40,12 +40,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void isExistGroupName(String groupName, String preName) throws CustomException {
-        if (preName == null || preName.isEmpty()) {
+    public void isExistGroupName(String groupName) throws CustomException {
             if (groupRepository.existsByName(groupName)) {
                 throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
             }
-        } else groupRepository.groupNameCheck(groupName, preName);
     }
     private void creatorCheck(String mid) throws CustomException {
         if (!CryptUtils.getMid().equals(mid)) {

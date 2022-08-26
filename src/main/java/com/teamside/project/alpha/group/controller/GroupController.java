@@ -40,10 +40,9 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @GetMapping("/{groupName}/exists")
-    public ResponseEntity<ResponseObject> isExistGroupName(@Pattern (regexp = KeepitConstant.REGEXP_GROUP_NAME)@PathVariable String groupName,
-                                                           @RequestParam(required = false) String preName) throws CustomException {
+    public ResponseEntity<ResponseObject> isExistGroupName(@Pattern (regexp = KeepitConstant.REGEXP_GROUP_NAME)@PathVariable String groupName) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        groupService.isExistGroupName(groupName, preName);
+        groupService.isExistGroupName(groupName);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 }
