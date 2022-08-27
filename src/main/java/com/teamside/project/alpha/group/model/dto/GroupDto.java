@@ -29,4 +29,16 @@ public class GroupDto {
     private String profileUrl;
     @NotNull
     private Category category;
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SelectGroupDto extends GroupDto{
+        public SelectGroupDto(String groupId, String name, String description, String password, Boolean usePrivate, Integer memberQuantity, String profileUrl, Category category, String master) {
+            super(groupId, name, description, password, usePrivate, memberQuantity, profileUrl, category);
+            this.master = master;
+        }
+
+        private String master;
+    }
 }

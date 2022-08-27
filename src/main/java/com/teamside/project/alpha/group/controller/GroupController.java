@@ -32,6 +32,21 @@ public class GroupController {
 
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<ResponseObject> deleteGroup(@PathVariable String groupId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        groupService.deleteGroup(groupId);
+
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+    @GetMapping("/{groupId}")
+    public ResponseEntity<ResponseObject> selectGroup(@PathVariable String groupId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.selectGroup(groupId));
+
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
     @PatchMapping
     public ResponseEntity<ResponseObject> updateGroup(@RequestBody @Valid GroupDto group) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
