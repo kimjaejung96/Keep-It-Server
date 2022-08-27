@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.group.model.dto;
 
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
+import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.Category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,16 +30,25 @@ public class GroupDto {
     private String profileUrl;
     @NotNull
     private Category category;
+    public GroupDto(GroupEntity groupEntity) {
+        this.groupId = groupEntity.getGroupId();
+        this.name = groupEntity.getName();
+        this.description = groupEntity.getDescription();
+        this.password = groupEntity.getPassword();
+        this.usePrivate = groupEntity.getUsePrivate();
+        this.memberQuantity = groupEntity.getMemberQuantity();
+        this.profileUrl = groupEntity.getProfileUrl();
+        this.category = groupEntity.getCategory();
+    }
 
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SelectGroupDto extends GroupDto{
-        public SelectGroupDto(String groupId, String name, String description, String password, Boolean usePrivate, Integer memberQuantity, String profileUrl, Category category, String master) {
-            super(groupId, name, description, password, usePrivate, memberQuantity, profileUrl, category);
-            this.master = master;
+        public SelectGroupDto(GroupEntity entity) {
+            super(entity);
+            this.master = entity.getMaster().getMid();
         }
-
         private String master;
     }
 }
