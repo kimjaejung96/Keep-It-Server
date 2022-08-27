@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.group.model.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.Category;
@@ -14,7 +15,7 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GroupDto {
-    private String groupId;
+    private Long groupId;
     @NotNull
     @Pattern(regexp = KeepitConstant.REGEXP_GROUP_NAME, message = "그룹 이름이 올바르지 않습니다.")
     private String name;
@@ -50,5 +51,30 @@ public class GroupDto {
             this.master = entity.getMaster().getMid();
         }
         private String master;
+    }
+    @Getter
+    @NoArgsConstructor
+    public static class SearchGroupDto {
+        private Long groupId;
+
+        private String name;
+
+        private Category category;
+
+        private String profileUrl;
+
+        private Boolean usePrivate;
+
+        private Long participantCount;
+
+        @QueryProjection
+        public SearchGroupDto(Long groupId, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount) {
+            this.groupId = groupId;
+            this.name = name;
+            this.category = category;
+            this.profileUrl = profileUrl;
+            this.usePrivate = usePrivate;
+            this.participantCount = participantCount;
+        }
     }
 }

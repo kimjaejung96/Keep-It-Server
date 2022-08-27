@@ -9,6 +9,9 @@ import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.GroupService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class GroupServiceImpl implements GroupService {
@@ -20,11 +23,13 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void createGroup(GroupDto group) throws CustomException {
         isExistGroupName(group.getName());
         GroupEntity groupEntity = new GroupEntity(group);
 
-        groupRepository.save(groupEntity);
+        GroupEntity newGroupEntity = groupRepository.save(groupEntity);
+        newGroupEntity.addMember(newGroupEntity.getMaster());
     }
 
     @Override
@@ -52,7 +57,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void deleteGroup(String groupId) throws CustomException {
+    public void deleteGroup(Long groupId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         creatorCheck(group.getMaster().getMid());
 
@@ -60,8 +65,18 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public GroupDto.SelectGroupDto selectGroup(String groupId) throws CustomException {
+    public GroupDto.SelectGroupDto selectGroup(Long groupId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         return new GroupDto.SelectGroupDto(group);
+    }
+
+    @Override
+    public List<GroupDto.SearchGroupDto> groups(Long groupId, Long pageSize) {
+        return groupRepository.groups(groupId, pageSize);
+    }
+
+    @Override
+    public List<GroupDto.SearchGroupDto> random() {
+        return groupRepository.random();
     }
 }

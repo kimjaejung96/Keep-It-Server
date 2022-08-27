@@ -23,8 +23,9 @@ import java.util.UUID;
 @DynamicUpdate
 public class GroupEntity extends TimeEntity {
     @Id
-    @Column(name = "GROUP_ID", columnDefinition = "char(36)")
-    private String groupId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "GROUP_ID", columnDefinition = "bigint")
+    private Long groupId;
 
     @Column(name = "NAME", columnDefinition = "varchar(20)")
     private String name;
@@ -56,7 +57,6 @@ public class GroupEntity extends TimeEntity {
     private List<GroupMemberMappingEntity> groupMemberMappingEntity;
 
     public GroupEntity(GroupDto group) {
-        this.groupId = UUID.randomUUID().toString();
         this.name = group.getName();
         this.description = group.getDescription();
         this.password = group.getUsePrivate() ?  group.getPassword() : "";
@@ -67,13 +67,13 @@ public class GroupEntity extends TimeEntity {
 
         this.groupMemberMappingEntity = new ArrayList<>();
         setMasterMember();
-        addMember(this.master);
+//        addMember(this.master);
     }
 
     private void setMasterMember(){
         this.master = new MemberEntity(CryptUtils.getMid());
     }
-    private void addMember(MemberEntity member) {
+    public void addMember(MemberEntity member) {
 
         this.groupMemberMappingEntity.add(
                 GroupMemberMappingEntity.builder()

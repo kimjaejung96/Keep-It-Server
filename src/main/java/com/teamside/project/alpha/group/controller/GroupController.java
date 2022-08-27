@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import java.awt.print.Pageable;
 
 @RestController
 @Validated
@@ -34,14 +35,14 @@ public class GroupController {
     }
 
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<ResponseObject> deleteGroup(@PathVariable String groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> deleteGroup(@PathVariable Long groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.deleteGroup(groupId);
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @GetMapping("/{groupId}")
-    public ResponseEntity<ResponseObject> selectGroup(@PathVariable String groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> selectGroup(@PathVariable Long groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectGroup(groupId));
 
@@ -58,6 +59,20 @@ public class GroupController {
     public ResponseEntity<ResponseObject> isExistGroupName(@Pattern (regexp = KeepitConstant.REGEXP_GROUP_NAME)@PathVariable String groupName) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.isExistGroupName(groupName);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseObject> groups(@RequestParam(required = false) Long groupId, @RequestParam Long pageSize) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.groups(groupId, pageSize));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<ResponseObject> random(){
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.random());
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 }

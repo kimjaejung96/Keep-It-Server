@@ -1,10 +1,21 @@
 package com.teamside.project.alpha.group.repository.dsl.impl;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.teamside.project.alpha.group.domain.QGroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.dto.GroupDto;
+import com.teamside.project.alpha.group.model.dto.QGroupDto_SearchGroupDto;
+import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
+
+import java.util.List;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     private final JPAQueryFactory jpaQueryFactory;
+
+    QGroupEntity group = QGroupEntity.groupEntity;
+    QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
 
     public GroupRepositoryDSLImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
@@ -40,4 +51,46 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 //        }
 //
 //    }
+
+    @Override
+    public List<GroupDto.SearchGroupDto> groups(Long groupId, Long pageSize) {
+        return jpaQueryFactory
+                .select(new QGroupDto_SearchGroupDto(
+                        group.groupId,
+                        group.name,
+                        group.category,
+                        group.profileUrl,
+                        group.usePrivate,
+                        groupMemberMapping.count().as("participantCount")))
+                .from(group)
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .where(
+                        gtGroupId(groupId)
+                )
+                .limit(pageSize)
+                .groupBy(group.groupId)
+                .fetch();
+    }
+
+    public BooleanExpression gtGroupId(Long groupId) {
+        return groupId != null ? group.groupId.gt(groupId) : null;
+    }
+
+    @Override
+    public List<GroupDto.SearchGroupDto> random() {
+        return jpaQueryFactory
+                .select(new QGroupDto_SearchGroupDto(
+                        group.groupId,
+                        group.name,
+                        group.category,
+                        group.profileUrl,
+                        group.usePrivate,
+                        groupMemberMapping.count().as("participantCount")))
+                .from(group)
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .orderBy(Expressions.numberTemplate(Long.class,"function('rand')").asc())
+                .limit(10)
+                .groupBy(group.groupId)
+                .fetch();
+    }
 }
