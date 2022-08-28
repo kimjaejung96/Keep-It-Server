@@ -35,7 +35,7 @@ public class GroupController {
     }
 
     @PostMapping("/{groupId}")
-    public ResponseEntity<ResponseObject> joinGroup(@PathVariable Long groupId, @RequestParam(required = false)String password) throws CustomException {
+    public ResponseEntity<ResponseObject> joinGroup(@PathVariable Long groupId, @RequestParam(required = false) String password) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.joinGroup(groupId, password);
 
@@ -74,9 +74,16 @@ public class GroupController {
     public ResponseEntity<ResponseObject> selectGroups(@RequestParam(required = false) Long groupId,
                                                        @RequestParam Long pageSize,
                                                        @RequestParam(required = false) String search,
-                                                       @RequestParam(required = false)Category category) throws CustomException {
+                                                       @RequestParam(required = false) Category category) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectGroups(groupId, pageSize));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseObject> selectMyGroups() {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.selectMyGroups());
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

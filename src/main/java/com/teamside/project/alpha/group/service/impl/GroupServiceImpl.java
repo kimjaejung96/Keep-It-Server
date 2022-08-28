@@ -21,6 +21,8 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
 
+    private final Long MEMBER_JOIN_POSSIBLE_COUNT = 10L;
+
     public GroupServiceImpl(GroupRepository groupRepository, MemberRepo memberRepo) {
         this.groupRepository = groupRepository;
     }
@@ -88,13 +90,17 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public void joinGroup(Long groupId, String password) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkJoinPossible(group);
+        group.checkJoinPossible(group, password);
 
-        if (groupRepository.countByGroupMemberMappingEntity(new GroupMemberMappingEntity(new MemberEntity(CryptUtils.getMid()))) >= group.getMemberQuantity()) {
+        if (groupRepository.countByGroupMemberMappingEntity(new GroupMemberMappingEntity(new MemberEntity(CryptUtils.getMid()))) >= MEMBER_JOIN_POSSIBLE_COUNT) {
             throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
         }
         group.addMember(MemberEntity.builder().mid(CryptUtils.getMid()).build());
 
     }
 
+    @Override
+    public List<GroupDto.MyGroupDto> selectMyGroups() {
+        return null;
+    }
 }

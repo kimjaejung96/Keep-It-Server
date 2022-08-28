@@ -68,7 +68,6 @@ public class GroupEntity extends TimeEntity {
 
         this.groupMemberMappingEntity = new ArrayList<>();
         setMasterMember();
-//        addMember(this.master);
     }
 
     private void setMasterMember(){
@@ -93,9 +92,9 @@ public class GroupEntity extends TimeEntity {
         this.profileUrl = group.getProfileUrl();
     }
 
-    public void checkJoinPossible(GroupEntity group) throws CustomException {
+    public void checkJoinPossible(GroupEntity group, String password) throws CustomException {
         if (Boolean.TRUE.equals(group.getUsePrivate())) {
-            if (!group.getPassword().equals(password)) {
+            if (!password.equals(group.getPassword())) {
                 throw new CustomException(ApiExceptionCode.PASSWORD_IS_INCORRECT);
             }
         }

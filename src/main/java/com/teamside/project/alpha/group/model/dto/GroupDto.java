@@ -56,17 +56,11 @@ public class GroupDto {
     @NoArgsConstructor
     public static class SearchGroupDto {
         private Long groupId;
-
         private String name;
-
         private Category category;
-
         private String profileUrl;
-
         private Boolean usePrivate;
-
         private Long participantCount;
-
         @QueryProjection
         public SearchGroupDto(Long groupId, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount) {
             this.groupId = groupId;
@@ -75,6 +69,30 @@ public class GroupDto {
             this.profileUrl = profileUrl;
             this.usePrivate = usePrivate;
             this.participantCount = participantCount;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class MyGroupDto {
+        private Long groupId;
+        private String name;
+        private Category category;
+        private String profileUrl;
+        private Boolean usePrivate;
+        private Long participantCount;
+        private Boolean favorite;
+        private Boolean isMaster;
+        @QueryProjection
+        public MyGroupDto(Long groupId, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount, Boolean favorite, Boolean isMaster) {
+            this.groupId = groupId;
+            this.name = name;
+            this.category = category;
+            this.profileUrl = profileUrl;
+            this.usePrivate = usePrivate;
+            this.participantCount = participantCount;
+            this.favorite = favorite;
+            this.isMaster = isMaster;
         }
     }
 }
