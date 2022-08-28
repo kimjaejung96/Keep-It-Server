@@ -8,5 +8,6 @@ public interface GroupRepositoryDSL {
 //    void groupNameCheck(String groupName) throws CustomException;
 
     List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize);
+    List<GroupDto.MyGroupDto> selectMyGroups(String mId);
     List<GroupDto.SearchGroupDto> random();
 }

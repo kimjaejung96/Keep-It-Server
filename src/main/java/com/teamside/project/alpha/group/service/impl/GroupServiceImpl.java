@@ -14,7 +14,9 @@ import com.teamside.project.alpha.member.repository.MemberRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GroupServiceImpl implements GroupService {
@@ -100,7 +102,22 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupDto.MyGroupDto> selectMyGroups() {
-        return null;
+    public GroupDto.ResponseMyGroupDto selectMyGroups() {
+        String mId = CryptUtils.getMid();
+        List<GroupDto.MyGroupDto> myGroups = groupRepository.selectMyGroups(mId);
+
+        List<GroupDto.MyGroupDto> favoriteGroups = myGroups.stream()
+                .filter(group -> group.getFavorite())
+                .sorted(Comparator.comparing(group -> group.getOrd()))
+                .collect(Collectors.toList());
+
+        List<GroupDto.MyGroupDto> groupList = myGroups.stream()
+                .filter(group -> !group.getFavorite())
+                .sorted(Comparator.comparing(group -> group.getGroupId()))
+                .collect(Collectors.toList());
+
+        GroupDto.ResponseMyGroupDto response = new GroupDto.ResponseMyGroupDto(favoriteGroups, groupList);
+
+        return response;
     }
 }
