@@ -91,7 +91,7 @@ public class GroupServiceImpl implements GroupService {
         group.checkJoinPossible(group);
 
         if (groupRepository.countByGroupMemberMappingEntity(new GroupMemberMappingEntity(new MemberEntity(CryptUtils.getMid()))) >= group.getMemberQuantity()) {
-            throw new CustomException(ApiExceptionCode.MEMBER_QUANTITY_IS_FULL);
+            throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
         }
         group.addMember(MemberEntity.builder().mid(CryptUtils.getMid()).build());
 

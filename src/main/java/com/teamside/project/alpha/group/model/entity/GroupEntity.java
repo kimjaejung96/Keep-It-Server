@@ -103,7 +103,7 @@ public class GroupEntity extends TimeEntity {
             throw new CustomException(ApiExceptionCode.ALREADY_JOINED_GROUP);
         }
         if (group.getGroupMemberMappingEntity().size() >= this.memberQuantity) {
-            throw new CustomException(ApiExceptionCode.ALREADY_JOINED_GROUP);
+            throw new CustomException(ApiExceptionCode.MEMBER_QUANTITY_IS_FULL);
         }
     }
 }
