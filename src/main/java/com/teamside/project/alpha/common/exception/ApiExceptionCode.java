@@ -18,6 +18,8 @@ public enum ApiExceptionCode {
     MEMBER_ALREADY_EXIST(702, "Member already exists"),
     INVALID_AUTH_TYPE(703, "Invalid auth type"),
     GROUP_NOT_FOUND(800, "Group Not Found"),
+    ALREADY_JOINED_GROUP(801, "Member already joined"),
+    PASSWORD_IS_INCORRECT(802, "Password is incorrect"),
     SYSTEM_ERROR(999, "System Error"),
     ;
 

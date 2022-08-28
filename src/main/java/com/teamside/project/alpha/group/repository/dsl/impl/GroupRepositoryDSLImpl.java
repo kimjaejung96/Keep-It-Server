@@ -53,7 +53,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 //    }
 
     @Override
-    public List<GroupDto.SearchGroupDto> groups(Long groupId, Long pageSize) {
+    public List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize) {
         return jpaQueryFactory
                 .select(new QGroupDto_SearchGroupDto(
                         group.groupId,

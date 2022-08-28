@@ -7,6 +7,6 @@ import java.util.List;
 public interface GroupRepositoryDSL {
 //    void groupNameCheck(String groupName) throws CustomException;
 
-    List<GroupDto.SearchGroupDto> groups(Long groupId, Long pageSize);
+    List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize);
     List<GroupDto.SearchGroupDto> random();
 }

@@ -8,6 +8,7 @@ import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.GroupService;
+import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,12 +72,27 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupDto.SearchGroupDto> groups(Long groupId, Long pageSize) {
-        return groupRepository.groups(groupId, pageSize);
+    public List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize) {
+        return groupRepository.selectGroups(lastGroupId, pageSize);
     }
 
     @Override
     public List<GroupDto.SearchGroupDto> random() {
         return groupRepository.random();
+    }
+
+    @Override
+    @Transactional
+    public void joinGroup(Long groupId, String password) throws CustomException {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+        if (Boolean.TRUE.equals(group.getUsePrivate())) {
+            if (!group.getPassword().equals(password)) {
+                throw new CustomException(ApiExceptionCode.PASSWORD_IS_INCORRECT);
+            }
+        }
+        if (group.getGroupMemberMappingEntity().stream().anyMatch(g -> g.getMid().equals(CryptUtils.getMid()))) {
+            throw new CustomException(ApiExceptionCode.ALREADY_JOINED_GROUP);
+        }
+        group.addMember(MemberEntity.builder().mid(CryptUtils.getMid()).build());
     }
 }

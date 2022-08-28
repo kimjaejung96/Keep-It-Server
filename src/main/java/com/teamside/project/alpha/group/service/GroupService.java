@@ -11,6 +11,7 @@ public interface GroupService {
     void isExistGroupName(String groupName) throws CustomException;
     void deleteGroup(Long groupId) throws CustomException;
     GroupDto.SelectGroupDto selectGroup(Long groupId) throws CustomException;
-    List<GroupDto.SearchGroupDto> groups(Long groupId, Long pageSize);
+    List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize);
     List<GroupDto.SearchGroupDto> random();
+    void joinGroup(Long groupId, String password) throws CustomException;
 }
