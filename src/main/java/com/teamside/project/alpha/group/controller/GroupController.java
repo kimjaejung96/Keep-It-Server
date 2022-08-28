@@ -80,7 +80,7 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/my-groups")
     public ResponseEntity<ResponseObject> selectMyGroups() {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectMyGroups());
