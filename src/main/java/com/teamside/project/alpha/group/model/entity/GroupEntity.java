@@ -75,12 +75,7 @@ public class GroupEntity extends TimeEntity {
     }
     public void addMember(MemberEntity member) {
 
-        this.groupMemberMappingEntity.add(
-                GroupMemberMappingEntity.builder()
-                        .mid(member.getMid())
-                        .groupId(this.groupId)
-                        .favorite(Boolean.FALSE)
-                        .build()
+        this.groupMemberMappingEntity.add(new GroupMemberMappingEntity(member.getMid(), this.groupId)
         );
     }
 

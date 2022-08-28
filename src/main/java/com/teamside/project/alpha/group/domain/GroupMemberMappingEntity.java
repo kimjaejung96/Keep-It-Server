@@ -45,4 +45,10 @@ public class GroupMemberMappingEntity {
     public GroupMemberMappingEntity(MemberEntity member) {
         this.member = member;
     }
+
+    public GroupMemberMappingEntity(String mid, Long groupId) {
+        this.mid = mid;
+        this.groupId = groupId;
+        this.favorite = false;
+    }
 }
