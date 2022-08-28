@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -83,8 +85,9 @@ public class GroupDto {
         private Long participantCount;
         private Boolean favorite;
         private Boolean isMaster;
+        private Integer ord;
         @QueryProjection
-        public MyGroupDto(Long groupId, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount, Boolean favorite, Boolean isMaster) {
+        public MyGroupDto(Long groupId, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount, Boolean favorite, Boolean isMaster, Integer ord) {
             this.groupId = groupId;
             this.name = name;
             this.category = category;
@@ -93,6 +96,15 @@ public class GroupDto {
             this.participantCount = participantCount;
             this.favorite = favorite;
             this.isMaster = isMaster;
+            this.ord = ord;
         }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResponseMyGroupDto {
+        List<MyGroupDto> favoriteGroupList = new ArrayList<>();
+        List<MyGroupDto> groupList = new ArrayList<>();
     }
 }

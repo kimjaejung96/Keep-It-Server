@@ -1,15 +1,21 @@
 package com.teamside.project.alpha.group.repository.dsl.impl;
 
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.group.domain.QGroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
+import com.teamside.project.alpha.group.model.dto.QGroupDto_MyGroupDto;
 import com.teamside.project.alpha.group.model.dto.QGroupDto_SearchGroupDto;
 import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
 
 import java.util.List;
+
+import static com.querydsl.core.types.ExpressionUtils.count;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     private final JPAQueryFactory jpaQueryFactory;
@@ -74,6 +80,35 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     public BooleanExpression gtGroupId(Long groupId) {
         return groupId != null ? group.groupId.gt(groupId) : null;
+    }
+
+    @Override
+    public List<GroupDto.MyGroupDto> selectMyGroups(String mId) {
+        return jpaQueryFactory
+                .select(new QGroupDto_MyGroupDto(
+                        group.groupId,
+                        group.name,
+                        group.category,
+                        group.profileUrl,
+                        group.usePrivate,
+                        ExpressionUtils.as(
+                                JPAExpressions
+                                        .select(groupMemberMapping.count())
+                                        .from(groupMemberMapping)
+                                        .where(groupMemberMapping.groupId.eq(group.groupId)),
+                        "participantCount"),
+                        groupMemberMapping.favorite,
+                        new CaseBuilder()
+                                .when(group.master.mid.eq(groupMemberMapping.mid))
+                                .then(true)
+                                .otherwise(false)
+                                .as("isMaster"),
+                        groupMemberMapping.ord
+                    ))
+                .from(groupMemberMapping)
+                .innerJoin(group).on(groupMemberMapping.groupId.eq(group.groupId))
+                .where(groupMemberMapping.member.mid.eq(mId))
+                .fetch();
     }
 
     @Override
