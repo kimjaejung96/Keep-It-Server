@@ -1,5 +1,7 @@
 package com.teamside.project.alpha.group.model.entity;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
@@ -14,7 +16,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -90,5 +91,19 @@ public class GroupEntity extends TimeEntity {
         this.password = group.getUsePrivate() ? group.getPassword() : "";
         this.memberQuantity = group.getMemberQuantity();
         this.profileUrl = group.getProfileUrl();
+    }
+
+    public void checkJoinPossible(GroupEntity group) throws CustomException {
+        if (Boolean.TRUE.equals(group.getUsePrivate())) {
+            if (!group.getPassword().equals(password)) {
+                throw new CustomException(ApiExceptionCode.PASSWORD_IS_INCORRECT);
+            }
+        }
+        if (group.getGroupMemberMappingEntity().stream().anyMatch(g -> g.getMid().equals(CryptUtils.getMid()))) {
+            throw new CustomException(ApiExceptionCode.ALREADY_JOINED_GROUP);
+        }
+        if (group.getGroupMemberMappingEntity().size() >= this.memberQuantity) {
+            throw new CustomException(ApiExceptionCode.ALREADY_JOINED_GROUP);
+        }
     }
 }

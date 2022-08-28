@@ -4,11 +4,13 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.GroupService;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
+import com.teamside.project.alpha.member.repository.MemberRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +21,10 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
 
-    public GroupServiceImpl(GroupRepository groupRepository) {
+    public GroupServiceImpl(GroupRepository groupRepository, MemberRepo memberRepo) {
         this.groupRepository = groupRepository;
     }
+
 
     @Override
     @Transactional
@@ -85,14 +88,13 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public void joinGroup(Long groupId, String password) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-        if (Boolean.TRUE.equals(group.getUsePrivate())) {
-            if (!group.getPassword().equals(password)) {
-                throw new CustomException(ApiExceptionCode.PASSWORD_IS_INCORRECT);
-            }
-        }
-        if (group.getGroupMemberMappingEntity().stream().anyMatch(g -> g.getMid().equals(CryptUtils.getMid()))) {
-            throw new CustomException(ApiExceptionCode.ALREADY_JOINED_GROUP);
+        group.checkJoinPossible(group);
+
+        if (groupRepository.countByGroupMemberMappingEntity(new GroupMemberMappingEntity(new MemberEntity(CryptUtils.getMid()))) >= group.getMemberQuantity()) {
+            throw new CustomException(ApiExceptionCode.MEMBER_QUANTITY_IS_FULL);
         }
         group.addMember(MemberEntity.builder().mid(CryptUtils.getMid()).build());
+
     }
+
 }

@@ -20,6 +20,8 @@ public enum ApiExceptionCode {
     GROUP_NOT_FOUND(800, "Group Not Found"),
     ALREADY_JOINED_GROUP(801, "Member already joined"),
     PASSWORD_IS_INCORRECT(802, "Password is incorrect"),
+    MEMBER_IS_FULL(803, "Member is full"),
+    MEMBER_QUANTITY_IS_FULL(804, "Member quantity is full"),
     SYSTEM_ERROR(999, "System Error"),
     ;
 

@@ -42,4 +42,7 @@ public class GroupMemberMappingEntity {
     @Column(name = "FAVORITE", columnDefinition = "boolean")
     private Boolean favorite;
 
+    public GroupMemberMappingEntity(MemberEntity member) {
+        this.member = member;
+    }
 }
