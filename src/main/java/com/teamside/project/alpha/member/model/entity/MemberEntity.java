@@ -8,8 +8,7 @@ import com.teamside.project.alpha.member.domain.RefreshTokenEntity;
 import com.teamside.project.alpha.member.domain.TermsEntity;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
@@ -22,9 +21,7 @@ import java.util.UUID;
 @Getter
 @Table(name = "MEMBER")
 @DynamicUpdate
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberEntity extends TimeEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")

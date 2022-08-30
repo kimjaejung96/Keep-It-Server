@@ -1,7 +1,7 @@
 package com.teamside.project.alpha.member.model.dto;
 
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,8 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberDto {
     @NotNull
     @Pattern(regexp = KeepitConstant.REGEXP_MEMBER_NAME, message = "이름이 올바르지 않습니다.")
@@ -23,8 +22,7 @@ public class MemberDto {
     private String fcmToken;
 
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class SignUpDto {
         @Valid
         private Terms terms;
@@ -33,8 +31,7 @@ public class MemberDto {
     }
 
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Terms {
         @NotNull
         private Boolean terms;

@@ -156,11 +156,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void saveSmsLog(String requestPhoneNum, String number) throws CustomException {
-        SmsLogEntity smsLogEntity = SmsLogEntity.builder()
-                .phone(CryptUtils.encrypt(requestPhoneNum))
-                .authNum(number)
-                .build();
-
+        SmsLogEntity smsLogEntity = new SmsLogEntity(CryptUtils.encrypt(requestPhoneNum), number);
         smsLogRepo.save(smsLogEntity);
     }
 
@@ -193,12 +189,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void checkPhone(String phone, String authType) throws CustomException {
+    public void checkPhone(String phone, AuthType authType) throws CustomException {
         Optional<MemberEntity> member = memberRepo.findByPhoneAndType(CryptUtils.encrypt(phone), SignUpType.PHONE);
 
-        if (authType.equals(AuthType.SIGN_UP.getType())) {
+        if (authType.getType().equals(AuthType.SIGN_UP.getType())) {
             member.ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.MEMBER_ALREADY_EXIST);});
-        } else if (authType.equals(AuthType.SIGN_IN.getType())) {
+        } else if (authType.getType().equals(AuthType.SIGN_IN.getType())) {
             member.orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
         } else {
             throw new CustomException(ApiExceptionCode.INVALID_AUTH_TYPE);

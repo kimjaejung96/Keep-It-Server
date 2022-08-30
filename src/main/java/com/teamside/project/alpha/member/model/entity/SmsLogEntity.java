@@ -1,15 +1,16 @@
 package com.teamside.project.alpha.member.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "SMS_LOG")
 public class SmsLogEntity extends TimeEntity {
@@ -24,4 +25,8 @@ public class SmsLogEntity extends TimeEntity {
     @Column(name = "authNum", columnDefinition = "char(6)")
     private String authNum;
 
+    public SmsLogEntity(String phone, String authNum) {
+        this.phone = phone;
+        this.authNum = authNum;
+    }
 }

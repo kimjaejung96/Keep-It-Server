@@ -1,7 +1,7 @@
 package com.teamside.project.alpha.member.model.dto;
 
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,8 +10,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InquiryDto {
 
     @NotNull

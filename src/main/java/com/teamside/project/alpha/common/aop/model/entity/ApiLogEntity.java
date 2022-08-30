@@ -1,13 +1,14 @@
 package com.teamside.project.alpha.common.aop.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "API_LOG")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApiLogEntity extends CreateDtEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

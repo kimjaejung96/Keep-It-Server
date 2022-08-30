@@ -3,8 +3,7 @@ package com.teamside.project.alpha.group.domain;
 import com.teamside.project.alpha.group.domain.compositeKeys.GroupMemberKeys;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,9 +13,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "GROUP_MEMBER_MAPPING")
 @IdClass(GroupMemberKeys.class)
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupMemberMappingEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")

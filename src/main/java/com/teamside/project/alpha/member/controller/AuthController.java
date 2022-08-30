@@ -34,8 +34,8 @@ public class AuthController {
 
     @PostMapping(value = "/sms/{phone}")
     public ResponseEntity<ResponseObject> sms(
-            @Pattern(regexp = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$",
-                    message = "핸드폰 번호가 올바르지 않습니다.") @PathVariable String phone, @RequestParam String authType) throws CustomException {
+            @Pattern(regexp = KeepitConstant.REGEXP_PHONE,
+                    message = "핸드폰 번호가 올바르지 않습니다.") @PathVariable String phone, @RequestParam AuthType authType) throws CustomException {
         String number = "000000";
         // check phone
         authService.checkPhone(phone, authType);
@@ -54,7 +54,7 @@ public class AuthController {
     @PostMapping(value = "/sms/sign-up")
     public ResponseEntity<ResponseObject> smsSignUp(@RequestBody @Valid SmsAuthDto smsAuthDto) throws CustomException {
         // auth sms
-        authService.checkPhone(smsAuthDto.getPhone(), AuthType.SIGN_UP.getType());
+        authService.checkPhone(smsAuthDto.getPhone(), AuthType.SIGN_UP);
 
         authService.checkAuthNum(smsAuthDto);
 

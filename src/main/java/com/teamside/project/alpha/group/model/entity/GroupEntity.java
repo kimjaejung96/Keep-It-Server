@@ -9,6 +9,7 @@ import com.teamside.project.alpha.group.model.converter.CategoryConverter;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.enumurate.Category;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
@@ -20,7 +21,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "GROUP_LIST")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 public class GroupEntity extends TimeEntity {
     @Id

@@ -1,12 +1,13 @@
 package com.teamside.project.alpha.common.model.dto;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ResponseObject implements Serializable {
     private Object data;
