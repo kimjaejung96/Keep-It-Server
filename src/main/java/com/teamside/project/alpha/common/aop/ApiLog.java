@@ -47,9 +47,10 @@ public class ApiLog {
 
         Object result;
         StringBuilder desc = new StringBuilder();
+        StringBuilder logs = new StringBuilder();
         String apiStatus = KeepitConstant.SUCCESS;
         String methodName = "";
-        String controllerName = "";
+        String controllerName;
         String mid = CryptUtils.getMid();
         int apiCode = 0;
         try {
@@ -58,9 +59,10 @@ public class ApiLog {
             String[] packagedMethodName = joinPoint.getTarget().getClass().getName().split("\\.");
             controllerName = packagedMethodName[packagedMethodName.length - 1];
 
-            String params = getRequestParams().replace("\\", "");
+            String params = getRequestParams().replace("\\", "").replace("\"{", "{").replace("}\"", "}");
 
-            desc.append("[REQUEST] METHOD : ").append(controllerName).append("{").append(methodName).append("}\nDATA : ").append(params);
+            logs.append("[REQUEST] method : ").append(controllerName).append("{").append(methodName).append("}\nDATA : ").append(params).append("\n");
+            desc.append("[REQUEST] ").append("\ndata : ").append(params).append("\n");
 
             Map<String, String> pathVariablesMap = (Map<String, String>)httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
             StringBuilder pathVariables = new StringBuilder();
@@ -68,7 +70,8 @@ public class ApiLog {
                 for (Map.Entry<String, String> entry : pathVariablesMap.entrySet()) {
                     pathVariables.append("\n").append(entry.getKey()).append(" -> ").append(entry.getValue());
                 }
-                desc.append("\nPATHVARIABLES : ").append(pathVariables);
+                logs.append("\npathVariables : ").append(pathVariables);
+                desc.append("\npathVariables : ").append(pathVariables);
             }
 
             result = joinPoint.proceed();
@@ -76,29 +79,33 @@ public class ApiLog {
             apiCode = ((ResponseEntity) result).getStatusCodeValue();
             stopWatch.stop();
             ResponseEntity<?> response = (ResponseEntity<?>) result;
-            desc.append("\n").append("[RESPONSE] ").append(objectMapper.writeValueAsString(response.getBody()));
+            desc.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response.getBody()));
+            logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response.getBody()));
 
         } catch (Exception ex) {
             stopWatch.stop();
             if (ex instanceof CustomException) {
                 apiCode = ((CustomException) ex).getApiExceptionCode().getApiCode();
-                desc.append("[RESPONSE] ").append(objectMapper.writeValueAsString(((CustomException) ex).getErrorDetail()));
+                desc.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomException) ex).getErrorDetail()));
+                logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomException) ex).getErrorDetail()));
             }
             if (ex instanceof CustomRuntimeException) {
                 apiCode = ((CustomRuntimeException) ex).getApiExceptionCode().getApiCode();
-                desc.append("[RESPONSE] ").append(objectMapper.writeValueAsString(((CustomRuntimeException) ex).getErrorDetail()));
+                desc.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomRuntimeException) ex).getErrorDetail()));
+                logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomRuntimeException) ex).getErrorDetail()));
             }
             if (ex instanceof ConstraintViolationException) {
                 apiCode = 999;
-                desc.append("[RESPONSE] ").append(((ConstraintViolationException) ex).getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate).collect(Collectors.joining()))  ;
+                desc.append("[RESPONSE]\n").append(((ConstraintViolationException) ex).getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate).collect(Collectors.joining()))  ;
+                logs.append("[RESPONSE]\n").append(((ConstraintViolationException) ex).getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate).collect(Collectors.joining()))  ;
 
             }
             apiStatus = KeepitConstant.FAIL;
             throw ex;
         }
         finally {
-            desc.append("\n").append("PROCESS_TIME : ").append(stopWatch.getTotalTimeMillis() * 0.001);
-            log.info("\n" + desc);
+            logs.append("\n").append("PROCESS_TIME : ").append(stopWatch.getTotalTimeMillis() * 0.001);
+            log.info("\n" + logs);
             ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc.toString(), apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
             logService.insertLog(apiLogEntity);
         }
@@ -116,7 +123,7 @@ public class ApiLog {
         if (requestAttributes != null) {
             Map<String, String[]> paramMap = requestAttributes.getRequest().getParameterMap();
             if (!paramMap.isEmpty()) {
-                params = " [" + getWrapperParamJson(paramMap) + "]";
+                params = getWrapperParamJson(paramMap);
             }
         }
 
@@ -126,7 +133,6 @@ public class ApiLog {
 
     private String getWrapperParamJson(Map<String, String[]> wrapperParams) throws JsonProcessingException {
         Map<String, String> params = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
 
         for (Map.Entry<String, String[]> entry : wrapperParams.entrySet()) {
             String[] values = wrapperParams.get(entry.getKey());
@@ -138,6 +144,6 @@ public class ApiLog {
                     sumValue.append(value);
             params.put(entry.getKey(), sumValue.toString());
         }
-        return mapper.writeValueAsString(params);
+        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(params);
     }
 }
