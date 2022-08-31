@@ -48,4 +48,9 @@ public class GroupMemberMappingEntity {
         this.groupId = groupId;
         this.favorite = false;
     }
+
+    public void updateOrdAndFavorite(Integer ord, Boolean isFavorite) {
+        this.ord = ord;
+        this.favorite = isFavorite;
+    }
 }

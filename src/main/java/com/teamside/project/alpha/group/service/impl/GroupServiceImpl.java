@@ -8,10 +8,10 @@ import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
+import com.teamside.project.alpha.group.repository.GroupMemberMappingRepository;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.GroupService;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
-import com.teamside.project.alpha.member.repository.MemberRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +24,13 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
 
+    private final GroupMemberMappingRepository groupMemberMappingRepository;
+
     private final Long MEMBER_JOIN_POSSIBLE_COUNT = 10L;
 
-    public GroupServiceImpl(GroupRepository groupRepository, MemberRepo memberRepo) {
+    public GroupServiceImpl(GroupRepository groupRepository, GroupMemberMappingRepository groupMemberMappingRepository) {
         this.groupRepository = groupRepository;
+        this.groupMemberMappingRepository = groupMemberMappingRepository;
     }
 
 
@@ -118,11 +121,32 @@ public class GroupServiceImpl implements GroupService {
 
         List<GroupDto.MyGroupDto> groupList = type.equals(MyGroupType.FAVORITE) ? null : myGroups.stream()
                 .filter(group -> !group.getFavorite())
-                .sorted(Comparator.comparing(group -> group.getGroupId()))
+                .sorted(Comparator.comparing(group -> group.getName()))
                 .collect(Collectors.toList());
 
         GroupDto.ResponseMyGroupDto response = new GroupDto.ResponseMyGroupDto(favoriteGroups, groupList);
 
         return response;
+    }
+
+    @Override
+    @Transactional
+    public void favorite(Long groupId) throws CustomException {
+        String mId = CryptUtils.getMid();
+
+        GroupMemberMappingEntity groupMemberMapping = groupMemberMappingRepository.findByMidAndGroupId(mId, groupId)
+                .orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_MEMBER_NOT_FOUND));
+
+        Boolean isFavorite = !groupMemberMapping.getFavorite();
+        Integer ord;
+
+        if (isFavorite) {
+            GroupMemberMappingEntity ordEntity = groupMemberMappingRepository.findTop1ByMidAndFavoriteOrderByOrdDesc(mId, true);
+            ord =  ordEntity != null ? (ordEntity.getOrd() + 1) : 1;
+        } else {
+            ord = null;
+        }
+
+        groupMemberMapping.updateOrdAndFavorite(ord, isFavorite);
     }
 }

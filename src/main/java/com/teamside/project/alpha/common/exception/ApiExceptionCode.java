@@ -22,8 +22,8 @@ public enum ApiExceptionCode {
     PASSWORD_IS_INCORRECT(802, "비밀번호가 틀렸습니다."),
     CAN_NOT_PARTICIPANT(803, "10개의 그룹에 참여하여 더이상 참여할 수 없습니다."),
     MEMBER_QUANTITY_IS_FULL(804, "해당 그룹의 멤버 수용 인원이 꽉 찼습니다."),
-
     INVALID_GROUP_TYPE(805, "유효하지 그룹 타입입니다."),
+    GROUP_MEMBER_NOT_FOUND(806, "내 그룹을 찾을 수 없습니다."),
     SYSTEM_ERROR(999, "System Error"),
     ;
 
