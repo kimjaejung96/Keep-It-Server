@@ -1,11 +1,13 @@
 package com.teamside.project.alpha.member.model.enumurate;
 
+
 public enum AuthType {
 
+    NULL("null"),
     SIGN_UP("sign-up"),
     SIGN_IN("sign-in");
 
-    private String type;
+    private final String type;
 
     AuthType(String type) {
         this.type = type;
@@ -14,5 +16,4 @@ public enum AuthType {
     public String getType() {
         return type;
     }
-
 }

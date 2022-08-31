@@ -29,6 +29,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseObject responseObject = new ResponseObject(ex.getApiExceptionCode());
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+
     @ExceptionHandler({CustomRuntimeException.class})
     public ResponseEntity<ResponseObject> handleCustomRuntimeException(CustomRuntimeException ex) {
         ResponseObject responseObject = new ResponseObject(ex.getApiExceptionCode());
