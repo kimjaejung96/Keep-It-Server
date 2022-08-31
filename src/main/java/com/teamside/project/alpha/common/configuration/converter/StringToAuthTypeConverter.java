@@ -10,9 +10,6 @@ import java.util.Arrays;
 public class StringToAuthTypeConverter implements Converter<String, AuthType> {
     @Override
     public AuthType convert(String source) {
-        if (!Arrays.asList(AuthType.values()).contains(source)) {
-            return AuthType.NULL;
-        }
-        return AuthType.valueOf(source);
+        return Arrays.stream(AuthType.values()).filter(d -> d.name().equals(source)).findAny().orElse(AuthType.NULL);
     }
 }
