@@ -7,6 +7,7 @@ import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
+import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.GroupService;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
@@ -102,16 +103,20 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public GroupDto.ResponseMyGroupDto selectMyGroups() {
+    public GroupDto.ResponseMyGroupDto selectMyGroups(MyGroupType type) {
+        if (type.equals(MyGroupType.NULL)) {
+            throw new CustomRuntimeException(ApiExceptionCode.INVALID_GROUP_TYPE);
+        }
+
         String mId = CryptUtils.getMid();
-        List<GroupDto.MyGroupDto> myGroups = groupRepository.selectMyGroups(mId);
+        List<GroupDto.MyGroupDto> myGroups = groupRepository.selectMyGroups(mId, type);
 
         List<GroupDto.MyGroupDto> favoriteGroups = myGroups.stream()
                 .filter(group -> group.getFavorite())
                 .sorted(Comparator.comparing(group -> group.getOrd()))
                 .collect(Collectors.toList());
 
-        List<GroupDto.MyGroupDto> groupList = myGroups.stream()
+        List<GroupDto.MyGroupDto> groupList = type.equals(MyGroupType.FAVORITE) ? null : myGroups.stream()
                 .filter(group -> !group.getFavorite())
                 .sorted(Comparator.comparing(group -> group.getGroupId()))
                 .collect(Collectors.toList());

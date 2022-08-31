@@ -2,6 +2,7 @@ package com.teamside.project.alpha.group.service;
 
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
+import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface GroupService {
     List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize);
     List<GroupDto.SearchGroupDto> random();
     void joinGroup(Long groupId, String password) throws CustomException;
-    GroupDto.ResponseMyGroupDto selectMyGroups();
+    GroupDto.ResponseMyGroupDto selectMyGroups(MyGroupType type);
 }

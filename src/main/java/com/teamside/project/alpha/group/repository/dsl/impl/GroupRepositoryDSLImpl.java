@@ -11,11 +11,10 @@ import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.dto.QGroupDto_MyGroupDto;
 import com.teamside.project.alpha.group.model.dto.QGroupDto_SearchGroupDto;
 import com.teamside.project.alpha.group.model.entity.QGroupEntity;
+import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
 
 import java.util.List;
-
-import static com.querydsl.core.types.ExpressionUtils.count;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     private final JPAQueryFactory jpaQueryFactory;
@@ -83,7 +82,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<GroupDto.MyGroupDto> selectMyGroups(String mId) {
+    public List<GroupDto.MyGroupDto> selectMyGroups(String mId, MyGroupType type) {
         return jpaQueryFactory
                 .select(new QGroupDto_MyGroupDto(
                         group.groupId,
@@ -107,10 +106,13 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                     ))
                 .from(groupMemberMapping)
                 .innerJoin(group).on(groupMemberMapping.groupId.eq(group.groupId))
-                .where(groupMemberMapping.member.mid.eq(mId))
+                .where(groupMemberMapping.member.mid.eq(mId).and(isFavorite(type)))
                 .fetch();
     }
 
+    public BooleanExpression isFavorite(MyGroupType type) {
+        return type == MyGroupType.FAVORITE ? groupMemberMapping.favorite.eq(true) : null;
+    }
     @Override
     public List<GroupDto.SearchGroupDto> random() {
         return jpaQueryFactory

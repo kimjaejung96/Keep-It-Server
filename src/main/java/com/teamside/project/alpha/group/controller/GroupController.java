@@ -7,6 +7,7 @@ import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.enumurate.Category;
+import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.service.GroupService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,9 +82,9 @@ public class GroupController {
     }
 
     @GetMapping("/my-groups")
-    public ResponseEntity<ResponseObject> selectMyGroups() {
+    public ResponseEntity<ResponseObject> selectMyGroups(@RequestParam MyGroupType type) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(groupService.selectMyGroups());
+        responseObject.setBody(groupService.selectMyGroups(type));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

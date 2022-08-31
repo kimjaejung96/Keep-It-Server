@@ -101,12 +101,14 @@ public class GroupDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ResponseMyGroupDto {
-        List<MyGroupDto> favoriteGroupList = new ArrayList<>();
-        List<MyGroupDto> groupList = new ArrayList<>();
+        List<MyGroupDto> favoriteGroupList;
+        List<MyGroupDto> groupList;
 
         public ResponseMyGroupDto(List<MyGroupDto> favoriteGroupList, List<MyGroupDto> groupList) {
             this.favoriteGroupList = favoriteGroupList;
-            this.groupList = groupList;
+            if (groupList != null) {
+                this.groupList = groupList;
+            }
         }
     }
 }
