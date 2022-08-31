@@ -88,10 +88,10 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
-    @PostMapping("/favorite/{groupId}")
-    public ResponseEntity<ResponseObject> favorite(@PathVariable Long groupId) throws CustomException {
+    @PostMapping("/{groupId}/favorite")
+    public ResponseEntity<ResponseObject> editFavorite(@PathVariable Long groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        groupService.favorite(groupId);
+        groupService.editFavorite(groupId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

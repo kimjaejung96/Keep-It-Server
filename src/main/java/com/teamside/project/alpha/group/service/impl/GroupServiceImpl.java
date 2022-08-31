@@ -8,7 +8,6 @@ import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
-import com.teamside.project.alpha.group.repository.GroupMemberMappingRepository;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.GroupService;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
@@ -17,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,13 +24,10 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
 
-    private final GroupMemberMappingRepository groupMemberMappingRepository;
-
     private final Long MEMBER_JOIN_POSSIBLE_COUNT = 10L;
 
-    public GroupServiceImpl(GroupRepository groupRepository, GroupMemberMappingRepository groupMemberMappingRepository) {
+    public GroupServiceImpl(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
-        this.groupMemberMappingRepository = groupMemberMappingRepository;
     }
 
 
@@ -131,18 +128,20 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void favorite(Long groupId) throws CustomException {
+    public void editFavorite(Long groupId) throws CustomException {
         String mId = CryptUtils.getMid();
 
-        GroupMemberMappingEntity groupMemberMapping = groupMemberMappingRepository.findByMidAndGroupId(mId, groupId)
-                .orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_MEMBER_NOT_FOUND));
+        GroupMemberMappingEntity groupMemberMapping = groupRepository.selectGroupMemberMappingEntity(mId, groupId)
+                        .orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_MEMBER_NOT_FOUND));
 
+
+//
         Boolean isFavorite = !groupMemberMapping.getFavorite();
         Integer ord;
 
         if (isFavorite) {
-            GroupMemberMappingEntity ordEntity = groupMemberMappingRepository.findTop1ByMidAndFavoriteOrderByOrdDesc(mId, true);
-            ord =  ordEntity != null ? (ordEntity.getOrd() + 1) : 1;
+            Optional<GroupMemberMappingEntity> ordEntity = groupRepository.selectLatestFavoriteOrd(mId);
+            ord = ordEntity.map(groupMemberMappingEntity -> groupMemberMappingEntity.getOrd() + 1).orElse(1);
         } else {
             ord = null;
         }

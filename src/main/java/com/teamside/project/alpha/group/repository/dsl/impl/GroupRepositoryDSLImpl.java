@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.domain.QGroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.dto.QGroupDto_MyGroupDto;
@@ -15,6 +16,7 @@ import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
 
 import java.util.List;
+import java.util.Optional;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     private final JPAQueryFactory jpaQueryFactory;
@@ -129,5 +131,28 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .limit(10)
                 .groupBy(group.groupId)
                 .fetch();
+    }
+
+    @Override
+    public Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, Long groupId) {
+        return Optional.ofNullable(jpaQueryFactory
+                .select(groupMemberMapping)
+                .from(group)
+                .innerJoin(groupMemberMapping)
+                    .on(group.groupId.eq(groupMemberMapping.groupId))
+                .where(groupMemberMapping.mid.eq(mid)
+                        .and(groupMemberMapping.groupId.eq(groupId)))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<GroupMemberMappingEntity> selectLatestFavoriteOrd(String mid) {
+        return Optional.ofNullable(jpaQueryFactory
+                .select(groupMemberMapping)
+                .from(groupMemberMapping)
+                .where(groupMemberMapping.mid.eq(mid)
+                        .and(groupMemberMapping.favorite.eq(true)))
+                .orderBy(groupMemberMapping.ord.desc())
+                .fetchFirst());
     }
 }
