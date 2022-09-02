@@ -5,10 +5,13 @@ import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 
+import java.util.List;
+
 public interface MemberService {
     JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException;
     void logout();
     void withdrawal() throws CustomException;
     void checkExistsName(String name) throws CustomException;
     void inquiry(InquiryDto inquiryDto);
+    List<String> search(String name, Long groupId);
 }

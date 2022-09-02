@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 import java.util.Random;
 
 @Validated
@@ -69,6 +70,14 @@ public class MemberController {
     public ResponseEntity<ResponseObject> inquiry(@RequestBody @Valid InquiryDto inquiryDto) {
         memberService.inquiry(inquiryDto);
         return new ResponseEntity<>(new ResponseObject(ApiExceptionCode.OK), HttpStatus.CREATED);
+    }
+    @PostMapping("/search")
+    public ResponseEntity<ResponseObject> search(@RequestParam String name,
+                                                 @RequestParam(required = false) Long groupId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        List<String> names = memberService.search(name, groupId);
+        responseObject.setBody(names);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
 
