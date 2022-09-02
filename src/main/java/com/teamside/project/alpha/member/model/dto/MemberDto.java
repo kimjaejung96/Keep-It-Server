@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.member.model.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -45,4 +46,15 @@ public class MemberDto {
         private Boolean alarm;
     }
 
+    @Getter
+    public static class InviteMemberList {
+        String name;
+        String mid;
+
+        @QueryProjection
+        public InviteMemberList(String name, String mid) {
+            this.name = name;
+            this.mid = mid;
+        }
+    }
 }

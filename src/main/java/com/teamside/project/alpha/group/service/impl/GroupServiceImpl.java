@@ -135,7 +135,6 @@ public class GroupServiceImpl implements GroupService {
                         .orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_MEMBER_NOT_FOUND));
 
 
-//
         Boolean isFavorite = !groupMemberMapping.getFavorite();
         Integer ord;
 
@@ -147,5 +146,10 @@ public class GroupServiceImpl implements GroupService {
         }
 
         groupMemberMapping.updateOrdAndFavorite(ord, isFavorite);
+    }
+
+    @Override
+    public void inviteMember(Long groupId, String memberName) throws CustomException {
+
     }
 }

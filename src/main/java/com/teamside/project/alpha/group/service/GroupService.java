@@ -17,4 +17,5 @@ public interface GroupService {
     void joinGroup(Long groupId, String password) throws CustomException;
     GroupDto.ResponseMyGroupDto selectMyGroups(MyGroupType type);
     void editFavorite(Long groupId) throws CustomException;
+    void inviteMember(Long groupId, String memberName) throws CustomException;
 }

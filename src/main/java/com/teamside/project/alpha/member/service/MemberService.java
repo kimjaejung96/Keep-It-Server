@@ -13,5 +13,5 @@ public interface MemberService {
     void withdrawal() throws CustomException;
     void checkExistsName(String name) throws CustomException;
     void inquiry(InquiryDto inquiryDto);
-    List<String> search(String name, Long groupId);
+    List<MemberDto.InviteMemberList> search(String name, Long groupId);
 }

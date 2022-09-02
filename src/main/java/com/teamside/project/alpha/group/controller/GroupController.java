@@ -94,6 +94,13 @@ public class GroupController {
         groupService.editFavorite(groupId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+    @PostMapping("/{groupId}/members/{memberName}")
+    public ResponseEntity<ResponseObject> editFavorite(@PathVariable Long groupId,
+                                                       @PathVariable String memberName) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        groupService.inviteMember(groupId, memberName);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
 
     @GetMapping("/random")
     public ResponseEntity<ResponseObject> random(){

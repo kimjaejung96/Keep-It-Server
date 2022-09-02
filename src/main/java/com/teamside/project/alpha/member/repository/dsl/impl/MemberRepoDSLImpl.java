@@ -3,6 +3,8 @@ package com.teamside.project.alpha.member.repository.dsl.impl;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.QGroupMemberMappingEntity;
+import com.teamside.project.alpha.member.model.dto.MemberDto;
+import com.teamside.project.alpha.member.model.dto.QMemberDto_InviteMemberList;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.member.repository.dsl.MemberRepoDSL;
 
@@ -19,21 +21,23 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
     QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
 
     @Override
-    public Optional<List<String>> searchMembers(String name, Long groupId) {
-        List<String> result;
+    public Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, Long groupId) {
+        List<MemberDto.InviteMemberList> result;
         if (groupId == null) {
             result = jpaQueryFactory
-                    .select(member.name)
+                    .select(new QMemberDto_InviteMemberList(member.name, member.mid))
                     .from(member)
                     .where(member.name.contains(name).and(member.mid.ne(CryptUtils.getMid())))
                     .fetch();
         } else {
             result = jpaQueryFactory
-                    .select(member.name)
+                    .select(new QMemberDto_InviteMemberList(member.name, member.mid))
                     .from(member)
-                    .innerJoin(groupMemberMapping).on(groupMemberMapping.groupId.ne(groupId))
-                    .where(member.name.contains(name).and(member.mid.ne(CryptUtils.getMid())))
-                    .groupBy(member.name)
+                    .leftJoin(groupMemberMapping).on(groupMemberMapping.mid.eq(member.mid))
+                    .where(groupMemberMapping.groupId.ne(groupId).or(groupMemberMapping.groupId.isNull())
+                            .and(member.name.contains(name))
+                            .and(member.mid.ne(CryptUtils.getMid())))
+                    .groupBy(member.name, member.mid)
                     .fetch();
         }
         return Optional.ofNullable(result);

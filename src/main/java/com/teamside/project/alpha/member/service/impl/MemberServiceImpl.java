@@ -88,7 +88,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<String> search(String name, Long groupId) {
+    public List<MemberDto.InviteMemberList> search(String name, Long groupId) {
         return memberRepo.searchMembers(name, groupId).orElse(null);
     }
 }

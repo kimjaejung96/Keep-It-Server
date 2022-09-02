@@ -75,7 +75,7 @@ public class MemberController {
     public ResponseEntity<ResponseObject> search(@RequestParam String name,
                                                  @RequestParam(required = false) Long groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        List<String> names = memberService.search(name, groupId);
+        List<MemberDto.InviteMemberList> names = memberService.search(name, groupId);
         responseObject.setBody(names);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }

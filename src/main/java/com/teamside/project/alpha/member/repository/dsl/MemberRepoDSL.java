@@ -1,8 +1,10 @@
 package com.teamside.project.alpha.member.repository.dsl;
 
+import com.teamside.project.alpha.member.model.dto.MemberDto;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepoDSL {
-    Optional<List<String>> searchMembers(String name, Long groupId);
+    Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, Long groupId);
 }
