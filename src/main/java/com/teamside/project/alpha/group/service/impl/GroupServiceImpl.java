@@ -134,13 +134,12 @@ public class GroupServiceImpl implements GroupService {
         GroupMemberMappingEntity groupMemberMapping = groupRepository.selectGroupMemberMappingEntity(mId, groupId)
                         .orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_MEMBER_NOT_FOUND));
 
-
         Boolean isFavorite = !groupMemberMapping.getFavorite();
         Integer ord;
 
         if (isFavorite) {
-            Optional<GroupMemberMappingEntity> ordEntity = groupRepository.selectLatestFavoriteOrd(mId);
-            ord = ordEntity.map(groupMemberMappingEntity -> groupMemberMappingEntity.getOrd() + 1).orElse(1);
+            Optional<Integer> ordEntity = groupRepository.selectLatestFavoriteOrd(mId);
+            ord = ordEntity.map(o -> o + 1).orElse(1);
         } else {
             ord = null;
         }

@@ -34,7 +34,7 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                     .select(new QMemberDto_InviteMemberList(member.name, member.mid))
                     .from(member)
                     .leftJoin(groupMemberMapping).on(groupMemberMapping.mid.eq(member.mid))
-                    .where(groupMemberMapping.groupId.ne(groupId).or(groupMemberMapping.groupId.isNull())
+                    .where((groupMemberMapping.groupId.ne(groupId).or(groupMemberMapping.groupId.isNull()))
                             .and(member.name.contains(name))
                             .and(member.mid.ne(CryptUtils.getMid())))
                     .groupBy(member.name, member.mid)

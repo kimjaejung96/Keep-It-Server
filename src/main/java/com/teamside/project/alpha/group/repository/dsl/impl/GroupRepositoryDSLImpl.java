@@ -146,9 +146,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public Optional<GroupMemberMappingEntity> selectLatestFavoriteOrd(String mid) {
+    public Optional<Integer> selectLatestFavoriteOrd(String mid) {
         return Optional.ofNullable(jpaQueryFactory
-                .select(groupMemberMapping)
+                .select(groupMemberMapping.ord)
                 .from(groupMemberMapping)
                 .where(groupMemberMapping.mid.eq(mid)
                         .and(groupMemberMapping.favorite.eq(true)))
