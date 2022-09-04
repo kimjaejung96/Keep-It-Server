@@ -111,4 +111,16 @@ public class GroupDto {
             }
         }
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ResponseSearchGroupDto {
+        Long totalCount;
+        List<SearchGroupDto> groupList;
+
+        public ResponseSearchGroupDto(Long totalCount, List<SearchGroupDto> groupList) {
+            this.totalCount = totalCount;
+            this.groupList = groupList;
+        }
+    }
 }

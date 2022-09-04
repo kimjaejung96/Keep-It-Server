@@ -14,6 +14,7 @@ import com.teamside.project.alpha.group.model.dto.QGroupDto_SearchGroupDto;
 import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
+import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,7 +61,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 //    }
 
     @Override
-    public List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize) {
+    public List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize, String search) {
         return jpaQueryFactory
                 .select(new QGroupDto_SearchGroupDto(
                         group.groupId,
@@ -72,7 +73,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
                 .where(
-                        gtGroupId(groupId)
+                        gtGroupId(groupId),
+                        containSearch(search)
                 )
                 .limit(pageSize)
                 .groupBy(group.groupId)
@@ -82,6 +84,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     public BooleanExpression gtGroupId(Long groupId) {
         return groupId != null ? group.groupId.gt(groupId) : null;
     }
+
+    public BooleanExpression containSearch(String search) { return (search != null && !Strings.isBlank(search)) ? group.name.contains(search) : null; }
 
     @Override
     public List<GroupDto.MyGroupDto> selectMyGroups(String mId, MyGroupType type) {

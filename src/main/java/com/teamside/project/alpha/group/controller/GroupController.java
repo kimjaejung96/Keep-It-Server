@@ -73,11 +73,18 @@ public class GroupController {
 
     @GetMapping
     public ResponseEntity<ResponseObject> selectGroups(@RequestParam(required = false) Long groupId,
-                                                       @RequestParam Long pageSize,
-                                                       @RequestParam(required = false) String search,
-                                                       @RequestParam(required = false) Category category) throws CustomException {
+                                                       @RequestParam Long pageSize) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectGroups(groupId, pageSize));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseObject> searchGroups(@RequestParam(required = false) Long groupId,
+                                                       @RequestParam Long pageSize,
+                                                       @RequestParam String search) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.searchGroup(groupId, pageSize, search));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

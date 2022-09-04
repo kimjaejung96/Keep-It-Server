@@ -81,7 +81,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize) {
-        return groupRepository.selectGroups(lastGroupId, pageSize);
+        return groupRepository.selectGroups(lastGroupId, pageSize, null);
+    }
+
+    @Override
+    public GroupDto.ResponseSearchGroupDto searchGroup(Long lastGroupId, Long pageSize, String search) {
+        List<GroupDto.SearchGroupDto> groupList = groupRepository.selectGroups(lastGroupId, pageSize, search);
+        Long totalCount = lastGroupId == null ? groupRepository.countByNameContaining(search) : null;
+
+        return new GroupDto.ResponseSearchGroupDto(totalCount, groupList);
     }
 
     @Override

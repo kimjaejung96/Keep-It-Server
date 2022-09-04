@@ -18,4 +18,5 @@ public interface GroupService {
     GroupDto.ResponseMyGroupDto selectMyGroups(MyGroupType type);
     void editFavorite(Long groupId) throws CustomException;
     void inviteMember(Long groupId, String memberName) throws CustomException;
+    GroupDto.ResponseSearchGroupDto searchGroup(Long groupId, Long pageSize, String search);
 }
