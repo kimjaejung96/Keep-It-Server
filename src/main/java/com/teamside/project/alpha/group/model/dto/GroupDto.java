@@ -2,6 +2,7 @@ package com.teamside.project.alpha.group.model.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
+import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.Category;
 import lombok.AccessLevel;
@@ -122,5 +123,10 @@ public class GroupDto {
             this.totalCount = totalCount;
             this.groupList = groupList;
         }
+    }
+
+    @Getter
+    public static class RequestUpdateOrdDto {
+        List<MyGroupDto> groupList = new ArrayList<>();
     }
 }

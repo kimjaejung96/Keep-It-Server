@@ -15,4 +15,5 @@ public interface GroupRepositoryDSL {
     List<GroupDto.SearchGroupDto> random();
     Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, Long groupId);
     Optional<Integer> selectLatestFavoriteOrd(String mid);
+    List<GroupMemberMappingEntity> selectFavoriteMappingGroups(String mid);
 }

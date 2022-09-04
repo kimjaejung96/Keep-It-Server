@@ -159,4 +159,21 @@ public class GroupServiceImpl implements GroupService {
     public void inviteMember(Long groupId, String memberName) throws CustomException {
 
     }
+
+    @Override
+    @Transactional
+    public void updateOrd(GroupDto.RequestUpdateOrdDto request) {
+        // Invalid ord, Group is not match
+
+        String mId = CryptUtils.getMid();
+        List<GroupMemberMappingEntity> targetList = groupRepository.selectFavoriteMappingGroups(mId);
+
+        targetList.stream().forEach(groupMemberMappingEntity -> {
+            for (GroupDto.MyGroupDto dto : request.getGroupList()) {
+                if (groupMemberMappingEntity.getGroupId() == dto.getGroupId()) {
+                    groupMemberMappingEntity.updateOrd(dto.getOrd());
+                }
+            }
+        });
+    }
 }

@@ -77,7 +77,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         containSearch(search)
                 )
                 .limit(pageSize)
-                .groupBy(group.groupId)
+                .groupBy(group.groupId, group.name, group.category, group.category, group.profileUrl, group.usePrivate)
+                .orderBy(group.groupId.desc())
                 .fetch();
     }
 
@@ -112,7 +113,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                     ))
                 .from(groupMemberMapping)
                 .innerJoin(group).on(groupMemberMapping.groupId.eq(group.groupId))
-                .where(groupMemberMapping.member.mid.eq(mId).and(isFavorite(type)))
+                .where(
+                        groupMemberMapping.member.mid.eq(mId),
+                        isFavorite(type))
                 .fetch();
     }
 
@@ -158,5 +161,15 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         .and(groupMemberMapping.favorite.eq(true)))
                 .orderBy(groupMemberMapping.ord.desc())
                 .fetchFirst());
+    }
+
+    @Override
+    public List<GroupMemberMappingEntity> selectFavoriteMappingGroups(String mid) {
+        return jpaQueryFactory
+                .select(groupMemberMapping)
+                .from(groupMemberMapping)
+                .where(groupMemberMapping.mid.eq(mid)
+                        .and(groupMemberMapping.favorite.eq(true)))
+                .fetch();
     }
 }

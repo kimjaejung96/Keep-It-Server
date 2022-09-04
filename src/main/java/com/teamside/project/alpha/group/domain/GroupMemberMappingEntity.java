@@ -6,6 +6,7 @@ import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -14,13 +15,14 @@ import javax.persistence.*;
 @Table(name = "GROUP_MEMBER_MAPPING")
 @IdClass(GroupMemberKeys.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 public class GroupMemberMappingEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")
     private String mid;
 
     @MapsId
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MID", referencedColumnName = "MID")
     private MemberEntity member;
 
@@ -29,7 +31,7 @@ public class GroupMemberMappingEntity {
     private Long groupId;
 
     @MapsId
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GROUP_ID", referencedColumnName = "GROUP_ID")
     private GroupEntity group;
 
@@ -52,5 +54,9 @@ public class GroupMemberMappingEntity {
     public void updateOrdAndFavorite(Integer ord, Boolean isFavorite) {
         this.ord = ord;
         this.favorite = isFavorite;
+    }
+
+    public void updateOrd(Integer ord) {
+        this.ord = ord;
     }
 }

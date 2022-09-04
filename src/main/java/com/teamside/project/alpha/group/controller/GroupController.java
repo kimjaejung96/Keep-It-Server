@@ -109,6 +109,14 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @PostMapping("/ords")
+    public ResponseEntity<ResponseObject> updateOrd(@RequestBody GroupDto.RequestUpdateOrdDto request) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        groupService.updateOrd(request);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+
     @GetMapping("/random")
     public ResponseEntity<ResponseObject> random(){
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
