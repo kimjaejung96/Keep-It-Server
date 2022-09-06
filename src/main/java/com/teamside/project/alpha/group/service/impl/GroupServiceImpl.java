@@ -5,6 +5,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.constant.GroupConstant;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
@@ -24,7 +25,6 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
 
-    private final Long MEMBER_JOIN_POSSIBLE_COUNT = 10L;
 
     public GroupServiceImpl(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
@@ -103,7 +103,7 @@ public class GroupServiceImpl implements GroupService {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkJoinPossible(group, password);
 
-        if (groupRepository.countByGroupMemberMappingEntity(new GroupMemberMappingEntity(new MemberEntity(CryptUtils.getMid()))) >= MEMBER_JOIN_POSSIBLE_COUNT) {
+        if (groupRepository.countByGroupMemberMappingEntity(new GroupMemberMappingEntity(new MemberEntity(CryptUtils.getMid()))) >= GroupConstant.MEMBER_JOIN_POSSIBLE_COUNT) {
             throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
         }
         group.addMember(new MemberEntity(CryptUtils.getMid()));
