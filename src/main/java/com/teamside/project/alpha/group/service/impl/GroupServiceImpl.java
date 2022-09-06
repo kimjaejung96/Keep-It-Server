@@ -34,6 +34,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void createGroup(GroupDto group) throws CustomException {
+        if (groupRepository.countByMaster(new MemberEntity(CryptUtils.getMid())) >= GroupConstant.GROUP_MAKE_POSSIBLE_COUNT) {
+            throw new CustomException(ApiExceptionCode.CAN_NOT_CREATE_GROUP);
+        }
         isExistGroupName(group.getName());
         GroupEntity groupEntity = new GroupEntity(group);
 
