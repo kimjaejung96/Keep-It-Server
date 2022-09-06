@@ -15,7 +15,3 @@ public enum Category {
         this.value = value;
     }
 }
-
-/**
- * Meeting Restaurant Local Hobby Leisure
- */

@@ -6,7 +6,6 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
-import com.teamside.project.alpha.group.model.enumurate.Category;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.service.GroupService;
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @RestController
 @Validated
@@ -65,7 +65,9 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @GetMapping("/{groupName}/exists")
-    public ResponseEntity<ResponseObject> isExistGroupName(@Pattern (regexp = KeepitConstant.REGEXP_GROUP_NAME)@PathVariable String groupName) throws CustomException {
+    public ResponseEntity<ResponseObject> isExistGroupName(@Pattern(regexp = KeepitConstant.REGEXP_GROUP_NAME, message = "그룹 이름이 올바르지 않습니다.")
+                                                               @Size(min = 4, max = 20, message = "그룹 제목은 4~20자 입니다.")
+                                                               @PathVariable String groupName) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.isExistGroupName(groupName);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
@@ -101,11 +103,11 @@ public class GroupController {
         groupService.editFavorite(groupId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
-    @PostMapping("/{groupId}/members/{memberName}")
-    public ResponseEntity<ResponseObject> editFavorite(@PathVariable Long groupId,
-                                                       @PathVariable String memberName) throws CustomException {
+    @PostMapping("/{groupId}/members/{memberId}")
+    public ResponseEntity<ResponseObject> invateMember(@PathVariable Long groupId,
+                                                       @PathVariable String memberId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        groupService.inviteMember(groupId, memberName);
+        groupService.inviteMember(groupId, memberId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

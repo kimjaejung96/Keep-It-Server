@@ -156,14 +156,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void inviteMember(Long groupId, String memberName) throws CustomException {
+    public void inviteMember(Long groupId, String memberId)  {
 
     }
 
     @Override
     @Transactional
     public void updateOrd(GroupDto.RequestUpdateOrdDto request) {
-        // Invalid ord, Group is not match
+        // TODO: 2022/09/05  Invalid ord, Group is not match - sh
 
         String mId = CryptUtils.getMid();
         List<GroupMemberMappingEntity> targetList = groupRepository.selectFavoriteMappingGroups(mId);
