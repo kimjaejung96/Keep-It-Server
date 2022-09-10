@@ -82,11 +82,11 @@ public class GroupController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseObject> searchGroups(@RequestParam(required = false) Long groupId,
+    public ResponseEntity<ResponseObject> searchGroups(@RequestParam(required = false) Long lastGroupId,
                                                        @RequestParam Long pageSize,
                                                        @RequestParam String search) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(groupService.searchGroup(groupId, pageSize, search));
+        responseObject.setBody(groupService.searchGroup(lastGroupId, pageSize, search));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

@@ -92,8 +92,9 @@ public class GroupServiceImpl implements GroupService {
     public GroupDto.ResponseSearchGroupDto searchGroup(Long lastGroupId, Long pageSize, String search) {
         List<GroupDto.SearchGroupDto> groupList = groupRepository.selectGroups(lastGroupId, pageSize, search.replaceAll(KeepitConstant.REGEXP_EMOJI, ""));
         Long totalCount = lastGroupId == null ? groupRepository.countByNameContaining(search) : null;
+        Long responseLastGroupId = groupList.size() == pageSize ? groupList.get((int) (pageSize-1L)).getGroupId() : null;
 
-        return new GroupDto.ResponseSearchGroupDto(totalCount, groupList);
+        return new GroupDto.ResponseSearchGroupDto(totalCount, responseLastGroupId, groupList);
     }
 
     @Override

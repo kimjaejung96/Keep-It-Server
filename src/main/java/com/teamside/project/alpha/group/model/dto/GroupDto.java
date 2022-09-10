@@ -118,10 +118,12 @@ public class GroupDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ResponseSearchGroupDto {
         Long totalCount;
+        Long lastGroupId;
         List<SearchGroupDto> groupList;
 
-        public ResponseSearchGroupDto(Long totalCount, List<SearchGroupDto> groupList) {
+        public ResponseSearchGroupDto(Long totalCount, Long lastGroupId, List<SearchGroupDto> groupList) {
             this.totalCount = totalCount;
+            this.lastGroupId = lastGroupId;
             this.groupList = groupList;
         }
     }
