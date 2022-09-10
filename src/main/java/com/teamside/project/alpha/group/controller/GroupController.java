@@ -112,7 +112,7 @@ public class GroupController {
     }
 
     @PostMapping("/ords")
-    public ResponseEntity<ResponseObject> updateOrd(@RequestBody GroupDto.RequestUpdateOrdDto request) {
+    public ResponseEntity<ResponseObject> updateOrd(@RequestBody GroupDto.RequestUpdateOrdDto request) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.updateOrd(request);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);

@@ -3,6 +3,7 @@ package com.teamside.project.alpha.group.service.impl;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
+import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.constant.GroupConstant;
@@ -89,7 +90,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDto.ResponseSearchGroupDto searchGroup(Long lastGroupId, Long pageSize, String search) {
-        List<GroupDto.SearchGroupDto> groupList = groupRepository.selectGroups(lastGroupId, pageSize, search);
+        List<GroupDto.SearchGroupDto> groupList = groupRepository.selectGroups(lastGroupId, pageSize, search.replaceAll(KeepitConstant.REGEXP_EMOJI, ""));
         Long totalCount = lastGroupId == null ? groupRepository.countByNameContaining(search) : null;
 
         return new GroupDto.ResponseSearchGroupDto(totalCount, groupList);
@@ -165,11 +166,11 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void updateOrd(GroupDto.RequestUpdateOrdDto request) {
-        // TODO: 2022/09/05  Invalid ord, Group is not match - sh
-
+    public void updateOrd(GroupDto.RequestUpdateOrdDto request) throws CustomException {
         String mId = CryptUtils.getMid();
         List<GroupMemberMappingEntity> targetList = groupRepository.selectFavoriteMappingGroups(mId);
+
+        validateRequest(request.getGroupList(), targetList);
 
         targetList.stream().forEach(groupMemberMappingEntity -> {
             for (GroupDto.MyGroupDto dto : request.getGroupList()) {
@@ -178,5 +179,33 @@ public class GroupServiceImpl implements GroupService {
                 }
             }
         });
+    }
+
+    public void validateRequest(List<GroupDto.MyGroupDto> request, List<GroupMemberMappingEntity> targetList) throws CustomException {
+        if (request.size() != targetList.size()) {
+            throw new CustomException(ApiExceptionCode.INVALID_GROUP_REQUEST);
+        }
+
+        Integer ordCount = request.stream()
+                .map(dto -> dto.getOrd())
+                .distinct()
+                .collect(Collectors.toList())
+                .size();
+
+        if (ordCount != targetList.size()) {
+            throw new CustomException(ApiExceptionCode.DUPLICATE_ORD);
+        }
+
+        List<Long> ids = request.stream()
+                .map(dto -> dto.getGroupId())
+                .collect(Collectors.toList());
+
+        List<GroupMemberMappingEntity> filteredList = targetList.stream()
+                .filter(target -> !ids.contains(target.getGroupId()))
+                .collect(Collectors.toList());
+
+        if (filteredList.size() > 0) {
+            throw new CustomException(ApiExceptionCode.GROUP_IS_NOT_MATCH);
+        }
     }
 }

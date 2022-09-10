@@ -25,6 +25,9 @@ public enum ApiExceptionCode {
     INVALID_GROUP_TYPE(805, "유효하지 그룹 타입입니다."),
     GROUP_MEMBER_NOT_FOUND(806, "내 그룹을 찾을 수 없습니다."),
     CAN_NOT_CREATE_GROUP(807, "10개 그룹을 생성하여 더이상 생성할 수 없습니다."),
+    INVALID_GROUP_REQUEST(808, "잘못된 그룹 요청입니다."),
+    DUPLICATE_ORD(809, "중복된 순서가 존재합니다."),
+    GROUP_IS_NOT_MATCH(810, "내 그룹이 아닌 그룹이 존재합니다."),
 
     SYSTEM_ERROR(999, "System Error"),
     ;

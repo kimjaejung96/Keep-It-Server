@@ -18,4 +18,7 @@ public class KeepitConstant {
     public static final String REGEXP_GROUP_NAME = "^\\S.*\\S$";
     public static final String REGEXP_GROUP_PASSWORD = "^[a-zA-Z0-9]{4,8}$";
     public static final String REGEXP_GROUP_DESCRIPTION = "^.{10,200}$";
+
+    public static final String REGEXP_EMOJI = "[^\\p{L}\\p{N}\\p{P}\\p{Z}]";
+
 }
