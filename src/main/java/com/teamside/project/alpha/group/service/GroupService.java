@@ -18,6 +18,6 @@ public interface GroupService {
     GroupDto.ResponseMyGroupDto selectMyGroups(MyGroupType type);
     void editFavorite(Long groupId) throws CustomException;
     void inviteMember(Long groupId, String memberId) throws CustomException;
-    GroupDto.ResponseSearchGroupDto searchGroup(Long groupId, Long pageSize, String search);
+    GroupDto.ResponseSearchGroupDto searchGroup(Long lastGroupId, Long pageSize, String search);
     void updateOrd(GroupDto.RequestUpdateOrdDto request) throws CustomException;
 }

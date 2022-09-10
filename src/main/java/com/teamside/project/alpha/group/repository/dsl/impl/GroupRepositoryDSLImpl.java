@@ -61,7 +61,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 //    }
 
     @Override
-    public List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize, String search) {
+    public List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize, String search) {
         return jpaQueryFactory
                 .select(new QGroupDto_SearchGroupDto(
                         group.groupId,
@@ -73,18 +73,16 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
                 .where(
-                        gtGroupId(groupId),
+                        gtGroupId(lastGroupId),
                         containSearch(search)
                 )
                 .limit(pageSize)
                 .groupBy(group.groupId, group.name, group.category, group.category, group.profileUrl, group.usePrivate)
-                .orderBy(group.groupId.desc())
+                .orderBy(group.groupId.asc())
                 .fetch();
     }
 
-    public BooleanExpression gtGroupId(Long groupId) {
-        return groupId != null ? group.groupId.gt(groupId) : null;
-    }
+    public BooleanExpression gtGroupId(Long lastGroupId) { return lastGroupId != null ? group.groupId.gt(lastGroupId) : null; }
 
     public BooleanExpression containSearch(String search) { return (search != null && !Strings.isBlank(search)) ? group.name.contains(search) : null; }
 
