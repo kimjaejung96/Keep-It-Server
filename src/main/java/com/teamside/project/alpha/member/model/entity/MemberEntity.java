@@ -103,5 +103,4 @@ public class MemberEntity extends TimeEntity {
         this.fcmToken = "";
     }
 
-
 }

@@ -1,5 +1,7 @@
 package com.teamside.project.alpha.group.domain;
 
+import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
@@ -41,4 +43,12 @@ public class ReviewEntity {
     @Column(name = "STATUS", columnDefinition = "boolean")
     private Boolean status;
 
+    public ReviewEntity(ReviewDto.CreateReviewDto review) {
+        this.group = new GroupEntity(review.getGroupId());
+        this.place = new PlaceEntity(review.getPlaceId());
+        this.master = new MemberEntity(CryptUtils.getMid());
+        this.content = review.getContent();
+        this.images = String.join(",", review.getImages());
+        this.status = review.isStatus();
+    }
 }

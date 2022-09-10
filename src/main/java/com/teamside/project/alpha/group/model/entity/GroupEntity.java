@@ -14,7 +14,6 @@ import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.List;
 @Getter
 @Table(name = "GROUP_LIST")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DynamicUpdate
 public class GroupEntity extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,6 +75,9 @@ public class GroupEntity extends TimeEntity {
 
         this.groupMemberMappingEntity = new ArrayList<>();
         setMasterMember();
+
+        this.reviewEntities = new ArrayList<>();
+        this.dailyEntities = new ArrayList<>();
     }
 
     private void setMasterMember(){
@@ -108,5 +109,13 @@ public class GroupEntity extends TimeEntity {
         if (group.getGroupMemberMappingEntity().size() >= this.memberQuantity) {
             throw new CustomException(ApiExceptionCode.MEMBER_QUANTITY_IS_FULL);
         }
+    }
+
+    public void createReview(ReviewEntity review) {
+        this.reviewEntities.add(review);
+    }
+
+    public GroupEntity(Long groupId) {
+        this.groupId = groupId;
     }
 }

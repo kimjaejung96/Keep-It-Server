@@ -5,15 +5,13 @@ import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "REVIEW")
+@Table(name = "DAILY")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DynamicUpdate
 public class DailyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

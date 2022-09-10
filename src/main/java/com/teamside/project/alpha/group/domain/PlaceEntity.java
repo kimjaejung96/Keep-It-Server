@@ -38,4 +38,8 @@ public class PlaceEntity {
 
     @Column(name = "Y", nullable = false, columnDefinition = "DECIMAL(16,14)")
     private BigDecimal y;
+
+    public PlaceEntity(Long placeId) {
+        this.placeId = placeId;
+    }
 }
