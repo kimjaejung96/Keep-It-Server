@@ -4,7 +4,9 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.domain.DailyEntity;
 import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
+import com.teamside.project.alpha.group.domain.ReviewEntity;
 import com.teamside.project.alpha.group.model.converter.CategoryConverter;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.enumurate.Category;
@@ -57,6 +59,12 @@ public class GroupEntity extends TimeEntity {
 
     @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupMemberMappingEntity> groupMemberMappingEntity;
+
+    @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReviewEntity> reviewEntities;
+
+    @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DailyEntity> dailyEntities;
 
     public GroupEntity(GroupDto group) {
         this.name = group.getName();

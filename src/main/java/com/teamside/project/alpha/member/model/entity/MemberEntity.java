@@ -4,6 +4,9 @@ package com.teamside.project.alpha.member.model.entity;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.domain.DailyEntity;
+import com.teamside.project.alpha.group.domain.ReviewEntity;
+import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.domain.RefreshTokenEntity;
 import com.teamside.project.alpha.member.domain.TermsEntity;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
@@ -14,6 +17,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -46,9 +50,18 @@ public class MemberEntity extends TimeEntity {
     @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private TermsEntity termsEntity;
 
-
     @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RefreshTokenEntity refreshTokenEntity;
+
+    @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<GroupEntity> groupEntities;
+
+    @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReviewEntity> reviewEntities;
+
+    @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DailyEntity> dailyEntities;
+
 
     public MemberEntity(String mid) {
         this.mid = mid;
