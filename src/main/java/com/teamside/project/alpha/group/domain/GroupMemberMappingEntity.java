@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.group.domain;
 
+import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import com.teamside.project.alpha.group.domain.compositeKeys.GroupMemberKeys;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
@@ -16,7 +17,7 @@ import javax.persistence.*;
 @IdClass(GroupMemberKeys.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
-public class GroupMemberMappingEntity {
+public class GroupMemberMappingEntity extends CreateDtEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")
     private String mid;

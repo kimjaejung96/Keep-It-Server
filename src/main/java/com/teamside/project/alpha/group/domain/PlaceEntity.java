@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.group.domain;
 
+import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
 @Table(name = "PLACE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
-public class PlaceEntity {
+public class PlaceEntity extends TimeEntity {
     @Id
     @Column(name = "PLACE_ID", columnDefinition = "bigint")
     private Long placeId;

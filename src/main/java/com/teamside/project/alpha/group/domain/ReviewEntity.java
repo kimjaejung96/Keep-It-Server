@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.group.domain;
 
+import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
@@ -16,7 +17,7 @@ import javax.persistence.*;
 @Table(name = "REVIEW")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
-public class ReviewEntity {
+public class ReviewEntity extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REVIEW_ID", columnDefinition = "bigint")

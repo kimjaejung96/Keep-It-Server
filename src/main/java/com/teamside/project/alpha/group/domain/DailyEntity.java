@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.group.domain;
 
+import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "DAILY")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DailyEntity {
+public class DailyEntity extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DAILY_ID", columnDefinition = "bigint")
