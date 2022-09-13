@@ -68,10 +68,10 @@ public class ApiLog {
             StringBuilder pathVariables = new StringBuilder();
             if (pathVariablesMap.size() >= 1) {
                 for (Map.Entry<String, String> entry : pathVariablesMap.entrySet()) {
-                    pathVariables.append("\n").append(entry.getKey()).append(" -> ").append(entry.getValue());
+                    pathVariables.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
                 }
-                logs.append("\npathVariables : ").append(pathVariables);
-                desc.append("\npathVariables : ").append(pathVariables);
+                logs.append("pathVariables : \n").append(pathVariables);
+                desc.append("pathVariables : \n").append(pathVariables);
             }
 
             result = joinPoint.proceed();
