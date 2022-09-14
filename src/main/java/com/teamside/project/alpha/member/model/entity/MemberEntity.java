@@ -7,6 +7,8 @@ import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.DailyEntity;
 import com.teamside.project.alpha.group.domain.ReviewEntity;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
+import com.teamside.project.alpha.member.domain.MemberBlockEntity;
+import com.teamside.project.alpha.member.domain.MemberFollowEntity;
 import com.teamside.project.alpha.member.domain.RefreshTokenEntity;
 import com.teamside.project.alpha.member.domain.TermsEntity;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
@@ -62,6 +64,11 @@ public class MemberEntity extends TimeEntity {
     @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyEntity> dailyEntities;
 
+    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MemberFollowEntity> memberFollowEntities;
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MemberBlockEntity> memberBlockEntities;
 
     public MemberEntity(String mid) {
         this.mid = mid;
