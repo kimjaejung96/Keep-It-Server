@@ -21,8 +21,5 @@ public class ReviewDto {
         private List<String> images;
         @NotNull
         private boolean status;
-
-        public CreateReviewDto() {
-        }
     }
 }

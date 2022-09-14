@@ -22,6 +22,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public void createReview(ReviewDto.CreateReviewDto review) {
         GroupEntity group = groupRepository.findByGroupId(review.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistReview(review.getPlaceId());
+
         ReviewEntity reviewEntity = new ReviewEntity(review);
         group.createReview(reviewEntity);
     }

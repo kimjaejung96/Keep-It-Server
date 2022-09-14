@@ -28,6 +28,7 @@ public enum ApiExceptionCode {
     INVALID_GROUP_REQUEST(808, "잘못된 그룹 요청입니다."),
     DUPLICATE_ORD(809, "중복된 순서가 존재합니다."),
     GROUP_IS_NOT_MATCH(810, "내 그룹이 아닌 그룹이 존재합니다."),
+    REVIEW_ALREADY_EXIST(811, "리뷰가 이미 존재합니다."),
 
     SYSTEM_ERROR(999, "System Error"),
     ;

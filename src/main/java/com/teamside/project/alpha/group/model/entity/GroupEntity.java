@@ -2,6 +2,7 @@ package com.teamside.project.alpha.group.model.entity;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.DailyEntity;
@@ -115,7 +116,16 @@ public class GroupEntity extends TimeEntity {
         this.reviewEntities.add(review);
     }
 
+    public void checkExistReview(long placeId) {
+        if (this.reviewEntities
+                .stream()
+                .filter(place -> placeId == place.getPlace().getPlaceId())
+                .anyMatch(reviewEntity -> reviewEntity.getMaster().getMid().equals(CryptUtils.getMid()))) {
+            throw new CustomRuntimeException(ApiExceptionCode.REVIEW_ALREADY_EXIST);
+        }
+    }
     public GroupEntity(Long groupId) {
         this.groupId = groupId;
     }
+
 }
