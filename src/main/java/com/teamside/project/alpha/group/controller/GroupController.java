@@ -43,7 +43,7 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
-    @PostMapping("/{groupId}/leave")
+    @DeleteMapping("/{groupId}/leave")
     public ResponseEntity<ResponseObject> leaveGroup(@PathVariable Long groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.leaveGroup(groupId);
