@@ -5,6 +5,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.DailyEntity;
+import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.domain.ReviewEntity;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.domain.MemberBlockEntity;
@@ -57,6 +58,9 @@ public class MemberEntity extends TimeEntity {
 
     @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupEntity> groupEntities;
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<GroupMemberMappingEntity> groupMemberMappingEntities;
 
     @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReviewEntity> reviewEntities;

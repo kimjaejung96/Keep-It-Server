@@ -35,10 +35,18 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{groupId}")
+    @PostMapping("/{groupId}/join")
     public ResponseEntity<ResponseObject> joinGroup(@PathVariable Long groupId, @RequestParam(required = false) String password) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.joinGroup(groupId, password);
+
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @PostMapping("/{groupId}/leave")
+    public ResponseEntity<ResponseObject> leaveGroup(@PathVariable Long groupId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        groupService.leaveGroup(groupId);
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }

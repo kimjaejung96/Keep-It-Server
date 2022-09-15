@@ -84,10 +84,16 @@ public class GroupEntity extends TimeEntity {
     private void setMasterMember(){
         this.master = new MemberEntity(CryptUtils.getMid());
     }
-    public void addMember(MemberEntity member) {
-
-        this.groupMemberMappingEntity.add(new GroupMemberMappingEntity(member.getMid(), this.groupId)
-        );
+    public void addMember(String mid) {
+        this.groupMemberMappingEntity.add(new GroupMemberMappingEntity(mid, this.groupId));
+    }
+    public void removeMember(String mid) {
+        GroupMemberMappingEntity findEntity = this.groupMemberMappingEntity.stream()
+                .filter(entity -> entity.getMid().equals(mid))
+                .filter(entity -> entity.getGroupId().equals(this.groupId))
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        this.groupMemberMappingEntity.remove(findEntity);
     }
 
     public void updateGroup(GroupDto group) {

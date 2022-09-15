@@ -15,6 +15,7 @@ public interface GroupService {
     List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize);
     List<GroupDto.SearchGroupDto> random();
     void joinGroup(Long groupId, String password) throws CustomException;
+    void leaveGroup(Long groupId) throws CustomException;
     GroupDto.ResponseMyGroupDto selectMyGroups(MyGroupType type);
     void editFavorite(Long groupId) throws CustomException;
     void inviteMember(Long groupId, String memberId) throws CustomException;

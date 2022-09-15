@@ -42,7 +42,7 @@ public class GroupServiceImpl implements GroupService {
         GroupEntity groupEntity = new GroupEntity(group);
 
         GroupEntity newGroupEntity = groupRepository.save(groupEntity);
-        newGroupEntity.addMember(newGroupEntity.getMaster());
+        newGroupEntity.addMember(newGroupEntity.getMaster().getMid());
     }
 
     @Override
@@ -111,8 +111,15 @@ public class GroupServiceImpl implements GroupService {
         if (groupRepository.countByGroupMemberMappingEntity(new GroupMemberMappingEntity(new MemberEntity(CryptUtils.getMid()))) >= GroupConstant.MEMBER_JOIN_POSSIBLE_COUNT) {
             throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
         }
-        group.addMember(new MemberEntity(CryptUtils.getMid()));
+        group.addMember(CryptUtils.getMid());
 
+    }
+
+    @Override
+    @Transactional
+    public void leaveGroup(Long groupId) throws CustomException {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.removeMember(CryptUtils.getMid());
     }
 
     @Override
