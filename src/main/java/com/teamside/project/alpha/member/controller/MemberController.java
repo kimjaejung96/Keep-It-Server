@@ -87,10 +87,12 @@ public class MemberController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
-
-
-
-
+    @PostMapping("/{targetMid}/block")
+    public ResponseEntity<ResponseObject> block(@PathVariable String targetMid) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        memberService.block(targetMid);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
 
 
 

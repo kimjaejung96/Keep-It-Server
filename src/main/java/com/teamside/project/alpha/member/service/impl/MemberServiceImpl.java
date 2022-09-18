@@ -108,4 +108,19 @@ public class MemberServiceImpl implements MemberService {
             throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
         }
     }
+
+    @Override
+    @Transactional
+    public void block(String targetMid) throws CustomException {
+        String mid = CryptUtils.getMid();
+        Optional<MemberEntity> targetMember = memberRepo.findByMid(targetMid);
+        Optional<MemberEntity> member = memberRepo.findByMid(mid);
+
+        // 이미 차단중이면 차단 해제
+        if (member.isPresent() && targetMember.isPresent()) {
+            member.get().block(mid, targetMid);
+        } else {
+            throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
+        }
+    }
 }

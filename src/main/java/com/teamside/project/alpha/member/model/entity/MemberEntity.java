@@ -128,4 +128,17 @@ public class MemberEntity extends TimeEntity {
         }
     }
 
+    public void block(String mid, String targetMid) {
+        // 이미 차단중이면 해제
+        Optional<MemberBlockEntity> blockEntity = this.getMemberBlockEntities().stream()
+                .filter(follow -> follow.getMid().equals(mid) && follow.getTargetMid().equals(targetMid))
+                .findFirst();
+
+        if (blockEntity.isPresent()) {
+            this.memberBlockEntities.remove(blockEntity.get());
+        } else {
+            this.memberBlockEntities.add(new MemberBlockEntity(mid, targetMid));
+        }
+    }
+
 }

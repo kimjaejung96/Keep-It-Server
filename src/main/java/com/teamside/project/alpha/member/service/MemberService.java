@@ -15,4 +15,5 @@ public interface MemberService {
     void inquiry(InquiryDto inquiryDto);
     List<MemberDto.InviteMemberList> search(String name, Long groupId);
     void follow(String targetMid) throws CustomException;
+    void block(String targetMid) throws CustomException;
 }
