@@ -1,7 +1,7 @@
-package com.teamside.project.alpha.member.domain;
+package com.teamside.project.alpha.member.model.domain;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
-import com.teamside.project.alpha.member.domain.compositeKeys.MemberKeys;
+import com.teamside.project.alpha.member.model.domain.compositeKeys.MemberKeys;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.teamside.project.alpha.group.repository;
 
-import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;

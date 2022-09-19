@@ -1,4 +1,4 @@
-package com.teamside.project.alpha.member.domain.compositeKeys;
+package com.teamside.project.alpha.member.model.domain.compositeKeys;
 
 import java.io.Serializable;
 

@@ -1,13 +1,26 @@
 package com.teamside.project.alpha.group.service.impl;
 
-import com.teamside.project.alpha.group.model.dto.PlaceDto;
-import org.springframework.http.HttpStatus;
+import com.teamside.project.alpha.place.model.dto.PlaceDto;
+import com.teamside.project.alpha.place.model.entity.PlaceEntity;
+import com.teamside.project.alpha.place.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PlaceServiceImpl implements PlaceService{
+    private final PlaceRepository placeRepository;
+
+    public PlaceServiceImpl(PlaceRepository placeRepository) {
+        this.placeRepository = placeRepository;
+    }
+
     @Override
-    public HttpStatus createPlace(PlaceDto place) {
-        return null;
+    public void createPlace(PlaceDto place) {
+        if (placeRepository.findByPlaceId(place.getPlaceId()).isPresent()) {
+            return;
+        }
+
+        PlaceEntity newPlace = new PlaceEntity(place);
+        placeRepository.save(newPlace);
+
     }
 }

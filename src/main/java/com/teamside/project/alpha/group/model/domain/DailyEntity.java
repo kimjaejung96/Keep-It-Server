@@ -1,4 +1,4 @@
-package com.teamside.project.alpha.group.domain;
+package com.teamside.project.alpha.group.model.domain;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;

@@ -1,4 +1,4 @@
-package com.teamside.project.alpha.group.model.dto;
+package com.teamside.project.alpha.place.model.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;

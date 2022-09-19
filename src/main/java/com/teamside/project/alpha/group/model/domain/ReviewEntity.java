@@ -1,10 +1,11 @@
-package com.teamside.project.alpha.group.domain;
+package com.teamside.project.alpha.group.model.domain;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
+import com.teamside.project.alpha.place.model.entity.PlaceEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

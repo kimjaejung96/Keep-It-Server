@@ -1,8 +1,7 @@
 package com.teamside.project.alpha.group.service.impl;
 
-import com.teamside.project.alpha.group.model.dto.PlaceDto;
-import org.springframework.http.HttpStatus;
+import com.teamside.project.alpha.place.model.dto.PlaceDto;
 
 public interface PlaceService {
-    HttpStatus createPlace(PlaceDto place);
+    void createPlace(PlaceDto place);
 }

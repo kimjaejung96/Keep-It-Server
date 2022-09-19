@@ -2,7 +2,7 @@ package com.teamside.project.alpha.group.service.impl;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
-import com.teamside.project.alpha.group.domain.ReviewEntity;
+import com.teamside.project.alpha.group.model.domain.ReviewEntity;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;

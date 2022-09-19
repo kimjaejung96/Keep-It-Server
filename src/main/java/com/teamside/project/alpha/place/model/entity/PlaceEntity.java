@@ -1,6 +1,7 @@
-package com.teamside.project.alpha.group.domain;
+package com.teamside.project.alpha.place.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
+import com.teamside.project.alpha.place.model.dto.PlaceDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,5 +43,15 @@ public class PlaceEntity extends TimeEntity {
 
     public PlaceEntity(Long placeId) {
         this.placeId = placeId;
+    }
+
+    public PlaceEntity(PlaceDto placeDto) {
+        this.placeId = placeDto.getPlaceId();
+        this.placeName = placeDto.getPlaceName();
+        this.address = placeDto.getAddress();
+        this.roadAddress = placeDto.getRoadAddress();
+        this.phone = placeDto.getPhone();
+        this.x = placeDto.getX();
+        this.y = placeDto.getY();
     }
 }
