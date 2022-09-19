@@ -6,24 +6,30 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.domain.QGroupMemberMappingEntity;
-import com.teamside.project.alpha.group.model.dto.GroupDto;
-import com.teamside.project.alpha.group.model.dto.QGroupDto_MyGroupDto;
-import com.teamside.project.alpha.group.model.dto.QGroupDto_SearchGroupDto;
+import com.teamside.project.alpha.group.domain.QReviewEntity;
+import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
+import com.teamside.project.alpha.member.domain.QMemberFollowEntity;
+import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     private final JPAQueryFactory jpaQueryFactory;
 
     QGroupEntity group = QGroupEntity.groupEntity;
+    QReviewEntity review = QReviewEntity.reviewEntity;
+    QMemberEntity member = QMemberEntity.memberEntity;
     QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
+    QMemberFollowEntity memberFollow = QMemberFollowEntity.memberFollowEntity;
 
     public GroupRepositoryDSLImpl(JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
@@ -82,9 +88,13 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .fetch();
     }
 
-    public BooleanExpression gtGroupId(Long lastGroupId) { return lastGroupId != null ? group.groupId.gt(lastGroupId) : null; }
+    public BooleanExpression gtGroupId(Long lastGroupId) {
+        return lastGroupId != null ? group.groupId.gt(lastGroupId) : null;
+    }
 
-    public BooleanExpression containSearch(String search) { return (search != null && !Strings.isBlank(search)) ? group.name.contains(search) : null; }
+    public BooleanExpression containSearch(String search) {
+        return (search != null && !Strings.isBlank(search)) ? group.name.contains(search) : null;
+    }
 
     @Override
     public List<GroupDto.MyGroupDto> selectMyGroups(String mId, MyGroupType type) {
@@ -169,5 +179,52 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .where(groupMemberMapping.mid.eq(mid)
                         .and(groupMemberMapping.favorite.eq(true)))
                 .fetch();
+    }
+
+    @Override
+    public GroupDto.GroupInfoDto selectGroup(Long groupId) {
+        GroupDto.GroupInfoDto groupInfoDto = jpaQueryFactory.select(
+                new QGroupDto_GroupInfoDto(
+                        group,
+                        group.master.mid,
+                        groupMemberMapping.favorite,
+                        JPAExpressions
+                                .select(groupMemberMapping.count())
+                                .from(groupMemberMapping)
+                                .where(groupMemberMapping.groupId.eq(groupId)),
+                        JPAExpressions
+                                .select(review.count())
+                                .from(review)
+                                .where(review.group.groupId.eq(groupId))
+                        )
+                )
+                .from(group)
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .where(group.groupId.eq(groupId).and(groupMemberMapping.mid.eq(CryptUtils.getMid())))
+                .fetchOne();
+
+
+        Objects.requireNonNull(groupInfoDto).addGroupInfoMembers(
+                jpaQueryFactory
+                        .select(new QGroupDto_GroupInfoDto_MembersDto(
+                                member.name,
+                                member.mid,
+                                member.profileUrl,
+                                new CaseBuilder().
+                                                when(new CaseBuilder()
+                                                .when(member.mid.eq(memberFollow.targetMid))
+                                                .then("")
+                                                .otherwise("eqauls").isEmpty())
+                                        .then("")
+                                        .otherwise("not exist").isEmpty()
+                        ))
+                        .from(groupMemberMapping)
+                        .innerJoin(member).on(groupMemberMapping.mid.eq(member.mid))
+                        .leftJoin(memberFollow).on(memberFollow.mid.eq(CryptUtils.getMid()).and(memberFollow.targetMid.eq(member.mid)))
+                        .where(groupMemberMapping.groupId.eq(groupId))
+                        .fetch()
+        );
+
+        return groupInfoDto;
     }
 }

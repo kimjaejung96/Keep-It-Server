@@ -47,12 +47,46 @@ public class GroupDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class SelectGroupDto extends GroupDto{
-        public SelectGroupDto(GroupEntity entity) {
+    public static class GroupInfoDto extends GroupDto{
+        public GroupInfoDto(GroupEntity entity) {
             super(entity);
             this.master = entity.getMaster().getMid();
         }
         private String master;
+        private boolean isFavorite;
+        private long inMembers;
+        private long inReviews;
+        private List<MembersDto> members;
+
+        @Getter
+        @NoArgsConstructor(access = AccessLevel.PROTECTED)
+        public static class MembersDto{
+            String name;
+            String mid;
+            String profileUrl;
+            boolean isFollow;
+
+            @QueryProjection
+            public MembersDto(String name, String mid, String profileUrl, boolean isFollow) {
+                this.name = name;
+                this.mid = mid;
+                this.profileUrl = profileUrl;
+                this.isFollow = isFollow;
+            }
+        }
+
+        @QueryProjection
+        public GroupInfoDto(GroupEntity groupEntity, String master, boolean isFavorite, long inMembers, long inReviews) {
+            super(groupEntity);
+            this.master = master;
+            this.isFavorite = isFavorite;
+            this.inMembers = inMembers;
+            this.members = new ArrayList<>();
+            this.inReviews = inReviews;
+        }
+        public void addGroupInfoMembers(List<MembersDto> members) {
+            this.members = members;
+        }
     }
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)

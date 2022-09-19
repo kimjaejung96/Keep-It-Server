@@ -16,4 +16,5 @@ public interface GroupRepositoryDSL {
     Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, Long groupId);
     Optional<Integer> selectLatestFavoriteOrd(String mid);
     List<GroupMemberMappingEntity> selectFavoriteMappingGroups(String mid);
+    GroupDto.GroupInfoDto selectGroup(Long groupId);
 }

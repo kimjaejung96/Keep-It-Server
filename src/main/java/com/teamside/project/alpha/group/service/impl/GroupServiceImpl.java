@@ -78,9 +78,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public GroupDto.SelectGroupDto selectGroup(Long groupId) throws CustomException {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-        return new GroupDto.SelectGroupDto(group);
+    public GroupDto.GroupInfoDto selectGroup(Long groupId) {
+        return groupRepository.selectGroup(groupId);
     }
 
     @Override
