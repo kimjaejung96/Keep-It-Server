@@ -6,6 +6,8 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.domain.QGroupMemberMappingEntity;
@@ -184,25 +186,27 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     @Override
     public GroupDto.GroupInfoDto selectGroup(Long groupId) {
         GroupDto.GroupInfoDto groupInfoDto = jpaQueryFactory.select(
-                new QGroupDto_GroupInfoDto(
-                        group,
-                        group.master.mid,
-                        groupMemberMapping.favorite,
-                        JPAExpressions
-                                .select(groupMemberMapping.count())
-                                .from(groupMemberMapping)
-                                .where(groupMemberMapping.groupId.eq(groupId)),
-                        JPAExpressions
-                                .select(review.count())
-                                .from(review)
-                                .where(review.group.groupId.eq(groupId))
+                        new QGroupDto_GroupInfoDto(
+                                group,
+                                group.master.mid,
+                                groupMemberMapping.favorite,
+                                JPAExpressions
+                                        .select(groupMemberMapping.count())
+                                        .from(groupMemberMapping)
+                                        .where(groupMemberMapping.groupId.eq(groupId)),
+                                JPAExpressions
+                                        .select(review.count())
+                                        .from(review)
+                                        .where(review.group.groupId.eq(groupId))
                         )
                 )
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
-                .where(group.groupId.eq(groupId).and(groupMemberMapping.mid.eq(CryptUtils.getMid())))
+                .where(group.groupId.eq(groupId)).distinct()
                 .fetchOne();
 
+
+        if (groupInfoDto == null) throw new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND);
 
         Objects.requireNonNull(groupInfoDto).addGroupInfoMembers(
                 jpaQueryFactory
@@ -221,7 +225,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         .from(groupMemberMapping)
                         .innerJoin(member).on(groupMemberMapping.mid.eq(member.mid))
                         .leftJoin(memberFollow).on(memberFollow.mid.eq(CryptUtils.getMid()).and(memberFollow.targetMid.eq(member.mid)))
-                        .where(groupMemberMapping.groupId.eq(groupId))
+                        .where(groupMemberMapping.groupId.eq(groupId).and(member.mid.ne(CryptUtils.getMid())))
                         .fetch()
         );
 
