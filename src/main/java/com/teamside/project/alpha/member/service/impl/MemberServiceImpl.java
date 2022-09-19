@@ -13,6 +13,7 @@ import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.member.service.AuthService;
 import com.teamside.project.alpha.member.service.MemberService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -91,5 +92,35 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberDto.InviteMemberList> search(String name, Long groupId) {
         return memberRepo.searchMembers(name, groupId).orElse(Collections.emptyList());
+    }
+
+    @Override
+    @Transactional
+    public void follow(String targetMid) throws CustomException {
+        String mid = CryptUtils.getMid();
+        Optional<MemberEntity> targetMember = memberRepo.findByMid(targetMid);
+        Optional<MemberEntity> member = memberRepo.findByMid(mid);
+
+        // 이미 팔로중이면 팔로우 취소
+        if (member.isPresent() && targetMember.isPresent()) {
+            member.get().follow(mid, targetMid);
+        } else {
+            throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void block(String targetMid) throws CustomException {
+        String mid = CryptUtils.getMid();
+        Optional<MemberEntity> targetMember = memberRepo.findByMid(targetMid);
+        Optional<MemberEntity> member = memberRepo.findByMid(mid);
+
+        // 이미 차단중이면 차단 해제
+        if (member.isPresent() && targetMember.isPresent()) {
+            member.get().block(mid, targetMid);
+        } else {
+            throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
+        }
     }
 }

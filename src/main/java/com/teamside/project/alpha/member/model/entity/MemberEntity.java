@@ -22,6 +22,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -112,6 +113,32 @@ public class MemberEntity extends TimeEntity {
     }
     private void deleteFcmToken() {
         this.fcmToken = "";
+    }
+
+    public void follow(String mid, String targetMid) {
+        // 이미 팔로중이면 취소
+        Optional<MemberFollowEntity> followEntity = this.getMemberFollowEntities().stream()
+                .filter(follow -> follow.getMid().equals(mid) && follow.getTargetMid().equals(targetMid))
+                .findFirst();
+
+        if (followEntity.isPresent()) {
+            this.memberFollowEntities.remove(followEntity.get());
+        } else {
+            this.memberFollowEntities.add(new MemberFollowEntity(mid, targetMid));
+        }
+    }
+
+    public void block(String mid, String targetMid) {
+        // 이미 차단중이면 해제
+        Optional<MemberBlockEntity> blockEntity = this.getMemberBlockEntities().stream()
+                .filter(follow -> follow.getMid().equals(mid) && follow.getTargetMid().equals(targetMid))
+                .findFirst();
+
+        if (blockEntity.isPresent()) {
+            this.memberBlockEntities.remove(blockEntity.get());
+        } else {
+            this.memberBlockEntities.add(new MemberBlockEntity(mid, targetMid));
+        }
     }
 
 }

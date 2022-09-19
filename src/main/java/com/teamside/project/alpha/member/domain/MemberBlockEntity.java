@@ -32,4 +32,9 @@ public class MemberBlockEntity extends CreateDtEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MID", referencedColumnName = "MID")
     private MemberEntity targetMember;
+
+    public MemberBlockEntity(String mid, String targetMid) {
+        this.mid = mid;
+        this.targetMid = targetMid;
+    }
 }

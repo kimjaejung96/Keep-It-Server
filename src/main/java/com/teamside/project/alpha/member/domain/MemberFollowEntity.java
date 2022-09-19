@@ -32,4 +32,9 @@ public class MemberFollowEntity extends CreateDtEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MID", referencedColumnName = "MID")
     private MemberEntity targetMember;
+
+    public MemberFollowEntity(String mid, String targetMid) {
+        this.mid = mid;
+        this.targetMid = targetMid;
+    }
 }
