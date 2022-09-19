@@ -4,19 +4,20 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
-import com.teamside.project.alpha.group.domain.QGroupMemberMappingEntity;
-import com.teamside.project.alpha.group.domain.QReviewEntity;
 import com.teamside.project.alpha.group.model.domain.GroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.domain.QGroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.domain.QReviewEntity;
 import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
-import com.teamside.project.alpha.member.domain.QMemberFollowEntity;
+import com.teamside.project.alpha.member.model.domain.QMemberFollowEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import org.apache.logging.log4j.util.Strings;
 
@@ -185,43 +186,46 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     @Override
     public GroupDto.GroupInfoDto selectGroup(Long groupId) {
+        BooleanExpression booleanExpression = new CaseBuilder()
+                .when(groupMemberMapping.mid.eq(CryptUtils.getMid()).and(groupMemberMapping.favorite.eq(true)))
+                .then(1)
+                .otherwise(0)
+                .sum().eq(1);
+
         GroupDto.GroupInfoDto groupInfoDto = jpaQueryFactory.select(
                         new QGroupDto_GroupInfoDto(
                                 group,
                                 group.master.mid,
-                                groupMemberMapping.favorite,
-                                JPAExpressions
-                                        .select(groupMemberMapping.count())
-                                        .from(groupMemberMapping)
-                                        .where(groupMemberMapping.groupId.eq(groupId)),
-                                JPAExpressions
-                                        .select(review.count())
-                                        .from(review)
-                                        .where(review.group.groupId.eq(groupId))
+                                new CaseBuilder()
+                                        .when(booleanExpression)
+                                        .then(true)
+                                        .otherwise(false),
+                                groupMemberMapping.count(),
+                                review.count()
                         )
                 )
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
-                .where(group.groupId.eq(groupId)).distinct()
+                .innerJoin(review).on(group.groupId.eq(review.group.groupId))
+                .where(group.groupId.eq(groupId))
+                .groupBy(group.groupId)
                 .fetchOne();
 
 
         if (groupInfoDto == null) throw new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND);
 
         Objects.requireNonNull(groupInfoDto).addGroupInfoMembers(
-                jpaQueryFactory
-                        .select(new QGroupDto_GroupInfoDto_MembersDto(
+                jpaQueryFactory.select(
+                        new QGroupDto_GroupInfoDto_MembersDto(
                                 member.name,
                                 member.mid,
                                 member.profileUrl,
-                                new CaseBuilder().
-                                                when(new CaseBuilder()
-                                                .when(member.mid.eq(memberFollow.targetMid))
-                                                .then("")
-                                                .otherwise("eqauls").isEmpty())
-                                        .then("")
-                                        .otherwise("not exist").isEmpty()
-                        ))
+                                new CaseBuilder()
+                                        .when(memberFollow.mid.isNotNull())
+                                        .then(true)
+                                        .otherwise(false)
+                                )
+                        )
                         .from(groupMemberMapping)
                         .innerJoin(member).on(groupMemberMapping.mid.eq(member.mid))
                         .leftJoin(memberFollow).on(memberFollow.mid.eq(CryptUtils.getMid()).and(memberFollow.targetMid.eq(member.mid)))

@@ -2,7 +2,7 @@ package com.teamside.project.alpha.member.repository.dsl.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.util.CryptUtils;
-import com.teamside.project.alpha.group.domain.QGroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.domain.QGroupMemberMappingEntity;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.dto.QMemberDto_InviteMemberList;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
