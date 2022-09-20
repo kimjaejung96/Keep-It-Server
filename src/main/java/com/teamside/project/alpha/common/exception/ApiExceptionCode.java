@@ -30,6 +30,7 @@ public enum ApiExceptionCode {
     GROUP_IS_NOT_MATCH(810, "내 그룹이 아닌 그룹이 존재합니다."),
     REVIEW_ALREADY_EXIST(811, "리뷰가 이미 존재합니다."),
     PLACE_NOT_EXIST(812, "장소가 존재하지 않습니다."),
+    NOT_PARTICIPANT_IN_GROUP(813, "그룹에 속해있지 않습니다."),
 
     SYSTEM_ERROR(999, "System Error"),
     ;

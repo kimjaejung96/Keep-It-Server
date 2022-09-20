@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface PlaceRepository extends JpaRepository<PlaceEntity, Long> {
     Optional<PlaceEntity> findByPlaceId(Long id);
+    boolean existsByPlaceId(Long id);
 }

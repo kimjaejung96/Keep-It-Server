@@ -2,6 +2,7 @@ package com.teamside.project.alpha.group.service.impl;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
+import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.domain.ReviewEntity;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
@@ -24,8 +25,13 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void createReview(ReviewDto.CreateReviewDto review) {
-        placeRepository.findByPlaceId(review.getPlaceId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.PLACE_NOT_EXIST));
+        if (!placeRepository.existsByPlaceId(review.getPlaceId())) {
+            throw new CustomRuntimeException(ApiExceptionCode.PLACE_NOT_EXIST);
+        }
+
+
         GroupEntity group = groupRepository.findByGroupId(review.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(CryptUtils.getMid());
         group.checkExistReview(review.getPlaceId());
 
         ReviewEntity reviewEntity = new ReviewEntity(review);
