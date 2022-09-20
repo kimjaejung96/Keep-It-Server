@@ -4,7 +4,6 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
@@ -206,7 +205,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 )
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
-                .innerJoin(review).on(group.groupId.eq(review.group.groupId))
+                .leftJoin(review).on(group.groupId.eq(review.group.groupId))
                 .where(group.groupId.eq(groupId))
                 .groupBy(group.groupId)
                 .fetchOne();
