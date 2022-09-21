@@ -23,7 +23,7 @@ public class GroupDto {
     @Size(min = 4, max = 20, message = "그룹 제목은 4~20자 입니다.")
     private String name;
     @NotNull
-    @Pattern(regexp = KeepitConstant.REGEXP_GROUP_DESCRIPTION, message = "그룹설명 벨리데이션이 올바르지 않습니다.")
+    @Size(min = 10, max = 200, message = "그룹설명 벨리데이션이 올바르지 않습니다.")
     private String description;
     @Pattern(regexp = KeepitConstant.REGEXP_GROUP_PASSWORD, message = "password가 올바르지 않습니다.")
     private String password;
