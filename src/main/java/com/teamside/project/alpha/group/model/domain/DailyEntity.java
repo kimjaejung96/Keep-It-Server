@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,7 +41,10 @@ public class DailyEntity extends TimeEntity {
     @JoinColumn(name = "MASTER",  referencedColumnName = "MID")
     private MemberEntity master;
 
-    public DailyEntity(DailyDto dailyDto) {
+    @OneToMany(mappedBy = "daily", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DailyCommentEntity> dailyCommentEntities;
+
+    public DailyEntity(DailyDto.CreateDailyDto dailyDto) {
         this.title = dailyDto.getTitle();
         this.content = dailyDto.getContent();
         this.images = String.join(",", dailyDto.getImages());

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -44,7 +45,13 @@ public class ReviewEntity extends TimeEntity {
     @Column(name = "IMAGES", columnDefinition = "varchar(1000)")
     private String images;
 
-    public ReviewEntity(ReviewDto review) {
+    @Column(name = "STATUS", columnDefinition = "boolean")
+    private Boolean status;
+
+    @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReviewCommentEntity> reviewCommentEntities;
+
+    public ReviewEntity(ReviewDto.CreateReviewDto review) {
         this.group = new GroupEntity(review.getGroupId());
         this.place = new PlaceEntity(review.getPlaceId());
         this.master = new MemberEntity(CryptUtils.getMid());
