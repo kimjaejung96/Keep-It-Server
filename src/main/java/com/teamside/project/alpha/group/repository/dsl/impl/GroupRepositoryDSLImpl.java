@@ -41,7 +41,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize, String search) {
+    public List<GroupDto.SearchGroupDto> searchGroup(Long lastGroupId, Long pageSize, String search) {
         return jpaQueryFactory
                 .select(new QGroupDto_SearchGroupDto(
                         group.groupId,
@@ -228,4 +228,26 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .fetch();
     }
 
+    @Override
+    public List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize) {
+        return jpaQueryFactory
+                .select(new QGroupDto_SearchGroupDto(
+                        group.groupId,
+                        group.name,
+                        group.category,
+                        group.profileUrl,
+                        group.usePrivate,
+                        groupMemberMapping.count().as("participantCount")))
+                .from(group)
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .where(ltGroupId(lastGroupId))
+                .limit(pageSize)
+                .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate)
+                .orderBy(group.groupId.desc())
+                .fetch();
+    }
+
+    public BooleanExpression ltGroupId(Long lastGroupId) {
+        return lastGroupId != null ? group.groupId.lt(lastGroupId) : null;
+    }
 }

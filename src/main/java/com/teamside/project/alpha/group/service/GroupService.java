@@ -12,7 +12,7 @@ public interface GroupService {
     void isExistGroupName(String groupName) throws CustomException;
     void deleteGroup(Long groupId) throws CustomException;
     GroupDto.GroupInfoDto selectGroup(Long groupId) throws CustomException;
-    List<GroupDto.SearchGroupDto> selectGroups(Long groupId, Long pageSize);
+    GroupDto.ResponseSearchGroupDto selectGroups(Long lastGroupId, Long pageSize);
     List<GroupDto.SearchGroupDto> random();
     void joinGroup(Long groupId, String password) throws CustomException;
     void leaveGroup(Long groupId) throws CustomException;

@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface GroupRepositoryDSL {
 //    void groupNameCheck(String groupName) throws CustomException;
 
-    List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize, String search);
+    List<GroupDto.SearchGroupDto> searchGroup(Long lastGroupId, Long pageSize, String search);
     List<GroupDto.MyGroupDto> selectMyGroups(String mId, MyGroupType type);
     List<GroupDto.SearchGroupDto> random();
     Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, Long groupId);
@@ -18,4 +18,5 @@ public interface GroupRepositoryDSL {
     List<GroupMemberMappingEntity> selectFavoriteMappingGroups(String mid);
     GroupDto.GroupInfoDto selectGroup(Long groupId);
     List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
+    List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize);
 }

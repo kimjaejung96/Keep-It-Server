@@ -122,11 +122,19 @@ public class GroupController {
     // 1. POPULARITY
     // 2. MANYREVIEW
     // 3. RECOM >> RANDOM
-    @GetMapping()
+    @GetMapping("/statistics")
     public ResponseEntity<ResponseObject> statGroups(@RequestParam String referralType,
                                                      @RequestParam String category) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.statGroups(referralType, category));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseObject> selectGroups(@RequestParam(required = false) Long lastGroupId,
+                                                       @RequestParam Long pageSize) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.selectGroups(lastGroupId, pageSize));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
