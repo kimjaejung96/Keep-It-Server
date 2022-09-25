@@ -1,12 +1,13 @@
 package com.teamside.project.alpha.group.service.impl;
 
+import com.teamside.project.alpha.group.service.PlaceService;
 import com.teamside.project.alpha.place.model.dto.PlaceDto;
 import com.teamside.project.alpha.place.model.entity.PlaceEntity;
 import com.teamside.project.alpha.place.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PlaceServiceImpl implements PlaceService{
+public class PlaceServiceImpl implements PlaceService {
     private final PlaceRepository placeRepository;
 
     public PlaceServiceImpl(PlaceRepository placeRepository) {

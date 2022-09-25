@@ -1,6 +1,8 @@
 package com.teamside.project.alpha.group.model.domain;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
+import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.model.dto.DailyDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
@@ -36,4 +38,11 @@ public class DailyEntity extends TimeEntity {
     @JoinColumn(name = "MASTER",  referencedColumnName = "MID")
     private MemberEntity master;
 
+    public DailyEntity(DailyDto.CreateDailyDto dailyDto) {
+        this.title = dailyDto.getTitle();
+        this.content = dailyDto.getContent();
+        this.images = String.join(",", dailyDto.getImages());
+        this.group = new GroupEntity(dailyDto.getGroupId());
+        this.master = new MemberEntity(CryptUtils.getMid());
+    }
 }

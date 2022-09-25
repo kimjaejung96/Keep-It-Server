@@ -122,6 +122,10 @@ public class GroupEntity extends TimeEntity {
         this.reviewEntities.add(review);
     }
 
+    public void createDaily(DailyEntity dailyEntity) {
+        this.dailyEntities.add(dailyEntity);
+    }
+
     public void checkExistReview(long placeId) {
         if (this.reviewEntities
                 .stream()

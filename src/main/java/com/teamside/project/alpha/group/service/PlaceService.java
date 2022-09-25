@@ -1,4 +1,4 @@
-package com.teamside.project.alpha.group.service.impl;
+package com.teamside.project.alpha.group.service;
 
 import com.teamside.project.alpha.place.model.dto.PlaceDto;
 

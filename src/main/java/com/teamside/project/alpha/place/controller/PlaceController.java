@@ -2,7 +2,7 @@ package com.teamside.project.alpha.place.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
-import com.teamside.project.alpha.group.service.impl.PlaceService;
+import com.teamside.project.alpha.group.service.PlaceService;
 import com.teamside.project.alpha.place.model.dto.PlaceDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
