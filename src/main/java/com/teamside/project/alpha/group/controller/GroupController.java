@@ -81,14 +81,6 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<ResponseObject> selectGroups(@RequestParam(required = false) Long groupId,
-                                                       @RequestParam Long pageSize) throws CustomException {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(groupService.selectGroups(groupId, pageSize));
-        return new ResponseEntity<>(responseObject, HttpStatus.OK);
-    }
-
     @GetMapping("/search")
     public ResponseEntity<ResponseObject> searchGroups(@RequestParam(required = false) Long lastGroupId,
                                                        @RequestParam Long pageSize,
@@ -123,6 +115,18 @@ public class GroupController {
     public ResponseEntity<ResponseObject> updateOrd(@RequestBody GroupDto.RequestUpdateOrdDto request) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.updateOrd(request);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    // statistic - 추천, 인기, 리뷰
+    // 1. POPULARITY
+    // 2. MANYREVIEW
+    // 3. RECOM >> RANDOM
+    @GetMapping()
+    public ResponseEntity<ResponseObject> statGroups(@RequestParam String referralType,
+                                                     @RequestParam String category) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.statGroups(referralType, category));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

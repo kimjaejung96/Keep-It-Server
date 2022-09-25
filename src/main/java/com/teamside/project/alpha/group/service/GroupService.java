@@ -21,4 +21,5 @@ public interface GroupService {
     void inviteMember(Long groupId, String memberId) throws CustomException;
     GroupDto.ResponseSearchGroupDto searchGroup(Long lastGroupId, Long pageSize, String search);
     void updateOrd(GroupDto.RequestUpdateOrdDto request) throws CustomException;
+    List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
 }

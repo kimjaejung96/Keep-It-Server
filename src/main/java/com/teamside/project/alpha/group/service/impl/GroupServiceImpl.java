@@ -215,4 +215,16 @@ public class GroupServiceImpl implements GroupService {
             throw new CustomException(ApiExceptionCode.GROUP_IS_NOT_MATCH);
         }
     }
+
+    @Override
+    public List<GroupDto.SearchGroupDto> statGroups(String referralType, String category) {
+        List<GroupDto.SearchGroupDto> groupList;
+
+        if (referralType.equals("RECOM")) {
+            groupList = groupRepository.random();
+        } else {
+            groupList = groupRepository.statGroups(referralType, category);
+        }
+        return groupList;
+    }
 }
