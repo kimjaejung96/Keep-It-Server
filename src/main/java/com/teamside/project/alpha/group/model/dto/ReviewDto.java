@@ -19,7 +19,5 @@ public class ReviewDto {
         @Size(min = 15, max = 2000)
         private String content;
         private List<String> images;
-        @NotNull
-        private boolean status;
     }
 }

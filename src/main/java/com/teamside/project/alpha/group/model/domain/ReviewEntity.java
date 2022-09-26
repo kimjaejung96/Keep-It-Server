@@ -42,15 +42,11 @@ public class ReviewEntity extends TimeEntity {
     @Column(name = "IMAGES", columnDefinition = "varchar(1000)")
     private String images;
 
-    @Column(name = "STATUS", columnDefinition = "boolean")
-    private Boolean status;
-
     public ReviewEntity(ReviewDto.CreateReviewDto review) {
         this.group = new GroupEntity(review.getGroupId());
         this.place = new PlaceEntity(review.getPlaceId());
         this.master = new MemberEntity(CryptUtils.getMid());
         this.content = review.getContent();
         this.images = String.join(",", review.getImages());
-        this.status = review.isStatus();
     }
 }
