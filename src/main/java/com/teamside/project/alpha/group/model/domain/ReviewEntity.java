@@ -51,7 +51,7 @@ public class ReviewEntity extends TimeEntity {
     @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReviewCommentEntity> reviewCommentEntities;
 
-    public ReviewEntity(ReviewDto.CreateReviewDto review) {
+    public ReviewEntity(ReviewDto review) {
         this.group = new GroupEntity(review.getGroupId());
         this.place = new PlaceEntity(review.getPlaceId());
         this.master = new MemberEntity(CryptUtils.getMid());
