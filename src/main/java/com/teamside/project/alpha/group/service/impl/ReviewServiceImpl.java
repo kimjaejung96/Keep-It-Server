@@ -24,17 +24,37 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void createReview(ReviewDto.CreateReviewDto review) {
-        if (!placeRepository.existsByPlaceId(review.getPlaceId())) {
-            throw new CustomRuntimeException(ApiExceptionCode.PLACE_NOT_EXIST);
-        }
-
+    public void createReview(ReviewDto review) {
+        checkExistPlace(review.getPlaceId());
 
         GroupEntity group = groupRepository.findByGroupId(review.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
         group.checkExistReview(review.getPlaceId());
 
-        ReviewEntity reviewEntity = new ReviewEntity(review);
-        group.createReview(reviewEntity);
+        group.createReview(new ReviewEntity(review));
+    }
+
+    @Override
+    @Transactional
+    public void updateReview(ReviewDto.UpdateReviewDto review) {
+        checkExistPlace(review.getPlaceId());
+
+        GroupEntity group = groupRepository.findByGroupId(review.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(CryptUtils.getMid());
+
+        ReviewEntity reviewEntity = group.getReviewEntities()
+                .stream()
+                .filter(r -> r.getReviewId().equals(review.getReviewId()))
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+
+        reviewEntity.checkReviewMaster(CryptUtils.getMid());
+        reviewEntity.updateReview(review);
+    }
+
+    private void checkExistPlace(Long placeId) {
+        if (!placeRepository.existsByPlaceId(placeId)) {
+            throw new CustomRuntimeException(ApiExceptionCode.PLACE_NOT_EXIST);
+        }
     }
 }

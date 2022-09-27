@@ -48,6 +48,9 @@ public class MemberController {
     public ResponseEntity<ResponseObject> checkExistName(
              @Pattern(regexp = KeepitConstant.REGEXP_MEMBER_NAME,
             message = "이름이 올바르지 않습니다.") @PathVariable String name) throws CustomException {
+        if (name.contains("\\.\\.") || name.contains("\\_\\_")) {
+            throw new CustomException(ApiExceptionCode.VALIDATION_ERROR);
+        }
         memberService.checkExistsName(name);
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);

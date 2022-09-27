@@ -7,10 +7,7 @@ import com.teamside.project.alpha.group.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -25,9 +22,15 @@ public class ReviewController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> createReview(@Valid @RequestBody ReviewDto.CreateReviewDto review) {
+    public ResponseEntity<ResponseObject> createReview(@Valid @RequestBody ReviewDto review) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         reviewService.createReview(review);
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+    @PatchMapping("")
+    public ResponseEntity<ResponseObject> updateReview(@Valid @RequestBody ReviewDto.UpdateReviewDto review) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        reviewService.updateReview(review);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 

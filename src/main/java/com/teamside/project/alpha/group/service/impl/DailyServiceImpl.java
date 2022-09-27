@@ -2,6 +2,7 @@ package com.teamside.project.alpha.group.service.impl;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.domain.DailyEntity;
 import com.teamside.project.alpha.group.model.dto.DailyDto;
@@ -22,10 +23,25 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void createDaily(DailyDto.CreateDailyDto dailyDto) throws CustomException {
+    public void createDaily(DailyDto dailyDto) throws CustomException {
         GroupEntity groupEntity = groupRepository.findByGroupId(dailyDto.getGroupId()).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         groupEntity.checkExistMember(CryptUtils.getMid());
 
         groupEntity.createDaily(new DailyEntity(dailyDto));
+    }
+
+    @Override
+    @Transactional
+    public void updateDaily(DailyDto.UpdateDailyDto dailyDto) throws CustomException {
+        GroupEntity groupEntity = groupRepository.findByGroupId(dailyDto.getGroupId()).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+        groupEntity.checkExistMember(CryptUtils.getMid());
+
+        DailyEntity dailyEntity = groupEntity.getDailyEntities()
+                .stream()
+                .filter(d -> d.getDailyId().equals(dailyDto.getDailyId()))
+                .findFirst()
+                .orElseThrow((() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST)));
+        dailyEntity.checkDailyMaster(CryptUtils.getMid());
+        dailyEntity.updateDaily(dailyDto);
     }
 }

@@ -31,7 +31,11 @@ public enum ApiExceptionCode {
     REVIEW_ALREADY_EXIST(811, "리뷰가 이미 존재합니다."),
     PLACE_NOT_EXIST(812, "장소가 존재하지 않습니다."),
     NOT_PARTICIPANT_IN_GROUP(813, "그룹에 속해있지 않습니다."),
+    REVIEW_NOT_EXIST(814, "리뷰가 존재하지 않습니다."),
+    DAILY_NOT_EXIST(815, "일상글이 존재하지 않습니다."),
 
+
+    VALIDATION_ERROR(998, "밸리데이션이 올바르지 않습니다."),
     SYSTEM_ERROR(999, "System Error"),
     ;
 

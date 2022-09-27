@@ -7,10 +7,7 @@ import com.teamside.project.alpha.group.model.dto.DailyDto;
 import com.teamside.project.alpha.group.service.DailyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/daily")
@@ -22,9 +19,15 @@ public class DailyController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseObject> createDaily(@RequestBody DailyDto.CreateDailyDto dailyDto) throws CustomException {
+    public ResponseEntity<ResponseObject> createDaily(@RequestBody DailyDto dailyDto) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         dailyService.createDaily(dailyDto);
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+    @PatchMapping
+    public ResponseEntity<ResponseObject> updateDaily(@RequestBody DailyDto.UpdateDailyDto dailyDto) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        dailyService.updateDaily(dailyDto);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 }

@@ -145,4 +145,9 @@ public class GroupEntity extends TimeEntity {
         this.groupId = groupId;
     }
 
+    public void checkGroupMaster(String mid) {
+        if (!this.master.getMid().equals(mid)) {
+            throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
+        }
+    }
 }

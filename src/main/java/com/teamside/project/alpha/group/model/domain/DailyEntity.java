@@ -1,5 +1,7 @@
 package com.teamside.project.alpha.group.model.domain;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.dto.DailyDto;
@@ -38,11 +40,22 @@ public class DailyEntity extends TimeEntity {
     @JoinColumn(name = "MASTER",  referencedColumnName = "MID")
     private MemberEntity master;
 
-    public DailyEntity(DailyDto.CreateDailyDto dailyDto) {
+    public DailyEntity(DailyDto dailyDto) {
         this.title = dailyDto.getTitle();
         this.content = dailyDto.getContent();
         this.images = String.join(",", dailyDto.getImages());
         this.group = new GroupEntity(dailyDto.getGroupId());
         this.master = new MemberEntity(CryptUtils.getMid());
+    }
+    public void updateDaily(DailyDto.UpdateDailyDto dailyDto) {
+        this.title = dailyDto.getTitle();
+        this.content = dailyDto.getContent();
+        this.images = String.join(",", dailyDto.getImages());
+    }
+
+    public void checkDailyMaster(String mid) {
+        if (!this.master.getMid().equals(mid)) {
+            throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
+        }
     }
 }

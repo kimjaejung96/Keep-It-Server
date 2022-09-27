@@ -1,5 +1,7 @@
 package com.teamside.project.alpha.group.model.domain;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
@@ -42,11 +44,23 @@ public class ReviewEntity extends TimeEntity {
     @Column(name = "IMAGES", columnDefinition = "varchar(1000)")
     private String images;
 
-    public ReviewEntity(ReviewDto.CreateReviewDto review) {
+    public ReviewEntity(ReviewDto review) {
         this.group = new GroupEntity(review.getGroupId());
         this.place = new PlaceEntity(review.getPlaceId());
         this.master = new MemberEntity(CryptUtils.getMid());
         this.content = review.getContent();
         this.images = String.join(",", review.getImages());
+    }
+
+    public void updateReview(ReviewDto.UpdateReviewDto dto) {
+        this.place = new PlaceEntity(dto.getPlaceId());
+        this.content = dto.getContent();
+        this.images = String.join(",", dto.getImages());
+    }
+
+    public void checkReviewMaster(String mid) {
+        if (!this.master.getMid().equals(mid)) {
+            throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
+        }
     }
 }
