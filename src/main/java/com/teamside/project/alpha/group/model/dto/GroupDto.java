@@ -137,8 +137,8 @@ public class GroupDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ResponseMyGroupDto {
-        List<MyGroupDto> favoriteGroupList;
-        List<MyGroupDto> groupList;
+        private List<MyGroupDto> favoriteGroupList;
+        private List<MyGroupDto> groupList;
 
         public ResponseMyGroupDto(List<MyGroupDto> favoriteGroupList, List<MyGroupDto> groupList) {
             this.favoriteGroupList = favoriteGroupList;
@@ -151,9 +151,9 @@ public class GroupDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ResponseSearchGroupDto {
-        Long totalCount;
-        Long lastGroupId;
-        List<SearchGroupDto> groupList;
+        private Long totalCount;
+        private Long lastGroupId;
+        private List<SearchGroupDto> groupList;
 
         public ResponseSearchGroupDto(Long totalCount, Long lastGroupId, List<SearchGroupDto> groupList) {
             this.totalCount = totalCount;
@@ -164,6 +164,25 @@ public class GroupDto {
 
     @Getter
     public static class RequestUpdateOrdDto {
-        List<MyGroupDto> groupList = new ArrayList<>();
+        private List<MyGroupDto> groupList = new ArrayList<>();
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class GroupMemberProfileDto {
+        private String mid;
+        private String name;
+        private Boolean isFollow;
+        private Long reviewCount;
+        private Long dailyCount;
+
+        @QueryProjection
+        public GroupMemberProfileDto(String mid, String name, Boolean isFollow, Long reviewCount, Long dailyCount) {
+            this.mid = mid;
+            this.name = name;
+            this.isFollow = isFollow;
+            this.reviewCount = reviewCount;
+            this.dailyCount = dailyCount;
+        }
     }
 }

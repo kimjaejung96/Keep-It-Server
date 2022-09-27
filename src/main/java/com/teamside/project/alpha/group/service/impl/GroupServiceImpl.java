@@ -224,4 +224,9 @@ public class GroupServiceImpl implements GroupService {
         }
         return groupList;
     }
+
+    @Override
+    public GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId) {
+        return groupRepository.groupMemberProfile(groupId, memberId);
+    }
 }

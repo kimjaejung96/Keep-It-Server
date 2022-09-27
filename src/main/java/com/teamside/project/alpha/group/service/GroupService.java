@@ -22,4 +22,5 @@ public interface GroupService {
     GroupDto.ResponseSearchGroupDto searchGroup(Long lastGroupId, Long pageSize, String search);
     void updateOrd(GroupDto.RequestUpdateOrdDto request) throws CustomException;
     List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
+    GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId);
 }

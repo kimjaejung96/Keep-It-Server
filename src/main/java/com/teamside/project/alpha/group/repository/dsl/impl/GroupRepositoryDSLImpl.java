@@ -9,10 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
-import com.teamside.project.alpha.group.model.domain.GroupMemberMappingEntity;
-import com.teamside.project.alpha.group.model.domain.QGroupMemberMappingEntity;
-import com.teamside.project.alpha.group.model.domain.QReviewEntity;
-import com.teamside.project.alpha.group.model.domain.QStatReferralGroupEntity;
+import com.teamside.project.alpha.group.model.domain.*;
 import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
@@ -30,6 +27,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     QGroupEntity group = QGroupEntity.groupEntity;
     QReviewEntity review = QReviewEntity.reviewEntity;
+
+    QDailyEntity daily = QDailyEntity.dailyEntity;
     QMemberEntity member = QMemberEntity.memberEntity;
     QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
     QMemberFollowEntity memberFollow = QMemberFollowEntity.memberFollowEntity;
@@ -249,5 +248,30 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     public BooleanExpression ltGroupId(Long lastGroupId) {
         return lastGroupId != null ? group.groupId.lt(lastGroupId) : null;
+    }
+
+    @Override
+    public GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId) {
+        // mid - targetMid
+        return jpaQueryFactory
+                .select(new QGroupDto_GroupMemberProfileDto(
+                        member.mid,
+                        member.name,
+                        new CaseBuilder()
+                                .when(memberFollow.mid.isNull())
+                                .then(false)
+                                .otherwise(true),
+                        review.count(),
+                        daily.count()
+                ))
+                .from(member)
+                .leftJoin(review)
+                    .on(review.master.mid.eq(member.mid).and(review.group.groupId.eq(groupId)))
+                .leftJoin(daily)
+                    .on(daily.master.mid.eq(member.mid).and(daily.group.groupId.eq(groupId)))
+                .leftJoin(memberFollow)
+                    .on(memberFollow.mid.eq(member.mid).and(memberFollow.targetMid.eq(CryptUtils.getMid())))
+                .where(member.mid.eq(memberId))
+                .fetchOne();
     }
 }

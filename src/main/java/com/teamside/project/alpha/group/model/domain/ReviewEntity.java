@@ -45,9 +45,6 @@ public class ReviewEntity extends TimeEntity {
     @Column(name = "IMAGES", columnDefinition = "varchar(1000)")
     private String images;
 
-    @Column(name = "STATUS", columnDefinition = "boolean")
-    private Boolean status;
-
     @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReviewCommentEntity> reviewCommentEntities;
 

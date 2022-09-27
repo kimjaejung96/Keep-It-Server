@@ -138,6 +138,14 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/{groupId}/members/{memberId}")
+    public ResponseEntity<ResponseObject> groupMemberProfile(@PathVariable Long groupId,
+                                                             @PathVariable String memberId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.groupMemberProfile(groupId, memberId));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
 
     @GetMapping("/random")
     public ResponseEntity<ResponseObject> random(){

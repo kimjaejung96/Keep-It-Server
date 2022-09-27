@@ -19,4 +19,5 @@ public interface GroupRepositoryDSL {
     GroupDto.GroupInfoDto selectGroup(Long groupId);
     List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
     List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize);
+    GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId);
 }
