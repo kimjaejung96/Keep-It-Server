@@ -279,7 +279,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<ReviewDto.SelectReviewsInGroup> selectReviewsIngroup(Long groupId, String targetId, Long pageSize, Long lastReviewId) {
+    public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(Long groupId, String targetId, Long pageSize, Long lastReviewId) {
         return jpaQueryFactory.select(new QReviewDto_SelectReviewsInGroup(
                 new QReviewDto_SelectReviewsInGroup_Review(
                         review.reviewId,
@@ -301,8 +301,27 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(review)
                 .innerJoin(member).on(review.master.mid.eq(member.mid))
                 .innerJoin(place).on(review.place.placeId.eq(place.placeId))
-                .where(review.group.groupId.eq(groupId), eqMaster(targetId), ltReviewId(lastReviewId))
+                .where(review.group.groupId.eq(groupId), eqReviewMaster(targetId), ltReviewId(lastReviewId))
                 .orderBy(review.reviewId.desc())
+                .limit(pageSize)
+                .fetch();
+    }
+
+    @Override
+    public List<DailyDto.DailyInGroup> selectDailyInGroup(Long groupId, String targetId, Long pageSize, Long lastDailyId) {
+        return jpaQueryFactory
+                .select(new QDailyDto_DailyInGroup(
+                        daily.dailyId,
+                        daily.title,
+                        daily.image,
+                        member.name,
+                        daily.dailyCommentEntities.size(),
+                        daily.createTime.stringValue()
+                ))
+                .from(daily)
+                .join(daily.master, member)
+                .where(daily.group.groupId.eq(groupId), eqDailyMaster(targetId), ltDailyId(lastDailyId))
+                .orderBy(daily.dailyId.desc())
                 .limit(pageSize)
                 .fetch();
     }
@@ -312,8 +331,17 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
 
-    private BooleanExpression eqMaster(String targetId) {
+    private BooleanExpression eqReviewMaster(String targetId) {
         return targetId != null ? review.master.mid.eq(targetId) : null;
+    }
+
+    private BooleanExpression ltDailyId(Long lastDailyId) {
+        return lastDailyId != null ? daily.dailyId.lt(lastDailyId) : null;
+    }
+
+
+    private BooleanExpression eqDailyMaster(String targetId) {
+        return targetId != null ? daily.master.mid.eq(targetId) : null;
     }
 
     /**

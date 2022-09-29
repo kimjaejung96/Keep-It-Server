@@ -7,6 +7,7 @@ import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.constant.GroupConstant;
 import com.teamside.project.alpha.group.model.domain.GroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.dto.DailyDto;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
@@ -233,18 +234,17 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(Long groupId, String targetMid, Long pageSize, Long lastReviewId) {
-        List<ReviewDto.SelectReviewsInGroup> responseSelectReviewsInGroup = groupRepository.selectReviewsIngroup(groupId, targetMid, pageSize, lastReviewId);
-        Long responseLastGroupId;
-        if (responseSelectReviewsInGroup.isEmpty()) {
-            responseLastGroupId = null;
-        } else {
-            responseLastGroupId = responseSelectReviewsInGroup.get(responseSelectReviewsInGroup.size()-1).getReview().getReviewId();
-        }
-        return new ReviewDto.ResponseSelectReviewsInGroup(responseSelectReviewsInGroup, responseLastGroupId);
+        List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, lastReviewId);
+        Long responseLastGroupId = reviewsInGroup.isEmpty() ? null : reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewId();
+
+        return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId);
     }
 
     @Override
-    public Object selectDailyInGroup(Long groupId, String targetMid, Long pageSize, Long lastDailyId) {
-        return null;
+    public DailyDto.ResponseDailyInGroup selectDailyInGroup(Long groupId, String targetMid, Long pageSize, Long lastDailyId) {
+        List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailyId);
+        Long responseLastDailyId = dailyInGroup.isEmpty() ? null : dailyInGroup.get(dailyInGroup.size() - 1).getDailyId();
+
+        return new DailyDto.ResponseDailyInGroup(dailyInGroup, responseLastDailyId);
     }
 }
