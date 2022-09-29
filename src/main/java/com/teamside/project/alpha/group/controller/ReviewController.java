@@ -35,6 +35,11 @@ public class ReviewController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 리뷰 상세 조회
+     * @param reviewId
+     * @return
+     */
     @GetMapping("/{reviewId}")
     public ResponseEntity<ResponseObject> selectReviewDetail(@PathVariable Long reviewId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

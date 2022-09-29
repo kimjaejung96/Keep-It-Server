@@ -175,6 +175,11 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 홈 화면
+     * @param groupId
+     * @return
+     */
     @GetMapping("/{groupId}/home")
     public ResponseEntity<ResponseObject> groupHomePage(@PathVariable Long groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
