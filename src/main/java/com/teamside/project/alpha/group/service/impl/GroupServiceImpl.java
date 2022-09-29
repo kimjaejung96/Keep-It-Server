@@ -8,6 +8,7 @@ import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.constant.GroupConstant;
 import com.teamside.project.alpha.group.model.domain.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
+import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.GroupRepository;
@@ -228,5 +229,22 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId) {
         return groupRepository.groupMemberProfile(groupId, memberId);
+    }
+
+    @Override
+    public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(Long groupId, String targetMid, Long pageSize, Long lastReviewId) {
+        List<ReviewDto.SelectReviewsInGroup> responseSelectReviewsInGroup = groupRepository.selectReviewsIngroup(groupId, targetMid, pageSize, lastReviewId);
+        Long responseLastGroupId;
+        if (responseSelectReviewsInGroup.isEmpty()) {
+            responseLastGroupId = null;
+        } else {
+            responseLastGroupId = responseSelectReviewsInGroup.get(responseSelectReviewsInGroup.size()-1).getReview().getReviewId();
+        }
+        return new ReviewDto.ResponseSelectReviewsInGroup(responseSelectReviewsInGroup, responseLastGroupId);
+    }
+
+    @Override
+    public Object selectDailyInGroup(Long groupId, String targetMid, Long pageSize, Long lastDailyId) {
+        return null;
     }
 }

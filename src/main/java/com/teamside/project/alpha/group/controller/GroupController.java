@@ -26,6 +26,21 @@ public class GroupController {
     public GroupController(GroupService groupService) {
         this.groupService = groupService;
     }
+    @GetMapping("/{groupId}/reviews")
+    public ResponseEntity<ResponseObject> selectReviewsInGroup(@PathVariable Long groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastReviewId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.selectReviewsInGroup(groupId, targetMid, pageSize, lastReviewId));
+
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+    @GetMapping("/{groupId}/daily")
+    public ResponseEntity<ResponseObject> selectDailyInGroup(@PathVariable Long groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastDailyId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.selectDailyInGroup(groupId, targetMid, pageSize, lastDailyId));
+
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
 
     @PostMapping
     public ResponseEntity<ResponseObject> createGroup(@RequestBody @Valid GroupDto group) throws CustomException {
@@ -104,7 +119,7 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @PostMapping("/{groupId}/members/{memberId}")
-    public ResponseEntity<ResponseObject> invateMember(@PathVariable Long groupId,
+    public ResponseEntity<ResponseObject> inviteMember(@PathVariable Long groupId,
                                                        @PathVariable String memberId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.inviteMember(groupId, memberId);

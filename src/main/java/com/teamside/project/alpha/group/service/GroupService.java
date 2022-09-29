@@ -2,6 +2,7 @@ package com.teamside.project.alpha.group.service;
 
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
+import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 
 import java.util.List;
@@ -23,4 +24,7 @@ public interface GroupService {
     void updateOrd(GroupDto.RequestUpdateOrdDto request) throws CustomException;
     List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
     GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId);
+    ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(Long groupId, String targetMid, Long pageSize, Long lastReviewId);
+
+    Object selectDailyInGroup(Long groupId, String targetMid, Long pageSize, Long lastDailyId);
 }

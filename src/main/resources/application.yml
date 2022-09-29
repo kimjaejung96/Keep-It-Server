@@ -1,6 +1,11 @@
 server:
   port: 11122
-
+  tomcat:
+    threads:
+      max: 200
+      min-spare: 10
+      
+      
 spring:
   data:
     jdbc:
@@ -14,7 +19,7 @@ spring:
     username: alpha
     password: alpha#!12
     hikari:
-      maximum-pool-size: 1
+      maximum-pool-size: 15
       connection-test-query: SELECT 1
   jpa:
     show-sql: true
@@ -53,8 +58,8 @@ alpha:
 jwt:
   accessToken:
     #단위 : 분
-    validTime: 10
+    validTime: 20000
   refreshToken:
-    validTime: 30
+    validTime: 30000
   secret: a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDZraW1qYWVqdW5ndGVzdHNlY3JldHNrZXkwMTA1MDY0MTQwNmtpbWphZWp1bmd0ZXN0c2VjcmV0c2tleTAxMDUwNjQxNDA2a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDY=
 #  secret: kimjaejungtestsecretskey01050641406  * 4

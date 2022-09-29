@@ -34,4 +34,21 @@ public class ReviewController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<ResponseObject> selectReviewDetail(@PathVariable Long reviewId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(reviewService.selectReviewDetail(reviewId));
+
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/{reviewId}/comment")
+    public ResponseEntity<ResponseObject> createComment(@PathVariable Long reviewId, @RequestParam(required = false)Long parentCommentId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(reviewService.selectReviewDetail(reviewId));
+
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
 }

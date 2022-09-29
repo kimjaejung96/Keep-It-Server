@@ -30,8 +30,8 @@ public class DailyEntity extends TimeEntity {
     @Column(name = "CONTENT", columnDefinition = "varchar(2000)")
     private String content;
 
-    @Column(name = "IMAGES", columnDefinition = "varchar(1000)")
-    private String images;
+    @Column(name = "IMAGE", columnDefinition = "varchar(1000)")
+    private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GROUP_ID",  referencedColumnName = "GROUP_ID")
@@ -47,14 +47,14 @@ public class DailyEntity extends TimeEntity {
     public DailyEntity(DailyDto dailyDto) {
         this.title = dailyDto.getTitle();
         this.content = dailyDto.getContent();
-        this.images = String.join(",", dailyDto.getImages());
+        this.image = dailyDto.getImage();
         this.group = new GroupEntity(dailyDto.getGroupId());
         this.master = new MemberEntity(CryptUtils.getMid());
     }
     public void updateDaily(DailyDto.UpdateDailyDto dailyDto) {
         this.title = dailyDto.getTitle();
         this.content = dailyDto.getContent();
-        this.images = String.join(",", dailyDto.getImages());
+        this.image = dailyDto.getImage();
     }
 
     public void checkDailyMaster(String mid) {

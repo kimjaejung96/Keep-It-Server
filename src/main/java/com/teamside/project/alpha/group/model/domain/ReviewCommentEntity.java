@@ -3,6 +3,7 @@ package com.teamside.project.alpha.group.model.domain;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "REVIEW_COMMENT")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 public class ReviewCommentEntity extends TimeEntity {

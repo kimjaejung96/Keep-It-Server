@@ -57,4 +57,9 @@ public class ReviewServiceImpl implements ReviewService {
             throw new CustomRuntimeException(ApiExceptionCode.PLACE_NOT_EXIST);
         }
     }
+
+    @Override
+    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long reviewId) {
+        return groupRepository.selectReviewDetail(reviewId);
+    }
 }

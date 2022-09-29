@@ -51,10 +51,10 @@ public class MemberEntity extends TimeEntity {
     @Enumerated(EnumType.STRING)
     private SignUpType type;
 
-    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private TermsEntity termsEntity;
 
-    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     private RefreshTokenEntity refreshTokenEntity;
 
     @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)

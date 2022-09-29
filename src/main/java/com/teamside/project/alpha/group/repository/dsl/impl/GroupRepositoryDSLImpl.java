@@ -16,6 +16,7 @@ import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
 import com.teamside.project.alpha.member.model.domain.QMemberFollowEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
+import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
@@ -26,6 +27,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     private final JPAQueryFactory jpaQueryFactory;
 
     QGroupEntity group = QGroupEntity.groupEntity;
+    QReviewCommentEntity reviewComment = QReviewCommentEntity.reviewCommentEntity;
+    QPlaceEntity place = QPlaceEntity.placeEntity;
     QReviewEntity review = QReviewEntity.reviewEntity;
 
     QDailyEntity daily = QDailyEntity.dailyEntity;
@@ -273,5 +276,108 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                     .on(memberFollow.mid.eq(member.mid).and(memberFollow.targetMid.eq(CryptUtils.getMid())))
                 .where(member.mid.eq(memberId))
                 .fetchOne();
+    }
+
+    @Override
+    public List<ReviewDto.SelectReviewsInGroup> selectReviewsIngroup(Long groupId, String targetId, Long pageSize, Long lastReviewId) {
+        return jpaQueryFactory.select(new QReviewDto_SelectReviewsInGroup(
+                new QReviewDto_SelectReviewsInGroup_Review(
+                        review.reviewId,
+                        review.content,
+                        review.reviewCommentEntities.size(),
+                        review.createTime,
+                        review.images),
+                        new QReviewDto_SelectReviewsInGroup_Member(
+                                member.mid,
+                                member.name,
+                                member.profileUrl
+                        ),
+                        new QReviewDto_SelectReviewsInGroup_Place(
+                                place.placeId,
+                                place.placeName,
+                                place.roadAddress
+                        ))
+                )
+                .from(review)
+                .innerJoin(member).on(review.master.mid.eq(member.mid))
+                .innerJoin(place).on(review.place.placeId.eq(place.placeId))
+                .where(review.group.groupId.eq(groupId), eqMaster(targetId), ltReviewId(lastReviewId))
+                .orderBy(review.reviewId.desc())
+                .limit(pageSize)
+                .fetch();
+    }
+
+    private BooleanExpression ltReviewId(Long lastReviewId) {
+        return lastReviewId != null ? review.reviewId.lt(lastReviewId) : null;
+    }
+
+
+    private BooleanExpression eqMaster(String targetId) {
+        return targetId != null ? review.master.mid.eq(targetId) : null;
+    }
+
+    /**
+     * select m.NAME ,m.PROFILE_URL, p.PLACE_NAME , p.ADDRESS , r.IMAGES , r.CREATE_DT
+     * from review r
+     * inner join `member` m on m.MID = r.MASTER
+     * inner join place p on r.PLACE_ID = p.PLACE_ID
+     * where r.REVIEW_ID = 5;
+     *
+     *
+     * select rc.COMMENT_ID , m.NAME ,m.MID , m.PROFILE_URL , rc.COMMENT , rc.CREATE_DT
+     * from review_comment rc
+     * inner join `member` m on m.MID = rc .MASTER_MID
+     * where rc.REVIEW_ID = 5;
+     *
+     * @param reviewId
+     * @return
+     */
+    @Override
+    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long reviewId) {
+        ReviewDto.ReviewDetail reviewDetail = jpaQueryFactory.select(new QReviewDto_ReviewDetail(review, member, place))
+                .from(review)
+                .innerJoin(member).on(member.mid.eq(review.master.mid))
+                .innerJoin(place).on(review.place.placeId.eq(place.placeId))
+                .where(review.reviewId.eq(reviewId))
+                .fetchFirst();
+        List<CommentDto> comments = getComments(reviewId);
+        return new ReviewDto.ResponseReviewDetail(reviewDetail, comments);
+    }
+
+    private List<CommentDto> getComments(Long reviewId) {
+//         List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member))
+//                .from(reviewComment)
+//                .innerJoin(member).on(member.mid.eq(reviewComment.master.mid))
+//                .where(reviewComment.review.reviewId.eq(reviewId))
+//                .orderBy(reviewComment.commentId.desc())
+//                .fetch();
+//
+//          result.stream()
+//                  .filter(commentDto ->  commentDto.getParentCommentId() != null)
+//                  .forEach(comment -> {
+//                      result.stream()
+//                      .filter(parent -> Objects.equals(comment.getParentCommentId(), parent.getCommentId()))
+//                      .forEach(dd -> {
+//                          dd.insertChildComments(comment);
+//                          result.remove(dd);
+//                      }
+//              );
+//          });
+        List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member))
+                .from(reviewComment)
+                .innerJoin(member).on(member.mid.eq(reviewComment.master.mid))
+                .where(reviewComment.review.reviewId.eq(reviewId))
+                .orderBy(reviewComment.commentId.desc())
+                .fetch();
+
+        result.stream()
+                .filter(commentDto ->  commentDto.getParentCommentId() != null)
+                .forEach(comment -> result.stream()
+                        .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
+                        .forEach(dd -> dd.insertChildComments(comment)
+                        ));
+        result.removeIf(d -> d.getParentCommentId() != null);
+
+        return result;
     }
 }
