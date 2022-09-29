@@ -33,6 +33,7 @@ public enum ApiExceptionCode {
     NOT_PARTICIPANT_IN_GROUP(813, "그룹에 속해있지 않습니다."),
     REVIEW_NOT_EXIST(814, "리뷰가 존재하지 않습니다."),
     DAILY_NOT_EXIST(815, "일상글이 존재하지 않습니다."),
+    COMMENT_NOT_ACCESS(816, "대댓글의 댓글의 리뷰가 아닙니다."),
 
 
     VALIDATION_ERROR(998, "밸리데이션이 올바르지 않습니다."),

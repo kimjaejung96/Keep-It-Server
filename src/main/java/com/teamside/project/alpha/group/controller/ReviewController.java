@@ -2,6 +2,7 @@ package com.teamside.project.alpha.group.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
+import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.service.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -43,10 +44,17 @@ public class ReviewController {
     }
 
 
-    @GetMapping("/{reviewId}/comment")
-    public ResponseEntity<ResponseObject> createComment(@PathVariable Long reviewId, @RequestParam(required = false)Long parentCommentId) {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(reviewService.selectReviewDetail(reviewId));
+    /**
+     * 리뷰에 댓글, 대댓글 작성 API
+     * @param comment 댓글 dto
+     *                parentId -> nullable(대댓글 작성용)
+     * @param reviewId 댓글 작성할 리뷰 id
+     * @return
+     */
+    @PostMapping("/{reviewId}/comment")
+    public ResponseEntity<ResponseObject> createComment(@RequestBody CommentDto.CreateComment comment, @PathVariable Long reviewId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
+        reviewService.createComment(comment, reviewId);
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }

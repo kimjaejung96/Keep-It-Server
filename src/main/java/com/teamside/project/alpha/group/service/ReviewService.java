@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.group.service;
 
+import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 
 public interface ReviewService {
@@ -7,4 +8,6 @@ public interface ReviewService {
     void updateReview(ReviewDto.UpdateReviewDto review);
 
     ReviewDto.ResponseReviewDetail selectReviewDetail(Long reviewId);
+
+    void createComment(CommentDto.CreateComment comment, Long reviewId);
 }

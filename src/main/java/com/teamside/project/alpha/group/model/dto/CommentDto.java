@@ -37,4 +37,14 @@ public class CommentDto {
         this.parentCommentId = reviewComment.getParentComment() != null?reviewComment.getParentComment().getCommentId():null;
         this.childComments = new ArrayList<>();
     }
+
+    // TODO: 2022/09/29 밸리데이션 확인해야함.
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class CreateComment {
+        private Long groupId;
+        private String comment;
+        private String image;
+        private Long parentCommentId;
+    }
 }

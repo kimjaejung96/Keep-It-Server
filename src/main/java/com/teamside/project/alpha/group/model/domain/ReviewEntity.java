@@ -4,6 +4,7 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
@@ -56,6 +57,10 @@ public class ReviewEntity extends TimeEntity {
         this.images = String.join(",", review.getImages());
     }
 
+    public ReviewEntity(Long reviewId) {
+        this.reviewId = reviewId;
+    }
+
     public void updateReview(ReviewDto.UpdateReviewDto dto) {
         this.place = new PlaceEntity(dto.getPlaceId());
         this.content = dto.getContent();
@@ -66,5 +71,14 @@ public class ReviewEntity extends TimeEntity {
         if (!this.master.getMid().equals(mid)) {
             throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
         }
+    }
+
+    public void createComment(CommentDto.CreateComment comment, Long reviewId) {
+        if (comment.getParentCommentId() == null) {
+            this.reviewCommentEntities.add(ReviewCommentEntity.createComment(comment, reviewId));
+        } else {
+            this.reviewCommentEntities.add(ReviewCommentEntity.createCoComment(comment, reviewId));
+        }
+
     }
 }

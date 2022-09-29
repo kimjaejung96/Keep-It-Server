@@ -4,6 +4,7 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.domain.ReviewEntity;
+import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
@@ -11,6 +12,8 @@ import com.teamside.project.alpha.group.service.ReviewService;
 import com.teamside.project.alpha.place.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -61,5 +64,26 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewDto.ResponseReviewDetail selectReviewDetail(Long reviewId) {
         return groupRepository.selectReviewDetail(reviewId);
+    }
+
+    @Override
+    @Transactional
+    public void createComment(CommentDto.CreateComment comment, Long reviewId) {
+        GroupEntity group = groupRepository.findByGroupId(comment.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(CryptUtils.getMid());
+
+        ReviewEntity review = group.getReviewEntities().stream()
+                .filter(r -> Objects.equals(r.getReviewId(), reviewId))
+                .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+
+        if (comment.getParentCommentId() != null) {
+            review.getReviewCommentEntities().stream()
+                    .filter(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))
+                    .findAny()
+                    .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS));
+        }
+
+        review.createComment(comment, reviewId);
+
     }
 }
