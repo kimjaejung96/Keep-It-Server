@@ -30,36 +30,6 @@ public class ReviewDto {
         private long reviewId;
     }
 
-    /**
-     * dailyId, DailyTitle, dailyImage, createDt
-     * commentCount,
-     * memberName, memberId
-     */
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class SelectDailyInGroup {
-        private Long dailyId;
-        private String dailyTitle;
-        private String dailyImageUrl;
-        private String createDt;
-        private Long commentCount;
-        private String memberId;
-        private String memberName;
-
-        @QueryProjection
-        public SelectDailyInGroup(Long dailyId, String dailyTitle, String dailyImageUrl, LocalDateTime createDt, Long commentCount, String memberId, String memberName) {
-            this.dailyId = dailyId;
-            this.dailyTitle = dailyTitle;
-            this.dailyImageUrl = dailyImageUrl;
-            this.createDt = String.valueOf(createDt);
-            this.commentCount = commentCount;
-            this.memberId = memberId;
-            this.memberName = memberName;
-        }
-    }
-
-
-
     @Getter
     public static class ResponseSelectReviewsInGroup {
         private final List<SelectReviewsInGroup> reviewData;
