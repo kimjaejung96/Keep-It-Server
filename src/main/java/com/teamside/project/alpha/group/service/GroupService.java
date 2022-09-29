@@ -27,4 +27,6 @@ public interface GroupService {
     ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(Long groupId, String targetMid, Long pageSize, Long lastReviewId);
 
     Object selectDailyInGroup(Long groupId, String targetMid, Long pageSize, Long lastDailyId);
+
+    GroupDto.GroupHome selectGroupHome(Long groupId);
 }

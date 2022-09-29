@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -246,5 +247,19 @@ public class GroupServiceImpl implements GroupService {
         Long responseLastDailyId = dailyInGroup.isEmpty() ? null : dailyInGroup.get(dailyInGroup.size() - 1).getDailyId();
 
         return new DailyDto.ResponseDailyInGroup(dailyInGroup, responseLastDailyId);
+    }
+
+    @Override
+    @Transactional
+    public GroupDto.GroupHome selectGroupHome(Long groupId) {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(CryptUtils.getMid());
+
+        return new GroupDto.GroupHome(group.getName(),
+                group.getGroupMemberMappingEntity().stream().count(),
+                group.getReviewEntities().stream().filter(d-> Objects.equals(d.getMaster().getMid(), CryptUtils.getMid())).count(),
+                group.getReviewEntities().stream().count(),
+                group.getDailyEntities().stream().count()
+                );
     }
 }

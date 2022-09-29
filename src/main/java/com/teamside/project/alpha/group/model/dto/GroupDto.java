@@ -164,7 +164,7 @@ public class GroupDto {
 
     @Getter
     public static class RequestUpdateOrdDto {
-        private List<MyGroupDto> groupList = new ArrayList<>();
+        private final List<MyGroupDto> groupList = new ArrayList<>();
     }
 
     @Getter
@@ -181,6 +181,24 @@ public class GroupDto {
             this.mid = mid;
             this.name = name;
             this.isFollow = isFollow;
+            this.reviewCount = reviewCount;
+            this.dailyCount = dailyCount;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class GroupHome {
+        private String groupName;
+        private long memberCount;
+        private long myReviewCount;
+        private long reviewCount;
+        private long dailyCount;
+
+        public GroupHome(String groupName, long memberCount, long myReviewCount, long reviewCount, long dailyCount) {
+            this.groupName = groupName;
+            this.memberCount = memberCount;
+            this.myReviewCount = myReviewCount;
             this.reviewCount = reviewCount;
             this.dailyCount = dailyCount;
         }

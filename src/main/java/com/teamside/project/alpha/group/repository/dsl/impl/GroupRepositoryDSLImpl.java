@@ -408,4 +408,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
         return result;
     }
+
+    public GroupDto.GroupHome selectGroupHome(Long groupId) {
+
+        return null;
+    }
 }

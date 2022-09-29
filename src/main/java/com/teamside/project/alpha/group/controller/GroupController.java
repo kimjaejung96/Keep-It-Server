@@ -73,6 +73,14 @@ public class GroupController {
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+
+    /**
+     * 그룹 - 그룹 정보
+     *
+     * @param groupId
+     * @return
+     * @throws CustomException
+     */
     @GetMapping("/{groupId}")
     public ResponseEntity<ResponseObject> selectGroup(@PathVariable Long groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -145,6 +153,12 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 - 그룹 찾기
+     * @param lastGroupId
+     * @param pageSize
+     * @return
+     */
     @GetMapping
     public ResponseEntity<ResponseObject> selectGroups(@RequestParam(required = false) Long lastGroupId,
                                                        @RequestParam Long pageSize) {
@@ -158,6 +172,13 @@ public class GroupController {
                                                              @PathVariable String memberId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.groupMemberProfile(groupId, memberId));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/{groupId}/home")
+    public ResponseEntity<ResponseObject> groupHomePage(@PathVariable Long groupId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.selectGroupHome(groupId));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
