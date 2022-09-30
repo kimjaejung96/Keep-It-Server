@@ -112,21 +112,26 @@ public class ReviewDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ReviewDetail {
+        private String reviewContent;
         private String memberName;
         private String memberProfileUrl;
         private String placeName;
         private String placeAddress;
         private List<String> reviewImagesUrl;
         private String reviewCreateDt;
+        private Long bookMarkCount;
 
         @QueryProjection
+        // TODO: 2022/09/30 bookMark 테이블 생성 후 DTO넣어줘야함.
         public ReviewDetail(ReviewEntity review, MemberEntity member, PlaceEntity place) {
+            this.reviewContent = review.getContent();
             this.memberName = member.getName();
             this.memberProfileUrl = member.getProfileUrl();
             this.placeName = place.getPlaceName();
             this.placeAddress = place.getAddress();
             this.reviewImagesUrl = List.of(review.getImages().split(","));
             this.reviewCreateDt = String.valueOf(review.getCreateTime());
+            this.bookMarkCount = 0L;
         }
     }
 
