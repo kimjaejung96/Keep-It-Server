@@ -361,7 +361,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
      * @return
      */
     @Override
-    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long reviewId) {
+    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId) {
         ReviewDto.ReviewDetail reviewDetail = jpaQueryFactory.select(new QReviewDto_ReviewDetail(review, member, place))
                 .from(review)
                 .innerJoin(member).on(member.mid.eq(review.master.mid))

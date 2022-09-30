@@ -4,6 +4,6 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.group.model.dto.DailyDto;
 
 public interface DailyService {
-    void createDaily(DailyDto dailyDto) throws CustomException;
-    void updateDaily(DailyDto.UpdateDailyDto dailyDto) throws CustomException;
+    void createDaily(Long groupId, DailyDto dailyDto) throws CustomException;
+    void updateDaily(Long groupId, DailyDto.UpdateDailyDto dailyDto) throws CustomException;
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/reviews")
+@RequestMapping("/groups/{groupId}/reviews")
 @Validated
 public class ReviewController {
     private final ReviewService reviewService;
@@ -23,15 +23,15 @@ public class ReviewController {
     }
 
     @PostMapping("")
-    public ResponseEntity<ResponseObject> createReview(@Valid @RequestBody ReviewDto review) {
+    public ResponseEntity<ResponseObject> createReview(@PathVariable Long groupId, @Valid @RequestBody ReviewDto review) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
-        reviewService.createReview(review);
+        reviewService.createReview(groupId, review);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
     @PatchMapping("")
-    public ResponseEntity<ResponseObject> updateReview(@Valid @RequestBody ReviewDto.UpdateReviewDto review) {
+    public ResponseEntity<ResponseObject> updateReview(@PathVariable Long groupId, @Valid @RequestBody ReviewDto.UpdateReviewDto review) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        reviewService.updateReview(review);
+        reviewService.updateReview(groupId, review);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
@@ -41,9 +41,9 @@ public class ReviewController {
      * @return
      */
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ResponseObject> selectReviewDetail(@PathVariable Long reviewId) {
+    public ResponseEntity<ResponseObject> selectReviewDetail(@PathVariable Long groupId, @PathVariable Long reviewId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(reviewService.selectReviewDetail(reviewId));
+        responseObject.setBody(reviewService.selectReviewDetail(groupId, reviewId));
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
@@ -57,9 +57,17 @@ public class ReviewController {
      * @return
      */
     @PostMapping("/{reviewId}/comment")
-    public ResponseEntity<ResponseObject> createComment(@RequestBody CommentDto.CreateComment comment, @PathVariable Long reviewId) {
+    public ResponseEntity<ResponseObject> createComment(@PathVariable Long groupId, @RequestBody CommentDto.CreateComment comment, @PathVariable Long reviewId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
-        reviewService.createComment(comment, reviewId);
+        reviewService.createComment(groupId, comment, reviewId);
+
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
+    @PostMapping("/{reviewId}/keep")
+    public ResponseEntity<ResponseObject> keepReview(@PathVariable Long groupId, @PathVariable Long reviewId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        reviewService.keepReview(groupId, reviewId);
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }

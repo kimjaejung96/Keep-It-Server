@@ -44,11 +44,11 @@ public class DailyEntity extends TimeEntity {
     @OneToMany(mappedBy = "daily", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyCommentEntity> dailyCommentEntities;
 
-    public DailyEntity(DailyDto dailyDto) {
+    public DailyEntity(Long groupId, DailyDto dailyDto) {
         this.title = dailyDto.getTitle();
         this.content = dailyDto.getContent();
         this.image = dailyDto.getImage();
-        this.group = new GroupEntity(dailyDto.getGroupId());
+        this.group = new GroupEntity(groupId);
         this.master = new MemberEntity(CryptUtils.getMid());
     }
     public void updateDaily(DailyDto.UpdateDailyDto dailyDto) {

@@ -17,8 +17,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewDto {
     @NotNull
-    private long groupId;
-    @NotNull
     private long placeId;
     @Size(min = 15, max = 2000)
     private String content;

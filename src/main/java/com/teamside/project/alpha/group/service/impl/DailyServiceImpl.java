@@ -23,17 +23,17 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void createDaily(DailyDto dailyDto) throws CustomException {
-        GroupEntity groupEntity = groupRepository.findByGroupId(dailyDto.getGroupId()).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+    public void createDaily(Long groupId, DailyDto dailyDto) throws CustomException {
+        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         groupEntity.checkExistMember(CryptUtils.getMid());
 
-        groupEntity.createDaily(new DailyEntity(dailyDto));
+        groupEntity.createDaily(new DailyEntity(groupId, dailyDto));
     }
 
     @Override
     @Transactional
-    public void updateDaily(DailyDto.UpdateDailyDto dailyDto) throws CustomException {
-        GroupEntity groupEntity = groupRepository.findByGroupId(dailyDto.getGroupId()).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+    public void updateDaily(Long groupId, DailyDto.UpdateDailyDto dailyDto) throws CustomException {
+        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         groupEntity.checkExistMember(CryptUtils.getMid());
 
         DailyEntity dailyEntity = groupEntity.getDailyEntities()

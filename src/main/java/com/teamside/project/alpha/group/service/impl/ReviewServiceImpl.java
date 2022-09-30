@@ -27,22 +27,22 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void createReview(ReviewDto review) {
+    public void createReview(Long groupId, ReviewDto review) {
         checkExistPlace(review.getPlaceId());
 
-        GroupEntity group = groupRepository.findByGroupId(review.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
         group.checkExistReview(review.getPlaceId());
 
-        group.createReview(new ReviewEntity(review));
+        group.createReview(new ReviewEntity(groupId, review));
     }
 
     @Override
     @Transactional
-    public void updateReview(ReviewDto.UpdateReviewDto review) {
+    public void updateReview(Long groupId, ReviewDto.UpdateReviewDto review) {
         checkExistPlace(review.getPlaceId());
 
-        GroupEntity group = groupRepository.findByGroupId(review.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
 
         ReviewEntity reviewEntity = group.getReviewEntities()
@@ -61,15 +61,16 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    // TODO: 2022/09/30 select groupId 받아서 권한도 체크
     @Override
-    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long reviewId) {
-        return groupRepository.selectReviewDetail(reviewId);
+    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId) {
+        return groupRepository.selectReviewDetail(groupId, reviewId);
     }
 
     @Override
     @Transactional
-    public void createComment(CommentDto.CreateComment comment, Long reviewId) {
-        GroupEntity group = groupRepository.findByGroupId(comment.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+    public void createComment(Long groupId, CommentDto.CreateComment comment, Long reviewId) {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
 
         ReviewEntity review = group.getReviewEntities().stream()
@@ -84,6 +85,11 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         review.createComment(comment, reviewId);
+
+    }
+
+    @Override
+    public void keepReview(Long groupId, Long reviewId) {
 
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/daily")
+@RequestMapping("/groups/{groupId}/daily")
 public class DailyController {
     private final DailyService dailyService;
 
@@ -19,15 +19,15 @@ public class DailyController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseObject> createDaily(@RequestBody DailyDto dailyDto) throws CustomException {
+    public ResponseEntity<ResponseObject> createDaily(@PathVariable Long groupId, @RequestBody DailyDto dailyDto) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
-        dailyService.createDaily(dailyDto);
+        dailyService.createDaily(groupId, dailyDto);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
     @PatchMapping
-    public ResponseEntity<ResponseObject> updateDaily(@RequestBody DailyDto.UpdateDailyDto dailyDto) throws CustomException {
+    public ResponseEntity<ResponseObject> updateDaily(@PathVariable Long groupId, @RequestBody DailyDto.UpdateDailyDto dailyDto) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        dailyService.updateDaily(dailyDto);
+        dailyService.updateDaily(groupId, dailyDto);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 }

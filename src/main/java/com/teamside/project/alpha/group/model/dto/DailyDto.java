@@ -10,7 +10,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DailyDto {
-    private Long groupId;
     private String title;
     private String content;
     private String image;
@@ -23,9 +22,9 @@ public class DailyDto {
 
     @Getter
     public static class ResponseDailyInGroup {
-        private List<DailyInGroup> dailyData;
+        private final List<DailyInGroup> dailyData;
 
-        private Long lastDailyId;
+        private final Long lastDailyId;
 
         public ResponseDailyInGroup(List<DailyInGroup> dailyData, Long lastDailyId) {
             this.dailyData = dailyData;

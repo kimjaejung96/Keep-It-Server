@@ -42,7 +42,6 @@ public class CommentDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class CreateComment {
-        private Long groupId;
         private String comment;
         private String image;
         private Long parentCommentId;
