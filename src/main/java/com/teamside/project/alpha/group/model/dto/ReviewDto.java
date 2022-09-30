@@ -101,10 +101,12 @@ public class ReviewDto {
     public static class ResponseReviewDetail {
         ReviewDetail reviewsDetail;
         List<CommentDto> comments;
+        String loginMemberName;
 
-        public ResponseReviewDetail(ReviewDetail reviewsDetail, List<CommentDto> comments) {
+        public ResponseReviewDetail(ReviewDetail reviewsDetail, List<CommentDto> comments, String loginMemberName) {
             this.reviewsDetail = reviewsDetail;
             this.comments = comments;
+            this.loginMemberName = loginMemberName;
         }
     }
     @Getter

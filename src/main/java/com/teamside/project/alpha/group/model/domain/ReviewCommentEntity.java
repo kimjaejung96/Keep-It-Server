@@ -46,20 +46,11 @@ public class ReviewCommentEntity extends TimeEntity {
                 .imageUrl(comment.getImage())
                 .master(new MemberEntity(CryptUtils.getMid()))
                 .review(new ReviewEntity(reviewId))
+                .parentComment(comment.getParentCommentId() != null ? new ReviewCommentEntity(comment.getParentCommentId()) : null)
                 .build();
     }
 
     public ReviewCommentEntity(Long commentId) {
         this.commentId = commentId;
-    }
-
-    public static ReviewCommentEntity createCoComment (CommentDto.CreateComment comment, Long reviewId) {
-        return ReviewCommentEntity.builder()
-                .comment(comment.getComment())
-                .imageUrl(comment.getImage())
-                .master(new MemberEntity(CryptUtils.getMid()))
-                .review(new ReviewEntity(reviewId))
-                .parentComment(new ReviewCommentEntity(comment.getParentCommentId()))
-                .build();
     }
 }

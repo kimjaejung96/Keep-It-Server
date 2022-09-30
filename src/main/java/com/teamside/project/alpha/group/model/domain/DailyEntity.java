@@ -4,6 +4,7 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.DailyDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
@@ -51,6 +52,10 @@ public class DailyEntity extends TimeEntity {
         this.group = new GroupEntity(groupId);
         this.master = new MemberEntity(CryptUtils.getMid());
     }
+
+    public DailyEntity(Long dailyId) {
+        this.dailyId = dailyId;
+    }
     public void updateDaily(DailyDto.UpdateDailyDto dailyDto) {
         this.title = dailyDto.getTitle();
         this.content = dailyDto.getContent();
@@ -61,5 +66,9 @@ public class DailyEntity extends TimeEntity {
         if (!this.master.getMid().equals(mid)) {
             throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
         }
+    }
+
+    public void createComment(CommentDto.CreateComment comment, Long dailyId) {
+        this.dailyCommentEntities.add(DailyCommentEntity.createComment(comment, dailyId));
     }
 }

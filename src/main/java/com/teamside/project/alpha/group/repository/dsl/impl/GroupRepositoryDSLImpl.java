@@ -15,6 +15,7 @@ import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
 import com.teamside.project.alpha.member.model.domain.QMemberFollowEntity;
+import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
@@ -362,35 +363,22 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
      */
     @Override
     public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId) {
-        ReviewDto.ReviewDetail reviewDetail = jpaQueryFactory.select(new QReviewDto_ReviewDetail(review, member, place))
+        ReviewDto.ReviewDetail reviewDetail = jpaQueryFactory
+                .select(new QReviewDto_ReviewDetail(
+                        review, member, place
+                ))
                 .from(review)
                 .innerJoin(member).on(member.mid.eq(review.master.mid))
                 .innerJoin(place).on(review.place.placeId.eq(place.placeId))
                 .where(review.reviewId.eq(reviewId))
                 .fetchFirst();
         List<CommentDto> comments = getComments(reviewId);
-        return new ReviewDto.ResponseReviewDetail(reviewDetail, comments);
+        String loginMemberName = jpaQueryFactory.select(member.name).from(member).where(member.mid.eq(CryptUtils.getMid())).fetchOne();
+
+        return new ReviewDto.ResponseReviewDetail(reviewDetail, comments, loginMemberName);
     }
 
     private List<CommentDto> getComments(Long reviewId) {
-//         List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member))
-//                .from(reviewComment)
-//                .innerJoin(member).on(member.mid.eq(reviewComment.master.mid))
-//                .where(reviewComment.review.reviewId.eq(reviewId))
-//                .orderBy(reviewComment.commentId.desc())
-//                .fetch();
-//
-//          result.stream()
-//                  .filter(commentDto ->  commentDto.getParentCommentId() != null)
-//                  .forEach(comment -> {
-//                      result.stream()
-//                      .filter(parent -> Objects.equals(comment.getParentCommentId(), parent.getCommentId()))
-//                      .forEach(dd -> {
-//                          dd.insertChildComments(comment);
-//                          result.remove(dd);
-//                      }
-//              );
-//          });
         List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member))
                 .from(reviewComment)
                 .innerJoin(member).on(member.mid.eq(reviewComment.master.mid))

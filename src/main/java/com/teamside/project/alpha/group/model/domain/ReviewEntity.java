@@ -74,11 +74,6 @@ public class ReviewEntity extends TimeEntity {
     }
 
     public void createComment(CommentDto.CreateComment comment, Long reviewId) {
-        if (comment.getParentCommentId() == null) {
-            this.reviewCommentEntities.add(ReviewCommentEntity.createComment(comment, reviewId));
-        } else {
-            this.reviewCommentEntities.add(ReviewCommentEntity.createCoComment(comment, reviewId));
-        }
-
+        this.reviewCommentEntities.add(ReviewCommentEntity.createComment(comment, reviewId));
     }
 }

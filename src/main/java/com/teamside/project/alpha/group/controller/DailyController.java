@@ -3,6 +3,7 @@ package com.teamside.project.alpha.group.controller;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
+import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.DailyDto;
 import com.teamside.project.alpha.group.service.DailyService;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,15 @@ public class DailyController {
     public ResponseEntity<ResponseObject> updateDaily(@PathVariable Long groupId, @RequestBody DailyDto.UpdateDailyDto dailyDto) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         dailyService.updateDaily(groupId, dailyDto);
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
+    @PostMapping("/{dailyId}/comment")
+    public ResponseEntity<ResponseObject> createComment(@PathVariable Long groupId,
+                                                        @PathVariable Long dailyId,
+                                                        @RequestBody CommentDto.CreateComment comment) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
+        dailyService.createComment(groupId, dailyId, comment);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 }

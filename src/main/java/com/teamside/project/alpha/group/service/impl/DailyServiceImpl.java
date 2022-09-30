@@ -5,6 +5,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.domain.DailyEntity;
+import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.DailyDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
@@ -12,6 +13,7 @@ import com.teamside.project.alpha.group.service.DailyService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Objects;
 
 @Service
 public class DailyServiceImpl implements DailyService {
@@ -43,5 +45,26 @@ public class DailyServiceImpl implements DailyService {
                 .orElseThrow((() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST)));
         dailyEntity.checkDailyMaster(CryptUtils.getMid());
         dailyEntity.updateDaily(dailyDto);
+    }
+
+    @Override
+    @Transactional
+    public void createComment(Long groupId, Long dailyId, CommentDto.CreateComment comment) throws CustomException {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(CryptUtils.getMid());
+
+        DailyEntity daily = group.getDailyEntities().stream()
+                .filter(d -> Objects.equals(d.getDailyId(), dailyId))
+                .findAny()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
+
+        if (comment.getParentCommentId() != null) {
+            daily.getDailyCommentEntities().stream()
+                    .filter(c -> Objects.equals(c.getCommentId(), comment.getParentCommentId()))
+                    .findAny()
+                    .orElseThrow(() -> new CustomException(ApiExceptionCode.COMMENT_NOT_ACCESS));
+        }
+
+        daily.createComment(comment, dailyId);
     }
 }
