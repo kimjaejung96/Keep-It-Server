@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -98,13 +97,6 @@ public class ReviewDto {
             }
         }
     }
-    /**
-     * memberName, memberImage,
-     * placeName, placeAddress
-     * reviewImages, reviewContent, reviewCreateDt,
-     * commentList,
-     * keepCount, isKeep
-     */
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -126,7 +118,6 @@ public class ReviewDto {
         private String placeAddress;
         private List<String> reviewImagesUrl;
         private String reviewCreateDt;
-        private List<CommentDto> commentList;
 
         @QueryProjection
         public ReviewDetail(ReviewEntity review, MemberEntity member, PlaceEntity place) {
@@ -136,7 +127,6 @@ public class ReviewDto {
             this.placeAddress = place.getAddress();
             this.reviewImagesUrl = List.of(review.getImages().split(","));
             this.reviewCreateDt = String.valueOf(review.getCreateTime());
-            this.commentList = new ArrayList<>();
         }
     }
 
