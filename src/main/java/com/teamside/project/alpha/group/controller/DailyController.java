@@ -40,4 +40,12 @@ public class DailyController {
         dailyService.createComment(groupId, dailyId, comment);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
+
+    @PostMapping("/{dailyId}/keep")
+    public ResponseEntity<ResponseObject> keepDaily(@PathVariable Long groupId, @PathVariable Long dailyId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        dailyService.keepDaily(groupId, dailyId);
+
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
 }

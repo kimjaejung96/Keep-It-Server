@@ -9,6 +9,7 @@ import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.ReviewService;
+import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.place.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,7 +90,16 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void keepReview(Long groupId, Long reviewId) {
+        String mid = CryptUtils.getMid();
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(mid);
 
+        ReviewEntity review = group.getReviewEntities().stream()
+                .filter(r -> Objects.equals(r.getReviewId(), reviewId))
+                .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+
+        review.keepReview(reviewId, mid);
     }
 }

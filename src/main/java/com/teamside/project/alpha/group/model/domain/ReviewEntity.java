@@ -16,6 +16,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -49,6 +50,9 @@ public class ReviewEntity extends TimeEntity {
     @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReviewCommentEntity> reviewCommentEntities;
 
+    @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReviewKeepEntity> reviewKeepEntities;
+
     public ReviewEntity(Long groupId, ReviewDto review) {
         this.group = new GroupEntity(groupId);
         this.place = new PlaceEntity(review.getPlaceId());
@@ -75,5 +79,18 @@ public class ReviewEntity extends TimeEntity {
 
     public void createComment(CommentDto.CreateComment comment, Long reviewId) {
         this.reviewCommentEntities.add(ReviewCommentEntity.createComment(comment, reviewId));
+    }
+
+    public void keepReview(Long reviewId, String mid) {
+        // 이미 킵중이면 킵 취소
+        Optional<ReviewKeepEntity> keepEntity = this.reviewKeepEntities.stream()
+                .filter(keep -> (keep.getMember().getMid().equals(mid) && keep.getReview().getReviewId() == reviewId))
+                .findFirst();
+
+        if (keepEntity.isPresent()) {
+            this.getReviewKeepEntities().remove(keepEntity.get());
+        } else {
+            this.getReviewKeepEntities().add(new ReviewKeepEntity(reviewId, mid));
+        }
     }
 }

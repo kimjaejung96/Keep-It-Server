@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -45,6 +46,9 @@ public class DailyEntity extends TimeEntity {
     @OneToMany(mappedBy = "daily", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyCommentEntity> dailyCommentEntities;
 
+    @OneToMany(mappedBy = "daily", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DailyKeepEntity> dailyKeepEntities;
+
     public DailyEntity(Long groupId, DailyDto dailyDto) {
         this.title = dailyDto.getTitle();
         this.content = dailyDto.getContent();
@@ -70,5 +74,17 @@ public class DailyEntity extends TimeEntity {
 
     public void createComment(CommentDto.CreateComment comment, Long dailyId) {
         this.dailyCommentEntities.add(DailyCommentEntity.createComment(comment, dailyId));
+    }
+
+    public void keepDaily(Long dailyId, String mid) {
+        Optional<DailyKeepEntity> dailyEntity = this.dailyKeepEntities.stream()
+                .filter(daily -> (daily.getMember().getMid().equals(mid) && daily.getDaily().getDailyId() == dailyId))
+                .findFirst();
+
+        if (dailyEntity.isPresent()) {
+            this.getDailyKeepEntities().remove(dailyEntity.get());
+        } else {
+            this.getDailyKeepEntities().add(new DailyKeepEntity(dailyId, mid));
+        }
     }
 }

@@ -4,9 +4,7 @@ package com.teamside.project.alpha.member.model.entity;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
-import com.teamside.project.alpha.group.model.domain.DailyEntity;
-import com.teamside.project.alpha.group.model.domain.GroupMemberMappingEntity;
-import com.teamside.project.alpha.group.model.domain.ReviewEntity;
+import com.teamside.project.alpha.group.model.domain.*;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.member.model.domain.MemberBlockEntity;
 import com.teamside.project.alpha.member.model.domain.MemberFollowEntity;
@@ -74,6 +72,12 @@ public class MemberEntity extends TimeEntity {
 
     @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MemberBlockEntity> memberBlockEntities;
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReviewKeepEntity> reviewKeepEntities;
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DailyKeepEntity> dailyKeepEntities;
 
     public MemberEntity(String mid) {
         this.mid = mid;

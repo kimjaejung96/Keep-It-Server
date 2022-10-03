@@ -67,4 +67,19 @@ public class DailyServiceImpl implements DailyService {
 
         daily.createComment(comment, dailyId);
     }
+
+    @Override
+    @Transactional
+    public void keepDaily(Long groupId, Long dailyId) {
+        String mid = CryptUtils.getMid();
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(mid);
+
+        DailyEntity daily = group.getDailyEntities().stream()
+                .filter(d -> Objects.equals(d.getDailyId(), dailyId))
+                .findAny()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
+
+        daily.keepDaily(dailyId, mid);
+    }
 }
