@@ -136,9 +136,10 @@ public class GroupEntity extends TimeEntity {
     }
 
     public void checkExistMember(String mid) {
-        this.groupMemberMappingEntity.stream()
-                .filter(member -> member.getMember().getMid().equals(mid))
-                .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.NOT_PARTICIPANT_IN_GROUP));
+        if (this.groupMemberMappingEntity.stream()
+                .noneMatch(member -> member.getMember().getMid().equals(mid))) {
+            throw new CustomRuntimeException(ApiExceptionCode.NOT_PARTICIPANT_IN_GROUP);
+        }
     }
 
     public GroupEntity(Long groupId) {

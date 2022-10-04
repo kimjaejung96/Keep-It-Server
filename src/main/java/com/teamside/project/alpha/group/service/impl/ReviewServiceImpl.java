@@ -65,9 +65,10 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    // TODO: 2022/09/30 select groupId 받아서 권한도 체크
     @Override
     public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId) {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(CryptUtils.getMid());
         return groupRepository.selectReviewDetail(groupId, reviewId);
     }
 
