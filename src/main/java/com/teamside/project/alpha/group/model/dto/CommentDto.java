@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.group.model.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.teamside.project.alpha.group.model.domain.DailyCommentEntity;
 import com.teamside.project.alpha.group.model.domain.ReviewCommentEntity;
 import com.teamside.project.alpha.group.model.enumurate.CommentStatus;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
@@ -46,6 +47,21 @@ public class CommentDto {
         this.targetName = reviewComment.getTargetMember() != null ? reviewComment.getTargetMember().getName() : null;
         this.targetMid = reviewComment.getTargetMember() != null ? reviewComment.getTargetMember().getMid() : null;
         this.status = reviewComment.getStatus();
+    }
+
+    @QueryProjection
+    public CommentDto(DailyCommentEntity dailyComment, MemberEntity member) {
+        this.commentId = dailyComment.getCommentId();
+        this.memberName = member.getName();
+        this.memberId = member.getMid();
+        this.memberProfileUrl = member.getProfileUrl();
+        this.comment = dailyComment.getComment();
+        this.createDt = String.valueOf(dailyComment.getCreateTime());
+        this.parentCommentId = dailyComment.getParentComment() != null ? dailyComment.getParentComment().getCommentId() : null;
+        this.imageUrl = dailyComment.getImageUrl();
+        this.targetName = dailyComment.getTargetMember() != null ? dailyComment.getTargetMember().getName() : null;
+        this.targetMid = dailyComment.getTargetMember() != null ? dailyComment.getTargetMember().getMid() : null;
+        this.status = dailyComment.getStatus();
     }
 
     @Getter

@@ -48,6 +48,11 @@ public class DailyServiceImpl implements DailyService {
     }
 
     @Override
+    public DailyDto.ResponseDailyDetail selectDaily(Long groupId, Long dailyId) {
+        return groupRepository.selectDaily(groupId, dailyId);
+    }
+
+    @Override
     @Transactional
     public void createComment(Long groupId, Long dailyId, CommentDto.CreateComment comment) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));

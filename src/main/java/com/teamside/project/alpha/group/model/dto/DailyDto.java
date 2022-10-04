@@ -5,12 +5,15 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DailyDto {
+    @Size(min = 1, max = 50)
     private String title;
+    @Size(min = 1, max = 2000)
     private String content;
     private String image;
 
@@ -55,6 +58,43 @@ public class DailyDto {
             this.name = name;
             this.commentCount = commentCount;
             this.createDt = createDt;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ResponseDailyDetail {
+        private DailyDetail dailyDetail;
+        List<CommentDto> comments;
+        String loginMemberName;
+
+        public ResponseDailyDetail(DailyDetail dailyDetail, List<CommentDto> comments, String loginMemberName) {
+            this.dailyDetail = dailyDetail;
+            this.comments = comments;
+            this.loginMemberName = loginMemberName;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class DailyDetail {
+        private String title;
+        private String memberName;
+        private String memberProfileUrl;
+        private String createDt;
+        private String content;
+        private String imageUrl;
+        private Boolean isKeep;
+
+        @QueryProjection
+        public DailyDetail(String title, String memberName, String memberProfileUrl, String createDt, String content, String imageUrl, Boolean isKeep) {
+            this.title = title;
+            this.memberName = memberName;
+            this.memberProfileUrl = memberProfileUrl;
+            this.createDt = createDt;
+            this.content = content;
+            this.imageUrl = imageUrl;
+            this.isKeep = isKeep;
         }
     }
 }

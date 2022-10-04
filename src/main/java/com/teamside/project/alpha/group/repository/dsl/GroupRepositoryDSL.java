@@ -26,5 +26,5 @@ public interface GroupRepositoryDSL {
     List<DailyDto.DailyInGroup> selectDailyInGroup(Long groupId, String targetId, Long pageSize, Long lastDailyId);
     ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId);
     GroupDto.GroupHome selectGroupHome(Long groupId);
-
+    DailyDto.ResponseDailyDetail selectDaily(Long groupId, Long dailyId);
 }

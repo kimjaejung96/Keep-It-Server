@@ -32,6 +32,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     QReviewEntity review = QReviewEntity.reviewEntity;
 
     QDailyEntity daily = QDailyEntity.dailyEntity;
+
+    QDailyKeepEntity dailyKeep = QDailyKeepEntity.dailyKeepEntity;
+    QDailyCommentEntity dailyComment = QDailyCommentEntity.dailyCommentEntity;
     QMemberEntity member = QMemberEntity.memberEntity;
     QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
     QMemberFollowEntity memberFollow = QMemberFollowEntity.memberFollowEntity;
@@ -356,13 +359,13 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(place).on(review.place.placeId.eq(place.placeId))
                 .where(review.reviewId.eq(reviewId))
                 .fetchFirst();
-        List<CommentDto> comments = getComments(reviewId);
+        List<CommentDto> comments = getReviewComments(reviewId);
         String loginMemberName = jpaQueryFactory.select(member.name).from(member).where(member.mid.eq(CryptUtils.getMid())).fetchOne();
 
         return new ReviewDto.ResponseReviewDetail(reviewDetail, comments, loginMemberName);
     }
 
-    private List<CommentDto> getComments(Long reviewId) {
+    private List<CommentDto> getReviewComments(Long reviewId) {
         List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member))
                 .from(reviewComment)
                 .innerJoin(member).on(member.mid.eq(reviewComment.master.mid))
@@ -384,5 +387,55 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     public GroupDto.GroupHome selectGroupHome(Long groupId) {
 
         return null;
+    }
+
+    @Override
+    public DailyDto.ResponseDailyDetail selectDaily(Long groupId, Long dailyId) {
+        String mid = CryptUtils.getMid();
+
+        DailyDto.DailyDetail dailyDetail = jpaQueryFactory
+                .select(new QDailyDto_DailyDetail(
+                        daily.title,
+                        member.name,
+                        member.profileUrl,
+                        daily.createTime.stringValue(),
+                        daily.content,
+                        daily.image,
+                        new CaseBuilder()
+                                .when(dailyKeep.keepId.isNull())
+                                .then(Boolean.FALSE)
+                                .otherwise(Boolean.TRUE)
+                        )
+                )
+                .from(daily)
+                .innerJoin(daily.master, member)
+                .leftJoin(daily.dailyKeepEntities, dailyKeep).on(dailyKeep.member.mid.eq(mid))
+                .where(daily.dailyId.eq(dailyId), daily.group.groupId.eq(groupId))
+                .fetchOne();
+
+        List<CommentDto> comments = this.getDailyComments(dailyId);
+        String loginMemberName = jpaQueryFactory.select(member.name).from(member).where(member.mid.eq(mid)).fetchOne();
+
+        return new DailyDto.ResponseDailyDetail(dailyDetail, comments, loginMemberName);
+    }
+
+    public List<CommentDto> getDailyComments(Long dailyId) {
+        List<CommentDto> result = jpaQueryFactory
+                .select(new QCommentDto(dailyComment, member))
+                .from(dailyComment)
+                .innerJoin(dailyComment.master, member)
+                .where(dailyComment.daily.dailyId.eq(dailyId))
+                .orderBy(dailyComment.commentId.desc())
+                .fetch();
+
+        result.stream()
+                .filter(commentDto ->  commentDto.getParentCommentId() != null)
+                .forEach(comment -> result.stream()
+                        .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
+                        .forEach(dd -> dd.insertChildComments(comment)
+                        ));
+        result.removeIf(d -> d.getParentCommentId() != null);
+
+        return result;
     }
 }

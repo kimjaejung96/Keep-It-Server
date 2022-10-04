@@ -9,4 +9,5 @@ public interface DailyService {
     void updateDaily(Long groupId, DailyDto.UpdateDailyDto dailyDto) throws CustomException;
     void createComment(Long groupId, Long dailyId, CommentDto.CreateComment comment) throws CustomException;
     void keepDaily(Long groupId, Long dailyId);
+    DailyDto.ResponseDailyDetail selectDaily(Long groupId, Long dailyId);
 }
