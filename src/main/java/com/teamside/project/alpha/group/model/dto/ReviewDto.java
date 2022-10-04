@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.group.model.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.domain.ReviewEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.place.model.entity.PlaceEntity;
@@ -119,10 +120,10 @@ public class ReviewDto {
         private String placeAddress;
         private List<String> reviewImagesUrl;
         private String reviewCreateDt;
-        private Long bookMarkCount;
+        private int keepCount;
+        private Boolean isKeep;
 
         @QueryProjection
-        // TODO: 2022/09/30 bookMark 테이블 생성 후 DTO넣어줘야함.
         public ReviewDetail(ReviewEntity review, MemberEntity member, PlaceEntity place) {
             this.reviewContent = review.getContent();
             this.memberName = member.getName();
@@ -131,7 +132,8 @@ public class ReviewDto {
             this.placeAddress = place.getAddress();
             this.reviewImagesUrl = List.of(review.getImages().split(","));
             this.reviewCreateDt = String.valueOf(review.getCreateTime());
-            this.bookMarkCount = 0L;
+            this.keepCount = review.getReviewKeepEntities().size();
+            this.isKeep = review.getReviewKeepEntities().stream().anyMatch(r -> r.getMember().getMid().equals(CryptUtils.getMid()));
         }
     }
 
