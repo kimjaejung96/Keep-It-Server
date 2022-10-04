@@ -53,7 +53,7 @@ public class GroupServiceImpl implements GroupService {
         isExistGroupName(group.getName());
 
         GroupEntity groupEntity = groupRepository.findByGroupId(group.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        groupEntity.checkGroupMaster(CryptUtils.getMid());
+        groupEntity.checkGroupMaster();
 
         groupEntity.updateGroup(group);
 
@@ -69,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void deleteGroup(Long groupId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkGroupMaster(CryptUtils.getMid());
+        group.checkGroupMaster();
 
         groupRepository.delete(group);
     }

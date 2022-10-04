@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.group.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
@@ -22,12 +23,32 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
+    /**
+     * 리뷰 생성
+     * @param groupId
+     * @param review
+     * @return
+     */
     @PostMapping("")
     public ResponseEntity<ResponseObject> createReview(@PathVariable Long groupId, @Valid @RequestBody ReviewDto review) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         reviewService.createReview(groupId, review);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<ResponseObject> deleteReview(@PathVariable Long groupId, @PathVariable Long reviewId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        reviewService.deleteReview(groupId, reviewId);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    /**
+     * 리뷰 수정(업데이트)
+     * @param groupId
+     * @param review
+     * @return
+     */
     @PatchMapping("")
     public ResponseEntity<ResponseObject> updateReview(@PathVariable Long groupId, @Valid @RequestBody ReviewDto.UpdateReviewDto review) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

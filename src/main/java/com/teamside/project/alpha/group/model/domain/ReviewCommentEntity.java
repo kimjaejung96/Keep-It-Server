@@ -3,6 +3,7 @@ package com.teamside.project.alpha.group.model.domain;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.dto.CommentDto;
+import com.teamside.project.alpha.group.model.enumurate.CommentStatus;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -45,6 +46,10 @@ public class ReviewCommentEntity extends TimeEntity {
     @JoinColumn(name = "PARENT_COMMENT_ID", referencedColumnName = "COMMENT_ID")
     private ReviewCommentEntity parentComment;
 
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    private CommentStatus status;
+
     public static ReviewCommentEntity createComment (CommentDto.CreateComment comment, Long reviewId) {
         return ReviewCommentEntity.builder()
                 .comment(comment.getComment())
@@ -53,6 +58,7 @@ public class ReviewCommentEntity extends TimeEntity {
                 .review(new ReviewEntity(reviewId))
                 .targetMember(comment.getTargetMid() != null ? new MemberEntity(comment.getTargetMid()) : null)
                 .parentComment(comment.getParentCommentId() != null ? new ReviewCommentEntity(comment.getParentCommentId()) : null)
+                .status(CommentStatus.CREATED)
                 .build();
     }
 

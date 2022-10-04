@@ -2,6 +2,7 @@ package com.teamside.project.alpha.group.model.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.teamside.project.alpha.group.model.domain.ReviewCommentEntity;
+import com.teamside.project.alpha.group.model.enumurate.CommentStatus;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class CommentDto {
     private String imageUrl;
     private String targetName;
     private String targetMid;
+    private CommentStatus status;
     public void insertChildComments(CommentDto commentDto) {
         this.childComments = new ArrayList<>();
         this.childComments.add(commentDto);
@@ -43,6 +45,7 @@ public class CommentDto {
         this.imageUrl = reviewComment.getImageUrl();
         this.targetName = reviewComment.getTargetMember() != null ? reviewComment.getTargetMember().getName() : null;
         this.targetMid = reviewComment.getTargetMember() != null ? reviewComment.getTargetMember().getMid() : null;
+        this.status = reviewComment.getStatus();
     }
 
     @Getter

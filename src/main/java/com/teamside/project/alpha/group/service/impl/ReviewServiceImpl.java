@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.group.service.impl;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.domain.ReviewEntity;
@@ -111,5 +112,14 @@ public class ReviewServiceImpl implements ReviewService {
                 .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
         review.keepReview(reviewId, mid);
+    }
+
+    @Override
+    @Transactional
+    public void deleteReview(Long groupId, Long reviewId) throws CustomException {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+
+        group.deleteReview(reviewId);
+
     }
 }

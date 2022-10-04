@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.group.service;
 
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 
@@ -12,4 +13,6 @@ public interface ReviewService {
     void createComment(Long groupId, CommentDto.CreateComment comment, Long reviewId);
 
     void keepReview(Long groupId, Long reviewId);
+
+    void deleteReview(Long groupId, Long reviewId) throws CustomException;
 }
