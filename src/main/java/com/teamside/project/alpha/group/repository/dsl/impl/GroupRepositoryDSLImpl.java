@@ -202,7 +202,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         .from(groupMemberMapping)
                         .innerJoin(member).on(groupMemberMapping.mid.eq(member.mid))
                         .leftJoin(memberFollow).on(memberFollow.mid.eq(CryptUtils.getMid()).and(memberFollow.targetMid.eq(member.mid)))
-                        .where(groupMemberMapping.groupId.eq(groupId).and(member.mid.ne(CryptUtils.getMid())))
+//                        .where(groupMemberMapping.groupId.eq(groupId).and(member.mid.ne(CryptUtils.getMid())))
+                        .where(groupMemberMapping.groupId.eq(groupId))
                         .fetch()
         );
 

@@ -36,6 +36,13 @@ public class ReviewController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 리뷰 삭제
+     * @param groupId
+     * @param reviewId
+     * @return
+     * @throws CustomException
+     */
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<ResponseObject> deleteReview(@PathVariable Long groupId, @PathVariable Long reviewId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -85,6 +92,12 @@ public class ReviewController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 리뷰 킵
+     * @param groupId
+     * @param reviewId
+     * @return
+     */
     @PostMapping("/{reviewId}/keep")
     public ResponseEntity<ResponseObject> keepReview(@PathVariable Long groupId, @PathVariable Long reviewId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
