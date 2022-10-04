@@ -26,13 +26,13 @@ public class ReviewController {
     public ResponseEntity<ResponseObject> createReview(@PathVariable Long groupId, @Valid @RequestBody ReviewDto review) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         reviewService.createReview(groupId, review);
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @PatchMapping("")
     public ResponseEntity<ResponseObject> updateReview(@PathVariable Long groupId, @Valid @RequestBody ReviewDto.UpdateReviewDto review) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.updateReview(groupId, review);
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
     /**
@@ -45,7 +45,7 @@ public class ReviewController {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(reviewService.selectReviewDetail(groupId, reviewId));
 
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
 
@@ -61,7 +61,7 @@ public class ReviewController {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         reviewService.createComment(groupId, comment, reviewId);
 
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
     @PostMapping("/{reviewId}/keep")
@@ -69,7 +69,7 @@ public class ReviewController {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.keepReview(groupId, reviewId);
 
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
 }

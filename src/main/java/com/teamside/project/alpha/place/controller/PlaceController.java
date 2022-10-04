@@ -24,7 +24,7 @@ public class PlaceController {
     public ResponseEntity<ResponseObject> createPlace(@RequestBody PlaceDto place) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         placeService.createPlace(place);
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
 }

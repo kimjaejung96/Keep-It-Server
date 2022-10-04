@@ -23,13 +23,13 @@ public class DailyController {
     public ResponseEntity<ResponseObject> createDaily(@PathVariable Long groupId, @RequestBody DailyDto dailyDto) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         dailyService.createDaily(groupId, dailyDto);
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @PatchMapping
     public ResponseEntity<ResponseObject> updateDaily(@PathVariable Long groupId, @RequestBody DailyDto.UpdateDailyDto dailyDto) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         dailyService.updateDaily(groupId, dailyDto);
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
     @PostMapping("/{dailyId}/comment")
@@ -38,7 +38,7 @@ public class DailyController {
                                                         @RequestBody CommentDto.CreateComment comment) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         dailyService.createComment(groupId, dailyId, comment);
-        return new ResponseEntity(responseObject, HttpStatus.OK);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
     @PostMapping("/{dailyId}/keep")
