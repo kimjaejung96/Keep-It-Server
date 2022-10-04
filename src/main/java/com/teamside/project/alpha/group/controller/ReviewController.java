@@ -57,7 +57,7 @@ public class ReviewController {
      * @return
      */
     @PostMapping("/{reviewId}/comment")
-    public ResponseEntity<ResponseObject> createComment(@PathVariable Long groupId, @RequestBody CommentDto.CreateComment comment, @PathVariable Long reviewId) {
+    public ResponseEntity<ResponseObject> createComment(@PathVariable Long groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable Long reviewId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         reviewService.createComment(groupId, comment, reviewId);
 

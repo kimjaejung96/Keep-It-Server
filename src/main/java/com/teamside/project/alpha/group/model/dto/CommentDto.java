@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,11 @@ public class CommentDto {
     private String createDt;
     private Long parentCommentId;
     private List<CommentDto> childComments;
+    private String imageUrl;
+    private String targetName;
+    private String targetMid;
     public void insertChildComments(CommentDto commentDto) {
+        this.childComments = new ArrayList<>();
         this.childComments.add(commentDto);
     }
 
@@ -35,15 +40,18 @@ public class CommentDto {
         this.comment = reviewComment.getComment();
         this.createDt = String.valueOf(reviewComment.getCreateTime());
         this.parentCommentId = reviewComment.getParentComment() != null?reviewComment.getParentComment().getCommentId():null;
-        this.childComments = new ArrayList<>();
+        this.imageUrl = reviewComment.getImageUrl();
+        this.targetName = reviewComment.getTargetMember() != null ? reviewComment.getTargetMember().getName() : null;
+        this.targetMid = reviewComment.getTargetMember() != null ? reviewComment.getTargetMember().getMid() : null;
     }
 
-    // TODO: 2022/09/29 밸리데이션 확인해야함.
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class CreateComment {
+        @Size(min = 15, max = 2000, message = "댓글 내용은 15자~2000자 사이입니다.")
         private String comment;
         private String image;
         private Long parentCommentId;
+        private String targetMid;
     }
 }

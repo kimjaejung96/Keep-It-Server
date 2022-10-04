@@ -9,7 +9,7 @@ import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.ReviewService;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
+import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.place.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +20,12 @@ import java.util.Objects;
 public class ReviewServiceImpl implements ReviewService {
     private final GroupRepository groupRepository;
     private final PlaceRepository placeRepository;
+    private final MemberRepo memberRepo;
 
-    public ReviewServiceImpl(GroupRepository groupRepository, PlaceRepository placeRepository) {
+    public ReviewServiceImpl(GroupRepository groupRepository, PlaceRepository placeRepository, MemberRepo memberRepo) {
         this.groupRepository = groupRepository;
         this.placeRepository = placeRepository;
+        this.memberRepo = memberRepo;
     }
 
     @Override
@@ -78,12 +80,20 @@ public class ReviewServiceImpl implements ReviewService {
                 .filter(r -> Objects.equals(r.getReviewId(), reviewId))
                 .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
-        if (comment.getParentCommentId() != null) {
-            review.getReviewCommentEntities().stream()
-                    .filter(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))
-                    .findAny()
-                    .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS));
+        if (comment.getTargetMid() != null && !memberRepo.existsByMid(comment.getTargetMid())) {
+            throw new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND);
         }
+
+
+        if (comment.getParentCommentId() != null && review.getReviewCommentEntities().stream().noneMatch(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))) {
+            throw new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS);
+        }
+//        if (comment.getParentCommentId() != null) {
+//            review.getReviewCommentEntities().stream()
+//                    .filter(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))
+//                    .findAny()
+//                    .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS));
+//        }
 
         review.createComment(comment, reviewId);
 

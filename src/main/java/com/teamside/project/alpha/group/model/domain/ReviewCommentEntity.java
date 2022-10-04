@@ -33,6 +33,11 @@ public class ReviewCommentEntity extends TimeEntity {
     private MemberEntity master;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TARGET_MID", referencedColumnName = "MID")
+    private MemberEntity targetMember;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REVIEW_ID", referencedColumnName = "REVIEW_ID")
     private ReviewEntity review;
 
@@ -46,6 +51,7 @@ public class ReviewCommentEntity extends TimeEntity {
                 .imageUrl(comment.getImage())
                 .master(new MemberEntity(CryptUtils.getMid()))
                 .review(new ReviewEntity(reviewId))
+                .targetMember(comment.getTargetMid() != null ? new MemberEntity(comment.getTargetMid()) : null)
                 .parentComment(comment.getParentCommentId() != null ? new ReviewCommentEntity(comment.getParentCommentId()) : null)
                 .build();
     }

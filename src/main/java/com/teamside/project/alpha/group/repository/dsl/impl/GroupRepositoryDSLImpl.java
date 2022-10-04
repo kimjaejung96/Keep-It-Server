@@ -15,7 +15,6 @@ import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
 import com.teamside.project.alpha.member.model.domain.QMemberFollowEntity;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
@@ -345,22 +344,6 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         return targetId != null ? daily.master.mid.eq(targetId) : null;
     }
 
-    /**
-     * select m.NAME ,m.PROFILE_URL, p.PLACE_NAME , p.ADDRESS , r.IMAGES , r.CREATE_DT
-     * from review r
-     * inner join `member` m on m.MID = r.MASTER
-     * inner join place p on r.PLACE_ID = p.PLACE_ID
-     * where r.REVIEW_ID = 5;
-     *
-     *
-     * select rc.COMMENT_ID , m.NAME ,m.MID , m.PROFILE_URL , rc.COMMENT , rc.CREATE_DT
-     * from review_comment rc
-     * inner join `member` m on m.MID = rc .MASTER_MID
-     * where rc.REVIEW_ID = 5;
-     *
-     * @param reviewId
-     * @return
-     */
     @Override
     public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId) {
         ReviewDto.ReviewDetail reviewDetail = jpaQueryFactory
