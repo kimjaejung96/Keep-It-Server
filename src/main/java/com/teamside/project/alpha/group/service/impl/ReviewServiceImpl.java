@@ -66,6 +66,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId) {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
