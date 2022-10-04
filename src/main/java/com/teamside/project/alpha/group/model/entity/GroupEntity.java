@@ -160,10 +160,26 @@ public class GroupEntity extends TimeEntity {
         }
     }
 
+    public void checkDailyMaster(Long dailyId) throws CustomException {
+        if (this.getDailyEntities().stream()
+                .filter(d -> d.getDailyId().equals(dailyId))
+                .noneMatch(d -> d.getMaster().getMid().equals(CryptUtils.getMid()))) {
+            throw new CustomException(ApiExceptionCode.FORBIDDEN);
+        }
+    }
+
     public void deleteReview(Long reviewId) throws CustomException {
         this.checkReviewMaster(reviewId);
         ReviewEntity review = this.getReviewEntities().stream().filter(r-> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
         this.getReviewEntities().remove(review);
     }
 
+    public void deleteDaily(Long dailyId) throws CustomException {
+        this.checkDailyMaster(dailyId);
+        DailyEntity daily = this.getDailyEntities().stream()
+                .filter(d -> d.getDailyId() == dailyId)
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
+        this.getDailyEntities().remove(daily);
+    }
 }

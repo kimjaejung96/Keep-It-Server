@@ -43,6 +43,13 @@ public class DailyController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{dailyId}")
+    public ResponseEntity<ResponseObject> deleteDaily(@PathVariable Long groupId, @PathVariable Long dailyId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        dailyService.deleteDaily(groupId, dailyId);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
     @PostMapping("/{dailyId}/comment")
     public ResponseEntity<ResponseObject> createComment(@PathVariable Long groupId,
                                                         @PathVariable Long dailyId,

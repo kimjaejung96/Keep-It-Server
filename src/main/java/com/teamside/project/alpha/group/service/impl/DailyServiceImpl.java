@@ -54,6 +54,14 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
+    public void deleteDaily(Long groupId, Long dailyId) throws CustomException {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+
+        group.deleteDaily(dailyId);
+    }
+
+    @Override
+    @Transactional
     public void createComment(Long groupId, Long dailyId, CommentDto.CreateComment comment) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
