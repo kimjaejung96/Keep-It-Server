@@ -103,11 +103,13 @@ public class ReviewDto {
         ReviewDetail reviewsDetail;
         List<CommentDto> comments;
         String loginMemberName;
+        String loginMemberProfileUrl;
 
-        public ResponseReviewDetail(ReviewDetail reviewsDetail, List<CommentDto> comments, String loginMemberName) {
+        public ResponseReviewDetail(ReviewDetail reviewsDetail, List<CommentDto> comments, String loginMemberName, String loginMemberProfileUrl) {
             this.reviewsDetail = reviewsDetail;
             this.comments = comments;
             this.loginMemberName = loginMemberName;
+            this.loginMemberProfileUrl = loginMemberProfileUrl;
         }
     }
     @Getter

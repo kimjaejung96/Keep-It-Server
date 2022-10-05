@@ -68,10 +68,13 @@ public class DailyDto {
         List<CommentDto> comments;
         String loginMemberName;
 
-        public ResponseDailyDetail(DailyDetail dailyDetail, List<CommentDto> comments, String loginMemberName) {
+        String loginMemberProfileUrl;
+
+        public ResponseDailyDetail(DailyDetail dailyDetail, List<CommentDto> comments, String loginMemberName, String loginMemberProfileUrl) {
             this.dailyDetail = dailyDetail;
             this.comments = comments;
             this.loginMemberName = loginMemberName;
+            this.loginMemberProfileUrl = loginMemberProfileUrl;
         }
     }
 
