@@ -1,5 +1,7 @@
 package com.teamside.project.alpha.group.model.domain;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.dto.CommentDto;
@@ -61,5 +63,21 @@ public class DailyCommentEntity extends TimeEntity {
                 .daily(new DailyEntity(dailyId))
                 .parentComment(comment.getParentCommentId() != null ? new DailyCommentEntity(comment.getParentCommentId()) : null)
                 .build();
+    }
+
+    public void checkCommentMaster(String mid) {
+        if (!this.master.getMid().equals(mid)) {
+            throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
+        }
+    }
+
+    public void updateComment(CommentDto.CreateComment comment) {
+        this.comment = comment.getComment();
+        this.imageUrl = comment.getImage();
+        this.targetMember = (comment.getTargetMid() != null ? new MemberEntity(comment.getTargetMid()) : null);
+    }
+
+    public void deleteComment() {
+        this.status = CommentStatus.DELETED;
     }
 }

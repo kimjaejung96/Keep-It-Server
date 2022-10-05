@@ -59,6 +59,25 @@ public class DailyController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @PatchMapping("/{dailyId}/comment/{commentId}")
+    public ResponseEntity<ResponseObject> updateComment(@PathVariable Long groupId,
+                                                        @PathVariable Long dailyId,
+                                                        @PathVariable Long commentId,
+                                                        @RequestBody @Valid CommentDto.CreateComment comment) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
+        dailyService.updateComment(groupId, dailyId, commentId, comment);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{dailyId}/comment/{commentId}")
+    public ResponseEntity<ResponseObject> deleteComment(@PathVariable Long groupId,
+                                                        @PathVariable Long dailyId,
+                                                        @PathVariable Long commentId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
+        dailyService.deleteComment(groupId, dailyId, commentId);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
     @PostMapping("/{dailyId}/keep")
     public ResponseEntity<ResponseObject> keepDaily(@PathVariable Long groupId, @PathVariable Long dailyId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
