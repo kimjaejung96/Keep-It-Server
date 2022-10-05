@@ -15,7 +15,6 @@ import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.dsl.GroupRepositoryDSL;
 import com.teamside.project.alpha.member.model.domain.QMemberFollowEntity;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
@@ -361,9 +360,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .where(review.reviewId.eq(reviewId))
                 .fetchFirst();
         List<CommentDto> comments = getReviewComments(reviewId);
-        MemberEntity loginMember = jpaQueryFactory.select(member).from(member).where(member.mid.eq(CryptUtils.getMid())).fetchOne();
+        String loginMemberName = jpaQueryFactory.select(member.name).from(member).where(member.mid.eq(CryptUtils.getMid())).fetchOne();
 
-        return new ReviewDto.ResponseReviewDetail(reviewDetail, comments, loginMember);
+        return new ReviewDto.ResponseReviewDetail(reviewDetail, comments, loginMemberName);
     }
 
     private List<CommentDto> getReviewComments(Long reviewId) {
@@ -416,9 +415,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .fetchOne();
 
         List<CommentDto> comments = this.getDailyComments(dailyId);
-        MemberEntity loginMember = jpaQueryFactory.select(member).from(member).where(member.mid.eq(mid)).fetchOne();
+        String loginMemberName = jpaQueryFactory.select(member.name).from(member).where(member.mid.eq(mid)).fetchOne();
 
-        return new DailyDto.ResponseDailyDetail(dailyDetail, comments, loginMember);
+        return new DailyDto.ResponseDailyDetail(dailyDetail, comments, loginMemberName);
     }
 
     public List<CommentDto> getDailyComments(Long dailyId) {

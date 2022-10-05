@@ -1,7 +1,6 @@
 package com.teamside.project.alpha.group.model.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,13 +67,11 @@ public class DailyDto {
         private DailyDetail dailyDetail;
         List<CommentDto> comments;
         String loginMemberName;
-        String loginMemberProfileUrl;
 
-        public ResponseDailyDetail(DailyDetail dailyDetail, List<CommentDto> comments, MemberEntity loginMember) {
+        public ResponseDailyDetail(DailyDetail dailyDetail, List<CommentDto> comments, String loginMemberName) {
             this.dailyDetail = dailyDetail;
             this.comments = comments;
-            this.loginMemberName = loginMember.getName();
-            this.loginMemberProfileUrl = loginMember.getProfileUrl();
+            this.loginMemberName = loginMemberName;
         }
     }
 
