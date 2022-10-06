@@ -65,4 +65,13 @@ public class ReviewCommentEntity extends TimeEntity {
     public ReviewCommentEntity(Long commentId) {
         this.commentId = commentId;
     }
+
+    public void updateComment(CommentDto.CreateComment comment) {
+        this.comment = comment.getComment();
+        this.imageUrl = comment.getImage();
+    }
+
+    public void updateStatus(CommentStatus status) {
+        this.status = status;
+    }
 }

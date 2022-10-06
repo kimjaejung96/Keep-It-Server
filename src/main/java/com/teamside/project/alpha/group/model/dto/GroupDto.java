@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Getter
@@ -57,6 +58,7 @@ public class GroupDto {
         private long inMembers;
         private long inReviews;
         private List<MembersDto> members;
+        private String createDt;
 
         @Getter
         @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -81,8 +83,9 @@ public class GroupDto {
             this.master = master;
             this.isFavorite = isFavorite;
             this.inMembers = inMembers;
-            this.members = new ArrayList<>();
+            this.members = new LinkedList<>();
             this.inReviews = inReviews;
+            this.createDt = String.valueOf(groupEntity.getCreateTime());
         }
         public void addGroupInfoMembers(List<MembersDto> members) {
             this.members = members;

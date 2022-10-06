@@ -4,10 +4,12 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.model.domain.ReviewCommentEntity;
 import com.teamside.project.alpha.group.model.domain.ReviewEntity;
 import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
+import com.teamside.project.alpha.group.model.enumurate.CommentStatus;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.ReviewService;
 import com.teamside.project.alpha.member.repository.MemberRepo;
@@ -34,7 +36,8 @@ public class ReviewServiceImpl implements ReviewService {
     public void createReview(Long groupId, ReviewDto review) {
         checkExistPlace(review.getPlaceId());
 
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = selectExistGroup(groupId);
+
         group.checkExistMember(CryptUtils.getMid());
         group.checkExistReview(review.getPlaceId());
 
@@ -46,7 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
     public void updateReview(Long groupId, ReviewDto.UpdateReviewDto review) {
         checkExistPlace(review.getPlaceId());
 
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(CryptUtils.getMid());
 
         ReviewEntity reviewEntity = group.getReviewEntities()
@@ -68,7 +71,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId) {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(CryptUtils.getMid());
         return groupRepository.selectReviewDetail(groupId, reviewId);
     }
@@ -76,7 +79,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void createComment(Long groupId, CommentDto.CreateComment comment, Long reviewId) {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(CryptUtils.getMid());
 
         ReviewEntity review = group.getReviewEntities().stream()
@@ -106,7 +109,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public void keepReview(Long groupId, Long reviewId) {
         String mid = CryptUtils.getMid();
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(mid);
 
         ReviewEntity review = group.getReviewEntities().stream()
@@ -119,9 +122,38 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void deleteReview(Long groupId, Long reviewId) throws CustomException {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = selectExistGroup(groupId);
 
         group.deleteReview(reviewId);
 
+    }
+
+    @Override
+    @Transactional
+    public void updateComment(Long groupId, CommentDto.CreateComment comment, Long reviewId, Long commentId) {
+        GroupEntity group = selectExistGroup(groupId);
+
+        ReviewEntity review = group.getReviewEntities().stream().filter(r -> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+
+        ReviewCommentEntity reviewComment = review.getReviewCommentEntities().stream().filter(c -> c.getCommentId().equals(commentId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_EXIST));
+
+        reviewComment.updateComment(comment);
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(Long groupId, Long reviewId, Long commentId) {
+        GroupEntity group = selectExistGroup(groupId);
+
+        ReviewEntity review = group.getReviewEntities().stream().filter(r -> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+
+        ReviewCommentEntity reviewComment = review.getReviewCommentEntities().stream().filter(c -> c.getCommentId().equals(commentId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_EXIST));
+
+        reviewComment.updateStatus(CommentStatus.DELETED);
+
+    }
+
+    private GroupEntity selectExistGroup(Long groupId) {
+        return groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
     }
 }

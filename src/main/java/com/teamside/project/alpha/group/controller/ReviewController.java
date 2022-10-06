@@ -93,6 +93,37 @@ public class ReviewController {
     }
 
     /**
+     * 댓글, 대댓글 수정
+     * @param groupId
+     * @param comment
+     * @param reviewId
+     * @param commentId
+     * @return
+     */
+    @PatchMapping("/{reviewId}/comment/{commentId}")
+    public ResponseEntity<ResponseObject> updateComment(@PathVariable Long groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable Long reviewId, @PathVariable Long commentId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
+        reviewService.updateComment(groupId, comment, reviewId, commentId);
+
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    /**
+     * 댓글, 대댓글 삭제 (상태값 변경)
+     * @param groupId
+     * @param reviewId
+     * @param commentId
+     * @return
+     */
+    @DeleteMapping("/{reviewId}/comment/{commentId}")
+    public ResponseEntity<ResponseObject> deleteComment(@PathVariable Long groupId, @PathVariable Long reviewId, @PathVariable Long commentId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
+        reviewService.deleteComment(groupId, reviewId, commentId);
+
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    /**
      * 리뷰 킵
      * @param groupId
      * @param reviewId

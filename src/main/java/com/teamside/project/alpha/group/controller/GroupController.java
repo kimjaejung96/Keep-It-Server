@@ -75,7 +75,7 @@ public class GroupController {
     }
 
     /**
-     * 그룹 - 그룹 정보
+     * 그룹 - 그룹 정보(그룹 조회)
      *
      * @param groupId
      * @return

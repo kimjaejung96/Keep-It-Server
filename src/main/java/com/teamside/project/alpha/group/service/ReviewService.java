@@ -15,4 +15,8 @@ public interface ReviewService {
     void keepReview(Long groupId, Long reviewId);
 
     void deleteReview(Long groupId, Long reviewId) throws CustomException;
+
+    void updateComment(Long groupId, CommentDto.CreateComment comment, Long reviewId, Long commentId);
+
+    void deleteComment(Long groupId, Long reviewId, Long commentId);
 }
