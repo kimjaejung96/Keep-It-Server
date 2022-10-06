@@ -73,8 +73,9 @@ public class DailyCommentEntity extends TimeEntity {
 
     public void updateComment(CommentDto.CreateComment comment) {
         this.comment = comment.getComment();
-        this.imageUrl = comment.getImage();
-        this.targetMember = (comment.getTargetMid() != null ? new MemberEntity(comment.getTargetMid()) : null);
+        if (comment.getImage() != null && !comment.getImage().isBlank()) {
+            this.imageUrl = comment.getImage();
+        }
     }
 
     public void deleteComment() {
