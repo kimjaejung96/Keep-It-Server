@@ -78,20 +78,15 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public GroupDto.GroupInfoDto selectGroup(Long groupId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkExistMember(CryptUtils.getMid());
 
         GroupDto.GroupInfoDto result = groupRepository.selectGroup(groupId);
 
         GroupDto.GroupInfoDto.MembersDto master = result.getMembers().stream().filter(m -> m.getMid().equals(group.getMaster().getMid())).findFirst().orElseThrow();
-        GroupDto.GroupInfoDto.MembersDto me = result.getMembers().stream().filter(m -> m.getMid().equals(CryptUtils.getMid())).findFirst().orElseThrow();
+        result.getMembers().remove(master);
+        result.getMembers().add(0, master);
 
-        if (master.equals(me)) {
-            result.getMembers().remove(me);
-            result.getMembers().add(0, me);
-        } else {
-            result.getMembers().remove(master);
-            result.getMembers().add(0, master);
-
+        GroupDto.GroupInfoDto.MembersDto me = result.getMembers().stream().filter(m -> m.getMid().equals(CryptUtils.getMid())).findFirst().orElse(null);
+        if (me != null && !master.equals(me)) {
             result.getMembers().remove(me);
             result.getMembers().add(1, me);
         }
