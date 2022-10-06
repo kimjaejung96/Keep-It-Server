@@ -71,7 +71,8 @@ public class ReviewCommentEntity extends TimeEntity {
         this.imageUrl = comment.getImage();
     }
 
-    public void updateStatus(CommentStatus status) {
-        this.status = status;
+    public void deleteComment() {
+        this.status = CommentStatus.DELETED;
+        this.comment = "삭제된 댓글입니다.😢";
     }
 }

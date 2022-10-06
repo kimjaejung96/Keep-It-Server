@@ -9,7 +9,6 @@ import com.teamside.project.alpha.group.model.domain.ReviewEntity;
 import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
-import com.teamside.project.alpha.group.model.enumurate.CommentStatus;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.group.service.ReviewService;
 import com.teamside.project.alpha.member.repository.MemberRepo;
@@ -149,7 +148,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         ReviewCommentEntity reviewComment = review.getReviewCommentEntities().stream().filter(c -> c.getCommentId().equals(commentId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_EXIST));
 
-        reviewComment.updateStatus(CommentStatus.DELETED);
+        reviewComment.deleteComment();
 
     }
 
