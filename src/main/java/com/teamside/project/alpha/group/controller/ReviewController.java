@@ -102,7 +102,7 @@ public class ReviewController {
      */
     @PatchMapping("/{reviewId}/comment/{commentId}")
     public ResponseEntity<ResponseObject> updateComment(@PathVariable Long groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable Long reviewId, @PathVariable Long commentId) {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.updateComment(groupId, comment, reviewId, commentId);
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
@@ -117,7 +117,7 @@ public class ReviewController {
      */
     @DeleteMapping("/{reviewId}/comment/{commentId}")
     public ResponseEntity<ResponseObject> deleteComment(@PathVariable Long groupId, @PathVariable Long reviewId, @PathVariable Long commentId) {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.deleteComment(groupId, reviewId, commentId);
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
