@@ -4,6 +4,7 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.model.domain.DailyCommentEntity;
 import com.teamside.project.alpha.group.model.domain.DailyEntity;
 import com.teamside.project.alpha.group.model.dto.CommentDto;
 import com.teamside.project.alpha.group.model.dto.DailyDto;
@@ -83,6 +84,48 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
+    public void updateComment(Long groupId, Long dailyId, Long commentId, CommentDto.CreateComment comment) {
+        String mid = CryptUtils.getMid();
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(mid);
+
+        DailyEntity daily = group.getDailyEntities().stream()
+                .filter(d -> Objects.equals(d.getDailyId(), dailyId))
+                .findAny()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
+
+        DailyCommentEntity commentEntity = daily.getDailyCommentEntities().stream()
+                .filter(c -> Objects.equals(c.getCommentId(), commentId))
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.OK));
+
+        commentEntity.checkCommentMaster(mid);
+        commentEntity.updateComment(comment);
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(Long groupId, Long dailyId, Long commentId) {
+        String mid = CryptUtils.getMid();
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkExistMember(mid);
+
+        DailyEntity daily = group.getDailyEntities().stream()
+                .filter(d -> Objects.equals(d.getDailyId(), dailyId))
+                .findAny()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
+
+        DailyCommentEntity commentEntity = daily.getDailyCommentEntities().stream()
+                .filter(c -> Objects.equals(c.getCommentId(), commentId))
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.OK));
+
+        commentEntity.checkCommentMaster(mid);
+        commentEntity.deleteComment();
+    }
+
+    @Override
+    @Transactional
     public void keepDaily(Long groupId, Long dailyId) {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
@@ -94,5 +137,6 @@ public class DailyServiceImpl implements DailyService {
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
 
         daily.keepDaily(dailyId, mid);
+        // 메소드있지않나 ㄷ;
     }
 }
