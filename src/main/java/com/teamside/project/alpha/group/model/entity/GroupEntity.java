@@ -106,7 +106,7 @@ public class GroupEntity extends TimeEntity {
 
     public void checkJoinPossible(GroupEntity group, String password) throws CustomException {
         if (Boolean.TRUE.equals(group.getUsePrivate())) {
-            if (!password.equals(group.getPassword())) {
+            if (password == null || !password.equals(group.getPassword())) {
                 throw new CustomException(ApiExceptionCode.PASSWORD_IS_INCORRECT);
             }
         }
