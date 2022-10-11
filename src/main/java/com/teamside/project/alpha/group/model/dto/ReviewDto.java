@@ -120,6 +120,7 @@ public class ReviewDto {
         private String memberProfileUrl;
         private String placeName;
         private String placeAddress;
+        private Long placeId;
         private List<String> reviewImagesUrl;
         private String reviewCreateDt;
         private int keepCount;
@@ -132,6 +133,7 @@ public class ReviewDto {
             this.memberProfileUrl = member.getProfileUrl();
             this.placeName = place.getPlaceName();
             this.placeAddress = place.getAddress();
+            this.placeId = place.getPlaceId();
             this.reviewImagesUrl = List.of(review.getImages().split(","));
             this.reviewCreateDt = String.valueOf(review.getCreateTime());
             this.keepCount = review.getReviewKeepEntities().size();
