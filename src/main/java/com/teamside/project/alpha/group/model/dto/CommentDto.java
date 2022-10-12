@@ -30,12 +30,12 @@ public class CommentDto {
     private String targetMid;
     private CommentStatus status;
     public void insertChildComments(CommentDto commentDto) {
-        this.childComments = new ArrayList<>();
         this.childComments.add(commentDto);
     }
 
     @QueryProjection
     public CommentDto(ReviewCommentEntity reviewComment, MemberEntity member) {
+        this.childComments = new ArrayList<>();
         this.commentId = reviewComment.getCommentId();
         this.memberName = member.getName();
         this.memberId = member.getMid();
@@ -51,6 +51,7 @@ public class CommentDto {
 
     @QueryProjection
     public CommentDto(DailyCommentEntity dailyComment, MemberEntity member) {
+        this.childComments = new ArrayList<>();
         this.commentId = dailyComment.getCommentId();
         this.memberName = member.getName();
         this.memberId = member.getMid();
