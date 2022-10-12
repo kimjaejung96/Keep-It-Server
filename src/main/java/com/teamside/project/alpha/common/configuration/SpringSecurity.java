@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.filter.AuthCheck;
 import com.teamside.project.alpha.common.handler.AuthenticationHandler;
 import com.teamside.project.alpha.common.handler.AuthorizationHandler;
-import com.teamside.project.alpha.member.service.AuthService;
+import com.teamside.project.alpha.member.domain.auth.service.AuthService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

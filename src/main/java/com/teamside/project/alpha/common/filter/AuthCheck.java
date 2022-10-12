@@ -6,7 +6,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
-import com.teamside.project.alpha.member.service.AuthService;
+import com.teamside.project.alpha.member.domain.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,7 +37,7 @@ public class AuthCheck extends OncePerRequestFilter {
             if(token != null){
                 authService.tokenValidationCheck(token);
                 String mid = authService.getAuthPayload(getAccessToken(request));
-                Authentication authentication = new UsernamePasswordAuthenticationToken(mid, getAccessToken(request),null);;
+                Authentication authentication = new UsernamePasswordAuthenticationToken(mid, getAccessToken(request),null);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             filterChain.doFilter(request, response);

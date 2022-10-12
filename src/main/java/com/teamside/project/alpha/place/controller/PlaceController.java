@@ -2,8 +2,8 @@ package com.teamside.project.alpha.place.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
-import com.teamside.project.alpha.group.service.PlaceService;
 import com.teamside.project.alpha.place.model.dto.PlaceDto;
+import com.teamside.project.alpha.place.service.PlaceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

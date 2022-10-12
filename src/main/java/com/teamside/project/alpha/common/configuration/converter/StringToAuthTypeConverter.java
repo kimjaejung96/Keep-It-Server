@@ -1,6 +1,6 @@
 package com.teamside.project.alpha.common.configuration.converter;
 
-import com.teamside.project.alpha.member.model.enumurate.AuthType;
+import com.teamside.project.alpha.member.domain.auth.model.enumurate.AuthType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 

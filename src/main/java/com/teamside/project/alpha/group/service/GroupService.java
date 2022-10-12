@@ -1,8 +1,8 @@
 package com.teamside.project.alpha.group.service;
 
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
-import com.teamside.project.alpha.group.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 
 import java.util.List;
