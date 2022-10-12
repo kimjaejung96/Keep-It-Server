@@ -80,5 +80,6 @@ public class DailyCommentEntity extends TimeEntity {
 
     public void deleteComment() {
         this.status = CommentStatus.DELETED;
+        this.comment = "삭제된 댓글입니다.😢";
     }
 }

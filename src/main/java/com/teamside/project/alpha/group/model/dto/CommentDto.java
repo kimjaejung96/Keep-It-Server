@@ -40,7 +40,7 @@ public class CommentDto {
         this.memberName = member.getName();
         this.memberId = member.getMid();
         this.memberProfileUrl = member.getProfileUrl();
-        this.comment = reviewComment.getComment();
+        this.comment = reviewComment.getStatus().equals(CommentStatus.BLOCKED) ? "신고에 의해 숨김 처리된 댓글입니다." : reviewComment.getComment();
         this.createDt = String.valueOf(reviewComment.getCreateTime());
         this.parentCommentId = reviewComment.getParentComment() != null?reviewComment.getParentComment().getCommentId():null;
         this.imageUrl = reviewComment.getImageUrl();
@@ -56,7 +56,7 @@ public class CommentDto {
         this.memberName = member.getName();
         this.memberId = member.getMid();
         this.memberProfileUrl = member.getProfileUrl();
-        this.comment = dailyComment.getComment();
+        this.comment = dailyComment.getStatus().equals(CommentStatus.BLOCKED) ? "신고에 의해 숨김 처리된 댓글입니다." : dailyComment.getComment();
         this.createDt = String.valueOf(dailyComment.getCreateTime());
         this.parentCommentId = dailyComment.getParentComment() != null ? dailyComment.getParentComment().getCommentId() : null;
         this.imageUrl = dailyComment.getImageUrl();
