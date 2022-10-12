@@ -20,6 +20,7 @@ import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -376,11 +377,13 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
         result.stream()
                 .filter(commentDto ->  commentDto.getParentCommentId() != null)
+                .sorted(Comparator.comparing(CommentDto::getCommentId))
                 .forEach(comment -> result.stream()
                         .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
-                        .forEach(dd -> dd.insertChildComments(comment)
-                        ));
+                        .sorted(Comparator.comparing(CommentDto::getCommentId).reversed())
+                        .forEach(dd -> dd.insertChildComments(comment)));
         result.removeIf(d -> d.getParentCommentId() != null);
+
 
         return result;
     }
@@ -432,6 +435,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
         result.stream()
                 .filter(commentDto ->  commentDto.getParentCommentId() != null)
+                .sorted(Comparator.comparing(CommentDto::getCommentId))
                 .forEach(comment -> result.stream()
                         .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
                         .forEach(dd -> dd.insertChildComments(comment)
