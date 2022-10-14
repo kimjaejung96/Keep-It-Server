@@ -58,15 +58,19 @@ public class ReviewDto {
             private final String content;
             private final Integer commentCount;
             private final String createDt;
+            private final Integer keepCount;
+            private final Boolean isKeep;
             private final List<String> images;
 
             @QueryProjection
-            public Review(Long reviewId, String content, Integer commentCount, LocalDateTime createDt, String images) {
+            public Review(Long reviewId, String content, Integer commentCount, LocalDateTime createDt, String images, Integer keepCount, Boolean isKeep) {
                 this.reviewId = reviewId;
                 this.content = content;
                 this.commentCount = commentCount;
                 this.createDt = String.valueOf(createDt);
                 this.images = List.of(images.split(","));
+                this.keepCount = keepCount;
+                this.isKeep = isKeep;
             }
         }
         @Getter

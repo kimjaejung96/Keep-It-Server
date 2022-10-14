@@ -6,6 +6,7 @@ import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.domain.review.service.ReviewService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,14 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/groups/{groupId}/reviews")
 @Validated
+@RequiredArgsConstructor
+@RequestMapping("/groups/{groupId}/reviews")
 public class ReviewController {
     private final ReviewService reviewService;
-
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
 
     /**
      * 리뷰 생성

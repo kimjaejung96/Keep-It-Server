@@ -8,6 +8,7 @@ import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.service.GroupService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,13 +20,11 @@ import javax.validation.constraints.Size;
 
 @RestController
 @Validated
+@RequiredArgsConstructor
 @RequestMapping("/groups")
 public class GroupController {
     private final GroupService groupService;
 
-    public GroupController(GroupService groupService) {
-        this.groupService = groupService;
-    }
     @GetMapping("/{groupId}/reviews")
     public ResponseEntity<ResponseObject> selectReviewsInGroup(@PathVariable Long groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastReviewId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

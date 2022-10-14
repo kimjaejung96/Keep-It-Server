@@ -20,6 +20,7 @@ import com.teamside.project.alpha.group.domain.daily.model.entity.QDailyKeepEnti
 import com.teamside.project.alpha.group.domain.review.model.dto.*;
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewCommentEntity;
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewEntity;
+import com.teamside.project.alpha.group.domain.review.model.entity.QReviewKeepEntity;
 import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.entity.QGroupEntity;
@@ -32,7 +33,6 @@ import com.teamside.project.alpha.member.model.entity.QMemberFollowEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,6 +40,7 @@ import java.util.Optional;
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     private final JPAQueryFactory jpaQueryFactory;
 
+    QReviewKeepEntity reviewKeep = QReviewKeepEntity.reviewKeepEntity;
     QGroupEntity group = QGroupEntity.groupEntity;
     QReviewCommentEntity reviewComment = QReviewCommentEntity.reviewCommentEntity;
     QPlaceEntity place = QPlaceEntity.placeEntity;
@@ -298,13 +299,15 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     @Override
     public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(Long groupId, String targetId, Long pageSize, Long lastReviewId) {
-        return jpaQueryFactory.select(new QReviewDto_SelectReviewsInGroup(
+         return jpaQueryFactory.select(new QReviewDto_SelectReviewsInGroup(
                 new QReviewDto_SelectReviewsInGroup_Review(
                         review.reviewId,
                         review.content,
                         review.reviewCommentEntities.size(),
                         review.createTime,
-                        review.images),
+                        review.images,
+                        review.reviewKeepEntities.size(),
+                        reviewKeep.isNotNull()),
                         new QReviewDto_SelectReviewsInGroup_Member(
                                 member.mid,
                                 member.name,
@@ -315,14 +318,15 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                                 place.placeName,
                                 place.roadAddress
                         ))
-                )
-                .from(review)
-                .innerJoin(member).on(review.master.mid.eq(member.mid))
-                .innerJoin(place).on(review.place.placeId.eq(place.placeId))
-                .where(review.group.groupId.eq(groupId), eqReviewMaster(targetId), ltReviewId(lastReviewId))
-                .orderBy(review.reviewId.desc())
-                .limit(pageSize)
-                .fetch();
+                 )
+                 .from(review)
+                 .innerJoin(member).on(review.master.mid.eq(member.mid))
+                 .innerJoin(place).on(review.place.placeId.eq(place.placeId))
+                 .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId).and(reviewKeep.member.mid.eq(CryptUtils.getMid())))
+                 .where(review.group.groupId.eq(groupId), eqReviewMaster(targetId), ltReviewId(lastReviewId))
+                 .orderBy(review.reviewId.desc())
+                 .limit(pageSize)
+                 .fetch();
     }
 
     @Override
@@ -389,10 +393,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
         result.stream()
                 .filter(commentDto ->  commentDto.getParentCommentId() != null)
-                .sorted(Comparator.comparing(CommentDto::getCommentId))
+//                .sorted(Comparator.comparing(CommentDto::getCommentId))
                 .forEach(comment -> result.stream()
                         .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
-                        .sorted(Comparator.comparing(CommentDto::getCommentId).reversed())
                         .forEach(dd -> dd.insertChildComments(comment)));
         result.removeIf(d -> d.getParentCommentId() != null);
 
@@ -447,7 +450,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
         result.stream()
                 .filter(commentDto ->  commentDto.getParentCommentId() != null)
-                .sorted(Comparator.comparing(CommentDto::getCommentId))
+//                .sorted(Comparator.comparing(CommentDto::getCommentId))
                 .forEach(comment -> result.stream()
                         .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
                         .forEach(dd -> dd.insertChildComments(comment)

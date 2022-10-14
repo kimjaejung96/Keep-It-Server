@@ -154,4 +154,5 @@ public class ReviewServiceImpl implements ReviewService {
     private GroupEntity selectExistGroup(Long groupId) {
         return groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
     }
+
 }
