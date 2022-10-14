@@ -80,7 +80,7 @@ public class DailyEntity extends TimeEntity {
 
     public void keepDaily(Long dailyId, String mid) {
         Optional<DailyKeepEntity> dailyEntity = this.dailyKeepEntities.stream()
-                .filter(daily -> (daily.getMember().getMid().equals(mid) && daily.getDaily().getDailyId() == dailyId))
+                .filter(daily -> (daily.getMember().getMid().equals(mid) && daily.getDaily().getDailyId().equals(dailyId)))
                 .findFirst();
 
         if (dailyEntity.isPresent()) {
