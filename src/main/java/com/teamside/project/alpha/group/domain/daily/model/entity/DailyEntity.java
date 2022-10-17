@@ -45,10 +45,10 @@ public class DailyEntity extends TimeEntity {
     @JoinColumn(name = "MASTER",  referencedColumnName = "MID")
     private MemberEntity master;
 
-    @OneToMany(mappedBy = "daily", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "daily",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyCommentEntity> dailyCommentEntities;
 
-    @OneToMany(mappedBy = "daily", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "daily",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyKeepEntity> dailyKeepEntities;
 
     public DailyEntity(Long groupId, DailyDto dailyDto) {

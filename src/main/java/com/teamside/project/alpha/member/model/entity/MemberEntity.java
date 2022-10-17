@@ -4,11 +4,6 @@ package com.teamside.project.alpha.member.model.entity;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
-import com.teamside.project.alpha.group.domain.daily.model.entity.DailyEntity;
-import com.teamside.project.alpha.group.domain.daily.model.entity.DailyKeepEntity;
-import com.teamside.project.alpha.group.domain.review.model.entity.ReviewEntity;
-import com.teamside.project.alpha.group.domain.review.model.entity.ReviewKeepEntity;
-import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.member.domain.auth.model.entity.RefreshTokenEntity;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
@@ -37,7 +32,7 @@ public class MemberEntity extends TimeEntity {
     @Column(name = "NAME", columnDefinition = "varchar(20)")
     private String name;
 
-    @Column(name = "PHONE", columnDefinition = "char(64)")
+    @Column(name = "PHONE", columnDefinition = "char(24)")
     private String phone;
 
     @Column(name = "PROFILE_URL", columnDefinition = "varchar(255)")
@@ -50,36 +45,18 @@ public class MemberEntity extends TimeEntity {
     @Enumerated(EnumType.STRING)
     private SignUpType type;
 
-    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     private TermsEntity termsEntity;
-
-    @OneToOne(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     private RefreshTokenEntity refreshTokenEntity;
-
-    @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<GroupEntity> groupEntities;
-
-    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<GroupMemberMappingEntity> groupMemberMappingEntities;
-
-    @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ReviewEntity> reviewEntities;
-
-    @OneToMany(mappedBy = "master", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<DailyEntity> dailyEntities;
-
-    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<MemberFollowEntity> memberFollowEntities;
-
-    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "targetMember",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<MemberFollowEntity> memberFollowTargetEntities;
+    @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<MemberBlockEntity> memberBlockEntities;
-
-    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ReviewKeepEntity> reviewKeepEntities;
-
-    @OneToMany(mappedBy = "member", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<DailyKeepEntity> dailyKeepEntities;
-
+    @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<GroupMemberMappingEntity> groupMemberMappingEntities;
     public MemberEntity(String mid) {
         this.mid = mid;
     }
@@ -144,6 +121,18 @@ public class MemberEntity extends TimeEntity {
         } else {
             this.memberBlockEntities.add(new MemberBlockEntity(mid, targetMid));
         }
+    }
+
+    public void deleteMember() {
+        this.name = "";
+        this.phone = "";
+        this.profileUrl = "";
+        this.fcmToken = "";
+        this.refreshTokenEntity = null;
+        this.memberBlockEntities = null;
+        this.memberFollowEntities = null;
+        this.memberFollowTargetEntities = null;
+        // status -> true
     }
 
 }

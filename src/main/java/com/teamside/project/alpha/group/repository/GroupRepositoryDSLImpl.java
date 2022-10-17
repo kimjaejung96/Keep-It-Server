@@ -6,8 +6,6 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.teamside.project.alpha.common.exception.ApiExceptionCode;
-import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.common.dto.QCommentDto;
@@ -187,14 +185,13 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         )
                 )
                 .from(group)
-                .innerJoin(groupMemberMapping).on(groupMemberMapping.member.mid.eq(CryptUtils.getMid()).and(group.groupId.eq(groupMemberMapping.groupId)))
-                .leftJoin(review).on(group.groupId.eq(review.group.groupId))
+                .innerJoin(groupMemberMapping)
+                .on(groupMemberMapping.member.mid.eq(CryptUtils.getMid()).and(group.groupId.eq(groupMemberMapping.groupId)))
+                .leftJoin(review)
+                .on(group.groupId.eq(review.group.groupId))
                 .where(group.groupId.eq(groupId))
                 .groupBy(group.groupId)
                 .fetchOne();
-
-
-        if (groupInfoDto == null) throw new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND);
 
         Objects.requireNonNull(groupInfoDto).addGroupInfoMembers(
                 jpaQueryFactory.select(
@@ -279,7 +276,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ))
                 .from(member)
                 .leftJoin(review)
-                    .on(review.master.mid.eq(member.mid).and(review.group.groupId.eq(groupId)))
+                    .on(review.masterMid.eq(member.mid).and(review.group.groupId.eq(groupId)))
                 .leftJoin(daily)
                     .on(daily.master.mid.eq(member.mid).and(daily.group.groupId.eq(groupId)))
                 .leftJoin(memberFollow)
@@ -311,7 +308,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         ))
                  )
                  .from(review)
-                 .innerJoin(member).on(review.master.mid.eq(member.mid))
+                 .innerJoin(member).on(review.masterMid.eq(member.mid))
                  .innerJoin(place).on(review.place.placeId.eq(place.placeId))
                  .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId).and(reviewKeep.member.mid.eq(CryptUtils.getMid())))
                  .where(review.group.groupId.eq(groupId), eqReviewMaster(targetId), ltReviewId(lastReviewId))
@@ -345,7 +342,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
 
     private BooleanExpression eqReviewMaster(String targetId) {
-        return targetId != null ? review.master.mid.eq(targetId) : null;
+        return targetId != null ? review.masterMid.eq(targetId) : null;
     }
 
     private BooleanExpression ltDailyId(Long lastDailyId) {
@@ -364,7 +361,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         review, member, place
                 ))
                 .from(review)
-                .innerJoin(member).on(member.mid.eq(review.master.mid))
+                .innerJoin(member).on(member.mid.eq(review.masterMid))
                 .innerJoin(place).on(review.place.placeId.eq(place.placeId))
                 .where(review.reviewId.eq(reviewId))
                 .fetchFirst();
@@ -375,9 +372,10 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     private List<CommentDto> getReviewComments(Long reviewId) {
-        List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member))
+        QMemberEntity targetMember = new QMemberEntity("targetMember");
+        List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member, targetMember))
                 .from(reviewComment)
-                .innerJoin(member).on(member.mid.eq(reviewComment.master.mid))
+                .innerJoin(member).on(member.mid.eq(reviewComment.masterMid))
                 .where(reviewComment.review.reviewId.eq(reviewId))
                 .orderBy(reviewComment.commentId.desc())
                 .fetch();

@@ -29,7 +29,7 @@ public class MemberFollowEntity extends CreateDtEntity {
 
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MID", referencedColumnName = "MID")
+    @JoinColumn(name = "TARGET_MID", referencedColumnName = "MID")
     private MemberEntity targetMember;
 
     public MemberFollowEntity(String mid, String targetMid) {

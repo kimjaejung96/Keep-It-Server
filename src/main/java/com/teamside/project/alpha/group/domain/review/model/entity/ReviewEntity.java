@@ -7,7 +7,6 @@ import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.place.model.entity.PlaceEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,10 +35,8 @@ public class ReviewEntity extends TimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PLACE_ID",  referencedColumnName = "PLACE_ID")
     private PlaceEntity place;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MASTER",  referencedColumnName = "MID")
-    private MemberEntity master;
+    @Column(name = "MASTER", columnDefinition = "char(36)")
+    private String masterMid;
 
     @Column(name = "CONTENT", columnDefinition = "varchar(1000)")
     private String content;
@@ -50,13 +47,13 @@ public class ReviewEntity extends TimeEntity {
     @OneToMany(mappedBy = "review", orphanRemoval = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReviewCommentEntity> reviewCommentEntities;
 
-    @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "review",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReviewKeepEntity> reviewKeepEntities;
 
     public ReviewEntity(Long groupId, ReviewDto review) {
         this.group = new GroupEntity(groupId);
         this.place = new PlaceEntity(review.getPlaceId());
-        this.master = new MemberEntity(CryptUtils.getMid());
+        this.masterMid = CryptUtils.getMid();
         this.content = review.getContent();
         this.images = String.join(",", review.getImages());
     }
@@ -72,7 +69,7 @@ public class ReviewEntity extends TimeEntity {
     }
 
     public void checkReviewMaster(String mid) {
-        if (!this.master.getMid().equals(mid)) {
+        if (!this.masterMid.equals(mid)) {
             throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
         }
     }

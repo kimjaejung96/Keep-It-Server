@@ -55,13 +55,13 @@ public class GroupEntity extends TimeEntity {
     @JoinColumn(name = "MASTER_MID",  referencedColumnName = "MID")
     private MemberEntity master;
 
-    @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupMemberMappingEntity> groupMemberMappingEntity;
 
-    @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReviewEntity> reviewEntities;
 
-    @OneToMany(mappedBy = "group", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyEntity> dailyEntities;
 
     public GroupEntity(GroupDto group) {
@@ -129,7 +129,7 @@ public class GroupEntity extends TimeEntity {
         if (this.reviewEntities
                 .stream()
                 .filter(place -> placeId == place.getPlace().getPlaceId())
-                .anyMatch(reviewEntity -> reviewEntity.getMaster().getMid().equals(CryptUtils.getMid()))) {
+                .anyMatch(reviewEntity -> reviewEntity.getMasterMid().equals(CryptUtils.getMid()))) {
             throw new CustomRuntimeException(ApiExceptionCode.REVIEW_ALREADY_EXIST);
         }
     }
@@ -154,7 +154,7 @@ public class GroupEntity extends TimeEntity {
     public void checkReviewMaster(Long reviewId) throws CustomException {
         if (this.getReviewEntities().stream()
                 .filter(r -> r.getReviewId().equals(reviewId))
-                .noneMatch(r -> r.getMaster().getMid().equals(CryptUtils.getMid()))) {
+                .noneMatch(r -> r.getMasterMid().equals(CryptUtils.getMid()))) {
             throw new CustomException(ApiExceptionCode.FORBIDDEN);
         }
     }
@@ -170,7 +170,7 @@ public class GroupEntity extends TimeEntity {
     public void deleteReview(Long reviewId) throws CustomException {
         this.checkReviewMaster(reviewId);
         ReviewEntity review = this.getReviewEntities().stream().filter(r-> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
-        this.getReviewEntities().remove(review);
+        this.reviewEntities.remove(review);
     }
 
     public void deleteDaily(Long dailyId) throws CustomException {

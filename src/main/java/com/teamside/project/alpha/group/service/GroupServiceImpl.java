@@ -271,7 +271,7 @@ public class GroupServiceImpl implements GroupService {
 
         return new GroupDto.GroupHome(group.getName(),
                 group.getGroupMemberMappingEntity().stream().count(),
-                group.getReviewEntities().stream().filter(d-> Objects.equals(d.getMaster().getMid(), CryptUtils.getMid())).count(),
+                group.getReviewEntities().stream().filter(d-> Objects.equals(d.getMasterMid(), CryptUtils.getMid())).count(),
                 group.getReviewEntities().stream().count(),
                 group.getDailyEntities().stream().count()
                 );

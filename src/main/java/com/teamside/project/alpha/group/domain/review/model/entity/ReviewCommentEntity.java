@@ -4,7 +4,6 @@ import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.common.enumurate.CommentStatus;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -29,13 +28,11 @@ public class ReviewCommentEntity extends TimeEntity {
     @Column(name = "IMAGE_URL", columnDefinition = "varchar(255)")
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MASTER_MID", referencedColumnName = "MID")
-    private MemberEntity master;
+    @Column(name = "MASTER_MID", columnDefinition = "char(36)")
+    private String masterMid;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TARGET_MID", referencedColumnName = "MID")
-    private MemberEntity targetMember;
+    @Column(name = "TARGET_MID", columnDefinition = "char(36)")
+    private String targetMemberMid;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -54,9 +51,9 @@ public class ReviewCommentEntity extends TimeEntity {
         return ReviewCommentEntity.builder()
                 .comment(comment.getComment())
                 .imageUrl(comment.getImage())
-                .master(new MemberEntity(CryptUtils.getMid()))
+                .masterMid(CryptUtils.getMid())
                 .review(new ReviewEntity(reviewId))
-                .targetMember(comment.getTargetMid() != null ? new MemberEntity(comment.getTargetMid()) : null)
+                .targetMemberMid(comment.getTargetMid() != null ? comment.getTargetMid() : null)
                 .parentComment(comment.getParentCommentId() != null ? new ReviewCommentEntity(comment.getParentCommentId()) : null)
                 .status(CommentStatus.CREATED)
                 .build();

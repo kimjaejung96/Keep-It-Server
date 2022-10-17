@@ -34,7 +34,7 @@ public class CommentDto {
     }
 
     @QueryProjection
-    public CommentDto(ReviewCommentEntity reviewComment, MemberEntity member) {
+    public CommentDto(ReviewCommentEntity reviewComment, MemberEntity member, MemberEntity targetMember) {
         this.childComments = new ArrayList<>();
         this.commentId = reviewComment.getCommentId();
         this.memberName = member.getName();
@@ -44,8 +44,8 @@ public class CommentDto {
         this.createDt = String.valueOf(reviewComment.getCreateTime());
         this.parentCommentId = reviewComment.getParentComment() != null?reviewComment.getParentComment().getCommentId():null;
         this.imageUrl = reviewComment.getImageUrl();
-        this.targetName = reviewComment.getTargetMember() != null ? reviewComment.getTargetMember().getName() : null;
-        this.targetMid = reviewComment.getTargetMember() != null ? reviewComment.getTargetMember().getMid() : null;
+        this.targetName = targetMember.getName();
+        this.targetMid = targetMember.getMid();
         this.status = reviewComment.getStatus();
     }
 
