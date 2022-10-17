@@ -44,13 +44,13 @@ public class CommentDto {
         this.createDt = String.valueOf(reviewComment.getCreateTime());
         this.parentCommentId = reviewComment.getParentComment() != null?reviewComment.getParentComment().getCommentId():null;
         this.imageUrl = reviewComment.getImageUrl();
-        this.targetName = targetMember.getName();
-        this.targetMid = targetMember.getMid();
+        this.targetName = targetMember != null ? targetMember.getName() : null;
+        this.targetMid = targetMember != null ? targetMember.getMid() : null;
         this.status = reviewComment.getStatus();
     }
 
     @QueryProjection
-    public CommentDto(DailyCommentEntity dailyComment, MemberEntity member) {
+    public CommentDto(DailyCommentEntity dailyComment, MemberEntity member, MemberEntity targetMember) {
         this.childComments = new ArrayList<>();
         this.commentId = dailyComment.getCommentId();
         this.memberName = member.getName();
@@ -60,8 +60,8 @@ public class CommentDto {
         this.createDt = String.valueOf(dailyComment.getCreateTime());
         this.parentCommentId = dailyComment.getParentComment() != null ? dailyComment.getParentComment().getCommentId() : null;
         this.imageUrl = dailyComment.getImageUrl();
-        this.targetName = dailyComment.getTargetMember() != null ? dailyComment.getTargetMember().getName() : null;
-        this.targetMid = dailyComment.getTargetMember() != null ? dailyComment.getTargetMember().getMid() : null;
+        this.targetName = targetMember != null ? targetMember.getName() : null;
+        this.targetMid = targetMember != null ? targetMember.getMid() : null;
         this.status = dailyComment.getStatus();
     }
 

@@ -162,7 +162,7 @@ public class GroupEntity extends TimeEntity {
     public void checkDailyMaster(Long dailyId) throws CustomException {
         if (this.getDailyEntities().stream()
                 .filter(d -> d.getDailyId().equals(dailyId))
-                .noneMatch(d -> d.getMaster().getMid().equals(CryptUtils.getMid()))) {
+                .noneMatch(d -> d.getMasterMid().equals(CryptUtils.getMid()))) {
             throw new CustomException(ApiExceptionCode.FORBIDDEN);
         }
     }

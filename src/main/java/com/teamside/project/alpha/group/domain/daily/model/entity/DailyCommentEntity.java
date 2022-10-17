@@ -35,13 +35,11 @@ public class DailyCommentEntity extends TimeEntity {
     @Enumerated(EnumType.STRING)
     private CommentStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MASTER_MID", referencedColumnName = "MID")
-    private MemberEntity master;
+    @Column(name = "MASTER_MID", columnDefinition = "char(36)")
+    private String masterMid;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TARGET_MID", referencedColumnName = "MID")
-    private MemberEntity targetMember;
+    @Column(name = "TARGET_MID", columnDefinition = "char(36)")
+    private String targetMemberMid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DAILY_ID", referencedColumnName = "DAILY_ID")
@@ -58,15 +56,15 @@ public class DailyCommentEntity extends TimeEntity {
                 .comment(comment.getComment())
                 .imageUrl(comment.getImage())
                 .status(CommentStatus.CREATED)
-                .targetMember(comment.getTargetMid() != null ? new MemberEntity(comment.getTargetMid()) : null)
-                .master(new MemberEntity(CryptUtils.getMid()))
+                .targetMemberMid(comment.getTargetMid() != null ? comment.getTargetMid() : null)
+                .masterMid(CryptUtils.getMid())
                 .daily(new DailyEntity(dailyId))
                 .parentComment(comment.getParentCommentId() != null ? new DailyCommentEntity(comment.getParentCommentId()) : null)
                 .build();
     }
 
     public void checkCommentMaster(String mid) {
-        if (!this.master.getMid().equals(mid)) {
+        if (!this.masterMid.equals(mid)) {
             throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
         }
     }

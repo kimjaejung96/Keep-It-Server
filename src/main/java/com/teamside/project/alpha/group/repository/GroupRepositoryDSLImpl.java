@@ -285,7 +285,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .leftJoin(review)
                     .on(review.masterMid.eq(member.mid).and(review.group.groupId.eq(groupId)))
                 .leftJoin(daily)
-                    .on(daily.master.mid.eq(member.mid).and(daily.group.groupId.eq(groupId)))
+                    .on(daily.masterMid.eq(member.mid).and(daily.group.groupId.eq(groupId)))
                 .leftJoin(memberFollow)
                     .on(memberFollow.mid.eq(member.mid).and(memberFollow.targetMid.eq(CryptUtils.getMid())))
                 .where(member.mid.eq(memberId))
@@ -336,7 +336,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         daily.createTime.stringValue()
                 ))
                 .from(daily)
-                .join(daily.master, member)
+                .innerJoin(member).on(member.mid.eq(daily.masterMid))
                 .where(daily.group.groupId.eq(groupId), eqDailyMaster(targetId), ltDailyId(lastDailyId))
                 .orderBy(daily.dailyId.desc())
                 .limit(pageSize)
@@ -358,7 +358,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
 
     private BooleanExpression eqDailyMaster(String targetId) {
-        return targetId != null ? daily.master.mid.eq(targetId) : null;
+        return targetId != null ? daily.masterMid.eq(targetId) : null;
     }
 
     @Override
@@ -383,13 +383,13 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member, targetMember))
                 .from(reviewComment)
                 .innerJoin(member).on(member.mid.eq(reviewComment.masterMid))
+                .leftJoin(targetMember).on(member.mid.eq(reviewComment.targetMemberMid))
                 .where(reviewComment.review.reviewId.eq(reviewId))
-                .orderBy(reviewComment.commentId.desc())
+                .orderBy(reviewComment.commentId.asc())
                 .fetch();
 
         result.stream()
                 .filter(commentDto ->  commentDto.getParentCommentId() != null)
-//                .sorted(Comparator.comparing(CommentDto::getCommentId))
                 .forEach(comment -> result.stream()
                         .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
                         .forEach(dd -> dd.insertChildComments(comment)));
@@ -424,7 +424,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         )
                 )
                 .from(daily)
-                .innerJoin(daily.master, member)
+                .innerJoin(member).on(member.mid.eq(daily.masterMid))
                 .leftJoin(daily.dailyKeepEntities, dailyKeep).on(dailyKeep.member.mid.eq(mid))
                 .where(daily.dailyId.eq(dailyId), daily.group.groupId.eq(groupId))
                 .fetchOne();
@@ -436,17 +436,19 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     public List<CommentDto> getDailyComments(Long dailyId) {
+        QMemberEntity targetMember = new QMemberEntity("targetMember");
+
         List<CommentDto> result = jpaQueryFactory
-                .select(new QCommentDto(dailyComment, member))
+                .select(new QCommentDto(dailyComment, member, targetMember))
                 .from(dailyComment)
-                .innerJoin(dailyComment.master, member)
+                .innerJoin(member).on(member.mid.eq(dailyComment.masterMid))
+                .leftJoin(targetMember).on(targetMember.mid.eq(dailyComment.targetMemberMid))
                 .where(dailyComment.daily.dailyId.eq(dailyId))
-                .orderBy(dailyComment.commentId.desc())
+                .orderBy(dailyComment.commentId.asc())
                 .fetch();
 
         result.stream()
                 .filter(commentDto ->  commentDto.getParentCommentId() != null)
-//                .sorted(Comparator.comparing(CommentDto::getCommentId))
                 .forEach(comment -> result.stream()
                         .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
                         .forEach(dd -> dd.insertChildComments(comment)

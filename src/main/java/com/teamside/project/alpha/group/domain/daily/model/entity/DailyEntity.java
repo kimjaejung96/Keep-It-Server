@@ -41,9 +41,8 @@ public class DailyEntity extends TimeEntity {
     @JoinColumn(name = "GROUP_ID",  referencedColumnName = "GROUP_ID")
     private GroupEntity group;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MASTER",  referencedColumnName = "MID")
-    private MemberEntity master;
+    @Column(name = "MASTER", columnDefinition = "char(36)")
+    private String masterMid;
 
     @OneToMany(mappedBy = "daily",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyCommentEntity> dailyCommentEntities;
@@ -56,7 +55,7 @@ public class DailyEntity extends TimeEntity {
         this.content = dailyDto.getContent();
         this.image = dailyDto.getImage();
         this.group = new GroupEntity(groupId);
-        this.master = new MemberEntity(CryptUtils.getMid());
+        this.masterMid = CryptUtils.getMid();
     }
 
     public DailyEntity(Long dailyId) {
@@ -69,7 +68,7 @@ public class DailyEntity extends TimeEntity {
     }
 
     public void checkDailyMaster(String mid) {
-        if (!this.master.getMid().equals(mid)) {
+        if (!this.masterMid.equals(mid)) {
             throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
         }
     }
