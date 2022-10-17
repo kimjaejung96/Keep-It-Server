@@ -175,20 +175,27 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     @Override
     public GroupDto.GroupInfoDto selectGroup(Long groupId) {
+        BooleanExpression booleanExpression = new CaseBuilder()
+                .when(groupMemberMapping.mid.eq(CryptUtils.getMid()).and(groupMemberMapping.favorite.eq(true)))
+                .then(1)
+                .otherwise(0)
+                .sum().eq(1);
+
         GroupDto.GroupInfoDto groupInfoDto = jpaQueryFactory.select(
                         new QGroupDto_GroupInfoDto(
                                 group,
                                 group.master.mid,
-                                groupMemberMapping.favorite,
+                                new CaseBuilder()
+                                        .when(booleanExpression)
+                                        .then(true)
+                                        .otherwise(false),
                                 groupMemberMapping.count(),
                                 review.count()
                         )
                 )
                 .from(group)
-                .innerJoin(groupMemberMapping)
-                .on(groupMemberMapping.member.mid.eq(CryptUtils.getMid()).and(group.groupId.eq(groupMemberMapping.groupId)))
-                .leftJoin(review)
-                .on(group.groupId.eq(review.group.groupId))
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .leftJoin(review).on(group.groupId.eq(review.group.groupId))
                 .where(group.groupId.eq(groupId))
                 .groupBy(group.groupId)
                 .fetchOne();
