@@ -1,7 +1,6 @@
 package com.teamside.project.alpha.group.domain.daily.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +21,11 @@ public class DailyKeepEntity extends CreateDtEntity {
     @JoinColumn(name = "DAILY_ID",  referencedColumnName = "DAILY_ID")
     private DailyEntity daily;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER",  referencedColumnName = "MID")
-    private MemberEntity member;
+    @Column(name = "MEMBER", columnDefinition = "char(36)")
+    private String memberMid;
 
     public DailyKeepEntity(Long dailyId, String mid) {
         this.daily = new DailyEntity(dailyId);
-        this.member = new MemberEntity(mid);
+        this.memberMid = mid;
     }
 }

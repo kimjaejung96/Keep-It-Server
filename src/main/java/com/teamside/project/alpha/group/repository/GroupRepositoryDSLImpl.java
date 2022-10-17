@@ -317,7 +317,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                  .from(review)
                  .innerJoin(member).on(review.masterMid.eq(member.mid))
                  .innerJoin(place).on(review.place.placeId.eq(place.placeId))
-                 .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId).and(reviewKeep.member.mid.eq(CryptUtils.getMid())))
+                 .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId).and(reviewKeep.memberMid.eq(CryptUtils.getMid())))
                  .where(review.group.groupId.eq(groupId), eqReviewMaster(targetId), ltReviewId(lastReviewId))
                  .orderBy(review.reviewId.desc())
                  .limit(pageSize)
@@ -425,7 +425,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 )
                 .from(daily)
                 .innerJoin(member).on(member.mid.eq(daily.masterMid))
-                .leftJoin(daily.dailyKeepEntities, dailyKeep).on(dailyKeep.member.mid.eq(mid))
+                .leftJoin(daily.dailyKeepEntities, dailyKeep).on(dailyKeep.memberMid.eq(mid))
                 .where(daily.dailyId.eq(dailyId), daily.group.groupId.eq(groupId))
                 .fetchOne();
 

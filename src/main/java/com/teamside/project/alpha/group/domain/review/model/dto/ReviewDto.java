@@ -142,7 +142,7 @@ public class ReviewDto {
             this.reviewImagesUrl = List.of(review.getImages().split(","));
             this.reviewCreateDt = String.valueOf(review.getCreateTime());
             this.keepCount = review.getReviewKeepEntities().size();
-            this.isKeep = review.getReviewKeepEntities().stream().anyMatch(r -> r.getMember().getMid().equals(CryptUtils.getMid()));
+            this.isKeep = review.getReviewKeepEntities().stream().anyMatch(r -> r.getMemberMid().equals(CryptUtils.getMid()));
         }
     }
 

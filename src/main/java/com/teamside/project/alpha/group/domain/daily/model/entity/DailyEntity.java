@@ -7,7 +7,6 @@ import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.daily.model.dto.DailyDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -79,7 +78,7 @@ public class DailyEntity extends TimeEntity {
 
     public void keepDaily(Long dailyId, String mid) {
         Optional<DailyKeepEntity> dailyEntity = this.dailyKeepEntities.stream()
-                .filter(daily -> (daily.getMember().getMid().equals(mid) && daily.getDaily().getDailyId().equals(dailyId)))
+                .filter(daily -> (daily.getMemberMid().equals(mid) && daily.getDaily().getDailyId().equals(dailyId)))
                 .findFirst();
 
         if (dailyEntity.isPresent()) {

@@ -1,7 +1,6 @@
 package com.teamside.project.alpha.group.domain.review.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +21,11 @@ public class ReviewKeepEntity extends CreateDtEntity {
     @JoinColumn(name = "REVIEW_ID",  referencedColumnName = "REVIEW_ID")
     private ReviewEntity review;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER",  referencedColumnName = "MID")
-    private MemberEntity member;
+    @Column(name = "MEMBER", columnDefinition = "char(36)")
+    private String memberMid;
 
     public ReviewKeepEntity(Long reviewId, String mid) {
         this.review = new ReviewEntity(reviewId);
-        this.member = new MemberEntity(mid);
+        this.memberMid = mid;
     }
 }

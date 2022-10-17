@@ -81,7 +81,7 @@ public class ReviewEntity extends TimeEntity {
     public void keepReview(Long reviewId, String mid) {
         // 이미 킵중이면 킵 취소
         Optional<ReviewKeepEntity> keepEntity = this.reviewKeepEntities.stream()
-                .filter(keep -> (keep.getMember().getMid().equals(mid) && keep.getReview().getReviewId().equals(reviewId)))
+                .filter(keep -> (keep.getMemberMid().equals(mid) && keep.getReview().getReviewId().equals(reviewId)))
                 .findFirst();
 
         if (keepEntity.isPresent()) {
