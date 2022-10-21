@@ -105,7 +105,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         "participantCount"),
                         groupMemberMapping.favorite,
                         new CaseBuilder()
-                                .when(group.master.mid.eq(groupMemberMapping.mid))
+                                .when(group.masterMid.eq(groupMemberMapping.mid))
                                 .then(true)
                                 .otherwise(false)
                                 .as("isMaster"),
@@ -184,7 +184,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         GroupDto.GroupInfoDto groupInfoDto = jpaQueryFactory.select(
                         new QGroupDto_GroupInfoDto(
                                 group,
-                                group.master.mid,
+                                group.masterMid,
                                 new CaseBuilder()
                                         .when(booleanExpression)
                                         .then(true)

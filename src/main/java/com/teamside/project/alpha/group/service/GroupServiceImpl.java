@@ -37,14 +37,14 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void createGroup(GroupDto group) throws CustomException {
-        if (groupRepository.countByMaster(new MemberEntity(CryptUtils.getMid())) >= GroupConstant.GROUP_MAKE_POSSIBLE_COUNT) {
+        if (groupRepository.countByMasterMid(CryptUtils.getMid()) >= GroupConstant.GROUP_MAKE_POSSIBLE_COUNT) {
             throw new CustomException(ApiExceptionCode.CAN_NOT_CREATE_GROUP);
         }
         isExistGroupName(group.getName());
         GroupEntity groupEntity = new GroupEntity(group);
 
         GroupEntity newGroupEntity = groupRepository.save(groupEntity);
-        newGroupEntity.addMember(newGroupEntity.getMaster().getMid());
+        newGroupEntity.addMember(newGroupEntity.getMasterMid());
     }
 
     @Override
@@ -80,7 +80,7 @@ public class GroupServiceImpl implements GroupService {
 
         GroupDto.GroupInfoDto result = groupRepository.selectGroup(groupId);
 
-        GroupDto.GroupInfoDto.MembersDto master = result.getMembers().stream().filter(m -> m.getMid().equals(group.getMaster().getMid())).findFirst().orElseThrow();
+        GroupDto.GroupInfoDto.MembersDto master = result.getMembers().stream().filter(m -> m.getMid().equals(group.getMasterMid())).findFirst().orElseThrow();
         result.getMembers().remove(master);
         result.getMembers().add(0, master);
 

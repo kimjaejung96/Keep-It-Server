@@ -50,10 +50,8 @@ public class GroupEntity extends TimeEntity {
     @Convert(converter = CategoryConverter.class)
     @Column(name = "CATEGORY", columnDefinition = "varchar(50)")
     private Category category;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "MASTER_MID",  referencedColumnName = "MID")
-    private MemberEntity master;
+    @Column(name = "MASTER_MID", columnDefinition = "char(36)")
+    private String masterMid;
 
     @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupMemberMappingEntity> groupMemberMappingEntity;
@@ -81,7 +79,7 @@ public class GroupEntity extends TimeEntity {
     }
 
     private void setMasterMember(){
-        this.master = new MemberEntity(CryptUtils.getMid());
+        this.masterMid = CryptUtils.getMid();
     }
     public void addMember(String mid) {
         this.groupMemberMappingEntity.add(new GroupMemberMappingEntity(mid, this.groupId));
@@ -146,7 +144,7 @@ public class GroupEntity extends TimeEntity {
     }
 
     public void checkGroupMaster() {
-        if (!this.master.getMid().equals(CryptUtils.getMid())) {
+        if (!this.masterMid.equals(CryptUtils.getMid())) {
             throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
         }
     }

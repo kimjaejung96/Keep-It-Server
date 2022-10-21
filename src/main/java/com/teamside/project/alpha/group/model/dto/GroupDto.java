@@ -51,7 +51,7 @@ public class GroupDto {
     public static class GroupInfoDto extends GroupDto{
         public GroupInfoDto(GroupEntity entity) {
             super(entity);
-            this.master = entity.getMaster().getMid();
+            this.master = entity.getMasterMid();
         }
         private String master;
         private boolean isFavorite;
