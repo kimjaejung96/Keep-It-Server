@@ -40,13 +40,19 @@ public class CommentDto {
         this.memberName = member.getName();
         this.memberId = member.getMid();
         this.memberProfileUrl = member.getProfileUrl();
-        this.comment = reviewComment.getStatus().equals(CommentStatus.BLOCKED) ? "신고에 의해 숨김 처리된 댓글입니다." : reviewComment.getComment();
         this.createDt = String.valueOf(reviewComment.getCreateTime());
         this.parentCommentId = reviewComment.getParentComment() != null?reviewComment.getParentComment().getCommentId():null;
         this.imageUrl = reviewComment.getImageUrl();
         this.targetName = targetMember != null ? targetMember.getName() : null;
         this.targetMid = targetMember != null ? targetMember.getMid() : null;
         this.status = reviewComment.getStatus();
+        if (reviewComment.getStatus().equals(CommentStatus.BLOCKED)) {
+            this.comment = "신고에 의해 숨김 처리된 댓글입니다.";
+        } else if (reviewComment.getStatus().equals(CommentStatus.DELETED)) {
+            this.comment = "삭제된 댓글입니다.😢";
+        } else {
+            this.comment = reviewComment.getComment();
+        }
     }
 
     @QueryProjection
@@ -56,13 +62,19 @@ public class CommentDto {
         this.memberName = member.getName();
         this.memberId = member.getMid();
         this.memberProfileUrl = member.getProfileUrl();
-        this.comment = dailyComment.getStatus().equals(CommentStatus.BLOCKED) ? "신고에 의해 숨김 처리된 댓글입니다." : dailyComment.getComment();
         this.createDt = String.valueOf(dailyComment.getCreateTime());
         this.parentCommentId = dailyComment.getParentComment() != null ? dailyComment.getParentComment().getCommentId() : null;
         this.imageUrl = dailyComment.getImageUrl();
         this.targetName = targetMember != null ? targetMember.getName() : null;
         this.targetMid = targetMember != null ? targetMember.getMid() : null;
         this.status = dailyComment.getStatus();
+        if (dailyComment.getStatus().equals(CommentStatus.BLOCKED)) {
+            this.comment = "신고에 의해 숨김 처리된 댓글입니다.";
+        } else if (dailyComment.getStatus().equals(CommentStatus.DELETED)) {
+            this.comment = "삭제된 댓글입니다.😢";
+        } else {
+            this.comment = dailyComment.getComment();
+        }
     }
 
     @Getter
