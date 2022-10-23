@@ -9,6 +9,7 @@ import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.service.MemberService;
 import com.teamside.project.alpha.sms.event.SMSEvent;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,16 +23,12 @@ import java.util.Random;
 
 @Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberController {
 
     private final ApplicationEventPublisher smsEventPublisher;
     private final MemberService memberService;
-
-    public MemberController(ApplicationEventPublisher smsEventPublisher, MemberService memberService) {
-        this.smsEventPublisher = smsEventPublisher;
-        this.memberService = memberService;
-    }
 
 
 
@@ -94,6 +91,12 @@ public class MemberController {
     public ResponseEntity<ResponseObject> block(@PathVariable String targetMid) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         memberService.block(targetMid);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+    @PutMapping("/fcm")
+    public ResponseEntity<ResponseObject> updateFcmToken(@RequestParam String fcmToken) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        memberService.updateFcm(fcmToken);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
