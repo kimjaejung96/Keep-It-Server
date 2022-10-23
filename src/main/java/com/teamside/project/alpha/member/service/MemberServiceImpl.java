@@ -2,6 +2,9 @@ package com.teamside.project.alpha.member.service;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.msg.MsgService;
+import com.teamside.project.alpha.common.msg.enumurate.MQExchange;
+import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.member.domain.auth.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.domain.auth.service.AuthService;
@@ -11,6 +14,7 @@ import com.teamside.project.alpha.member.model.entity.InquiryEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.repository.InquiryRepo;
 import com.teamside.project.alpha.member.repository.MemberRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,15 +23,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepo memberRepo;
     private final AuthService authService;
     private final InquiryRepo inquiryRepo;
-    public MemberServiceImpl(MemberRepo memberRepo, AuthService authService, InquiryRepo inquiryRepo) {
-        this.memberRepo = memberRepo;
-        this.authService = authService;
-        this.inquiryRepo = inquiryRepo;
-    }
+    private final MsgService msgService;
 
     @Override
     public JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException {
@@ -40,6 +41,8 @@ public class MemberServiceImpl implements MemberService {
         member.createRefreshToken(jwtTokens.getRefreshToken());
 
         memberRepo.save(member);
+
+        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.TEST, member.getMid()+"가 가입했습니다.");
         return jwtTokens;
     }
 
