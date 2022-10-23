@@ -2,6 +2,7 @@ package com.teamside.project.alpha.group.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import com.teamside.project.alpha.group.model.entity.compositeKeys.GroupMemberKeys;
+import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -41,6 +42,10 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
     @Column(name = "FAVORITE", columnDefinition = "boolean")
     private Boolean favorite;
 
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    private GroupMemberStatus status;
+
     public GroupMemberMappingEntity(MemberEntity member) {
         this.member = member;
     }
@@ -49,6 +54,7 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
         this.mid = mid;
         this.groupId = groupId;
         this.favorite = false;
+        this.status = GroupMemberStatus.JOIN;
     }
 
     public void updateOrdAndFavorite(Integer ord, Boolean isFavorite) {

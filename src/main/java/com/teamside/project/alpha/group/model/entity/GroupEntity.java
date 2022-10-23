@@ -53,6 +53,9 @@ public class GroupEntity extends TimeEntity {
     @Column(name = "MASTER_MID", columnDefinition = "char(36)")
     private String masterMid;
 
+    @Column(name = "IS_DELETE", columnDefinition = "boolean")
+    private Boolean isDelete;
+
     @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupMemberMappingEntity> groupMemberMappingEntity;
 
@@ -70,6 +73,7 @@ public class GroupEntity extends TimeEntity {
         this.memberQuantity = group.getMemberQuantity();
         this.profileUrl = group.getProfileUrl();
         this.category = group.getCategory();
+        this.isDelete = false;
 
         this.groupMemberMappingEntity = new ArrayList<>();
         setMasterMember();

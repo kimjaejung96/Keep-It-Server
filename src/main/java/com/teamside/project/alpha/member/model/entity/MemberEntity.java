@@ -45,6 +45,9 @@ public class MemberEntity extends TimeEntity {
     @Enumerated(EnumType.STRING)
     private SignUpType type;
 
+    @Column(name = "IS_DELETE", columnDefinition = "boolean")
+    private Boolean isDelete;
+
     @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     private TermsEntity termsEntity;
     @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
@@ -68,6 +71,7 @@ public class MemberEntity extends TimeEntity {
         this.profileUrl = Objects.requireNonNullElse(signUpDto.getMember().getProfileUrl(), "");
         this.fcmToken = Objects.requireNonNullElse(signUpDto.getMember().getFcmToken(), "");
         this.type = Objects.requireNonNullElse(type, SignUpType.PHONE);
+        this.isDelete = false;
 
         createTerms(signUpDto.getTerms());
     }
@@ -132,6 +136,7 @@ public class MemberEntity extends TimeEntity {
         this.memberBlockEntities = null;
         this.memberFollowEntities = null;
         this.memberFollowTargetEntities = null;
+        this.isDelete = true;
         // status -> true
     }
 
