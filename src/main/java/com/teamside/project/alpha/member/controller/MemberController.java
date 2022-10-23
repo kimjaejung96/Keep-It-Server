@@ -93,6 +93,12 @@ public class MemberController {
         memberService.block(targetMid);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+    @PutMapping("/fcm")
+    public ResponseEntity<ResponseObject> updateFcmToken(@RequestParam String fcmToken) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        memberService.updateFcm(fcmToken);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
 
 
 

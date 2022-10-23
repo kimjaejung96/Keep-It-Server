@@ -16,4 +16,6 @@ public interface MemberService {
     List<MemberDto.InviteMemberList> search(String name, Long groupId);
     void follow(String targetMid) throws CustomException;
     void block(String targetMid) throws CustomException;
+
+    void updateFcm(String fcmToken);
 }

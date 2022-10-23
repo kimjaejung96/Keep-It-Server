@@ -2,6 +2,7 @@ package com.teamside.project.alpha.member.service;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.msg.MsgService;
 import com.teamside.project.alpha.common.msg.enumurate.MQExchange;
 import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
@@ -126,5 +127,12 @@ public class MemberServiceImpl implements MemberService {
         } else {
             throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateFcm(String fcmToken) {
+        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        member.updateFcmToken(fcmToken);
     }
 }

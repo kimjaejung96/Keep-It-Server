@@ -135,4 +135,8 @@ public class MemberEntity extends TimeEntity {
         // status -> true
     }
 
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
 }
