@@ -20,14 +20,10 @@ import com.teamside.project.alpha.group.domain.review.model.entity.QReviewCommen
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewEntity;
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewKeepEntity;
 import com.teamside.project.alpha.group.model.dto.*;
-import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
-import com.teamside.project.alpha.group.model.entity.QGroupEntity;
-import com.teamside.project.alpha.group.model.entity.QGroupMemberMappingEntity;
-import com.teamside.project.alpha.group.model.entity.QStatReferralGroupEntity;
+import com.teamside.project.alpha.group.model.entity.*;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
-import com.teamside.project.alpha.member.model.entity.QMemberFollowEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
 
@@ -214,7 +210,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         )
                         .from(groupMemberMapping)
                         .innerJoin(member).on(groupMemberMapping.mid.eq(member.mid))
-                        .leftJoin(memberFollow).on(memberFollow.mid.eq(CryptUtils.getMid()).and(memberFollow.targetMid.eq(member.mid)))
+                        .leftJoin(memberFollow).on(memberFollow.group.groupId.eq(groupId).and(memberFollow.mid.eq(CryptUtils.getMid()).and(memberFollow.targetMid.eq(member.mid))))
 //                        .where(groupMemberMapping.groupId.eq(groupId).and(member.mid.ne(CryptUtils.getMid())))
                         .where(groupMemberMapping.groupId.eq(groupId))
                         .fetch()
@@ -287,7 +283,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .leftJoin(daily)
                     .on(daily.masterMid.eq(member.mid).and(daily.group.groupId.eq(groupId)))
                 .leftJoin(memberFollow)
-                    .on(memberFollow.mid.eq(member.mid).and(memberFollow.targetMid.eq(CryptUtils.getMid())))
+                    .on(memberFollow.group.groupId.eq(groupId).and(memberFollow.mid.eq(member.mid).and(memberFollow.targetMid.eq(CryptUtils.getMid()))))
                 .where(member.mid.eq(memberId))
                 .fetchOne();
     }
