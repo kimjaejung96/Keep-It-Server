@@ -24,7 +24,7 @@ public class ReviewKeepEntity extends CreateDtEntity {
     @Column(name = "MEMBER", columnDefinition = "char(36)")
     private String memberMid;
 
-    public ReviewKeepEntity(Long reviewId, String mid) {
+    public ReviewKeepEntity(String reviewId, String mid) {
         this.review = new ReviewEntity(reviewId);
         this.memberMid = mid;
     }

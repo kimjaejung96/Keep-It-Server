@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "REVIEW_COMMENT")
@@ -18,9 +19,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class ReviewCommentEntity extends TimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COMMENT_ID", columnDefinition = "bigint")
-    private Long commentId;
+    @Column(name = "COMMENT_ID", columnDefinition = "char(36)")
+    private String commentId;
 
     @Column(name = "COMMENT", columnDefinition = "varchar(1500)")
     private String comment;
@@ -47,8 +47,9 @@ public class ReviewCommentEntity extends TimeEntity {
     @Enumerated(EnumType.STRING)
     private CommentStatus status;
 
-    public static ReviewCommentEntity createComment (CommentDto.CreateComment comment, Long reviewId) {
+    public static ReviewCommentEntity createComment (CommentDto.CreateComment comment, String reviewId) {
         return ReviewCommentEntity.builder()
+                .commentId(UUID.randomUUID().toString())
                 .comment(comment.getComment())
                 .imageUrl(comment.getImage())
                 .masterMid(CryptUtils.getMid())
@@ -59,7 +60,7 @@ public class ReviewCommentEntity extends TimeEntity {
                 .build();
     }
 
-    public ReviewCommentEntity(Long commentId) {
+    public ReviewCommentEntity(String commentId) {
         this.commentId = commentId;
     }
 

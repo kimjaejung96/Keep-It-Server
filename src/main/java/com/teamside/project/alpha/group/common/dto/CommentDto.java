@@ -17,13 +17,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentDto {
-    private Long commentId;
+    private String commentId;
     private String memberName;
     private String memberId;
     private String memberProfileUrl;
     private String comment;
     private String createDt;
-    private Long parentCommentId;
+    private String parentCommentId;
     private List<CommentDto> childComments;
     private String imageUrl;
     private String targetName;
@@ -83,7 +83,7 @@ public class CommentDto {
         @Size(min = 1, max = 1500, message = "댓글 내용은 1자~1500자 사이입니다.")
         private String comment;
         private String image;
-        private Long parentCommentId;
+        private String parentCommentId;
         private String targetMid;
     }
 }

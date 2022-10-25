@@ -8,15 +8,15 @@ public interface ReviewService {
     void createReview(Long groupId, ReviewDto review);
     void updateReview(Long groupId, ReviewDto.UpdateReviewDto review);
 
-    ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId);
+    ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, String reviewId);
 
-    void createComment(Long groupId, CommentDto.CreateComment comment, Long reviewId);
+    void createComment(Long groupId, CommentDto.CreateComment comment, String reviewId);
 
-    void keepReview(Long groupId, Long reviewId);
+    void keepReview(Long groupId, String reviewId);
 
-    void deleteReview(Long groupId, Long reviewId) throws CustomException;
+    void deleteReview(Long groupId, String reviewId) throws CustomException;
 
-    void updateComment(Long groupId, CommentDto.CreateComment comment, Long reviewId, Long commentId);
+    void updateComment(Long groupId, CommentDto.CreateComment comment, String reviewId, Long commentId);
 
-    void deleteComment(Long groupId, Long reviewId, Long commentId);
+    void deleteComment(Long groupId, String reviewId, Long commentId);
 }

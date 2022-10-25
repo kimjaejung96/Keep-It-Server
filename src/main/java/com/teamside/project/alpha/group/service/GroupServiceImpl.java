@@ -249,9 +249,9 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(Long groupId, String targetMid, Long pageSize, Long lastReviewId) {
-        List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, lastReviewId);
-        Long responseLastGroupId = reviewsInGroup.isEmpty() ? null : reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewId();
+    public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(Long groupId, String targetMid, Long pageSize, Long seq) {
+        List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, seq);
+        Long responseLastGroupId = reviewsInGroup.isEmpty() ? null : reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewSeq();
 
         return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId);
     }

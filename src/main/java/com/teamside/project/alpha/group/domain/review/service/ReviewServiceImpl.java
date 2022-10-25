@@ -68,7 +68,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId) {
+    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, String reviewId) {
         GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(CryptUtils.getMid());
         return groupRepository.selectReviewDetail(groupId, reviewId);
@@ -76,7 +76,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void createComment(Long groupId, CommentDto.CreateComment comment, Long reviewId) {
+    public void createComment(Long groupId, CommentDto.CreateComment comment, String reviewId) {
         GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(CryptUtils.getMid());
 
@@ -105,7 +105,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void keepReview(Long groupId, Long reviewId) {
+    public void keepReview(Long groupId, String reviewId) {
         String mid = CryptUtils.getMid();
         GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(mid);
@@ -119,7 +119,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteReview(Long groupId, Long reviewId) throws CustomException {
+    public void deleteReview(Long groupId, String reviewId) throws CustomException {
         GroupEntity group = selectExistGroup(groupId);
 
         group.deleteReview(reviewId);
@@ -128,7 +128,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void updateComment(Long groupId, CommentDto.CreateComment comment, Long reviewId, Long commentId) {
+    public void updateComment(Long groupId, CommentDto.CreateComment comment, String reviewId, Long commentId) {
         GroupEntity group = selectExistGroup(groupId);
 
         ReviewEntity review = group.getReviewEntities().stream().filter(r -> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
@@ -140,7 +140,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void deleteComment(Long groupId, Long reviewId, Long commentId) {
+    public void deleteComment(Long groupId, String reviewId, Long commentId) {
         GroupEntity group = selectExistGroup(groupId);
 
         ReviewEntity review = group.getReviewEntities().stream().filter(r -> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));

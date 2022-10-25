@@ -20,14 +20,10 @@ import com.teamside.project.alpha.group.domain.review.model.entity.QReviewCommen
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewEntity;
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewKeepEntity;
 import com.teamside.project.alpha.group.model.dto.*;
-import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
-import com.teamside.project.alpha.group.model.entity.QGroupEntity;
-import com.teamside.project.alpha.group.model.entity.QGroupMemberMappingEntity;
-import com.teamside.project.alpha.group.model.entity.QStatReferralGroupEntity;
+import com.teamside.project.alpha.group.model.entity.*;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
-import com.teamside.project.alpha.member.model.entity.QMemberFollowEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
 
@@ -293,10 +289,11 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(Long groupId, String targetId, Long pageSize, Long lastReviewId) {
+    public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(Long groupId, String targetId, Long pageSize, Long seq) {
          return jpaQueryFactory.select(new QReviewDto_SelectReviewsInGroup(
                 new QReviewDto_SelectReviewsInGroup_Review(
                         review.reviewId,
+                        review.seq,
                         review.content,
                         review.reviewCommentEntities.size(),
                         review.createTime,
@@ -318,7 +315,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                  .innerJoin(member).on(review.masterMid.eq(member.mid))
                  .innerJoin(place).on(review.place.placeId.eq(place.placeId))
                  .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId).and(reviewKeep.memberMid.eq(CryptUtils.getMid())))
-                 .where(review.group.groupId.eq(groupId), eqReviewMaster(targetId), ltReviewId(lastReviewId))
+                 .where(review.group.groupId.eq(groupId), eqReviewMaster(targetId), ltReviewId(seq))
                  .orderBy(review.reviewId.desc())
                  .limit(pageSize)
                  .fetch();
@@ -343,8 +340,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .fetch();
     }
 
-    private BooleanExpression ltReviewId(Long lastReviewId) {
-        return lastReviewId != null ? review.reviewId.lt(lastReviewId) : null;
+    private BooleanExpression ltReviewId(Long seq) {
+        return seq != null ? review.seq.lt(seq) : null;
     }
 
 
@@ -362,7 +359,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, Long reviewId) {
+    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, String reviewId) {
         ReviewDto.ReviewDetail reviewDetail = jpaQueryFactory
                 .select(new QReviewDto_ReviewDetail(
                         review, member, place
@@ -378,7 +375,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         return new ReviewDto.ResponseReviewDetail(reviewDetail, comments, loginMember);
     }
 
-    private List<CommentDto> getReviewComments(Long reviewId) {
+    private List<CommentDto> getReviewComments(String reviewId) {
         QMemberEntity targetMember = new QMemberEntity("targetMember");
         List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member, targetMember))
                 .from(reviewComment)

@@ -16,6 +16,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -24,9 +25,11 @@ import java.util.Optional;
 @DynamicUpdate
 public class ReviewEntity extends TimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "REVIEW_ID", columnDefinition = "bigint")
-    private Long reviewId;
+    @Column(name = "REVIEW_ID", columnDefinition = "char(36)")
+    private String reviewId;
+
+    @Column(name = "SEQ", columnDefinition = "BIGINT(20) NOT NULL UNIQUE KEY auto_increment")
+    private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "GROUP_ID",  referencedColumnName = "GROUP_ID")
@@ -51,6 +54,7 @@ public class ReviewEntity extends TimeEntity {
     private List<ReviewKeepEntity> reviewKeepEntities;
 
     public ReviewEntity(Long groupId, ReviewDto review) {
+        this.reviewId = UUID.randomUUID().toString();
         this.group = new GroupEntity(groupId);
         this.place = new PlaceEntity(review.getPlaceId());
         this.masterMid = CryptUtils.getMid();
@@ -58,7 +62,7 @@ public class ReviewEntity extends TimeEntity {
         this.images = String.join(",", review.getImages());
     }
 
-    public ReviewEntity(Long reviewId) {
+    public ReviewEntity(String reviewId) {
         this.reviewId = reviewId;
     }
 
@@ -74,11 +78,11 @@ public class ReviewEntity extends TimeEntity {
         }
     }
 
-    public void createComment(CommentDto.CreateComment comment, Long reviewId) {
+    public void createComment(CommentDto.CreateComment comment, String reviewId) {
         this.reviewCommentEntities.add(ReviewCommentEntity.createComment(comment, reviewId));
     }
 
-    public void keepReview(Long reviewId, String mid) {
+    public void keepReview(String reviewId, String mid) {
         // 이미 킵중이면 킵 취소
         Optional<ReviewKeepEntity> keepEntity = this.reviewKeepEntities.stream()
                 .filter(keep -> (keep.getMemberMid().equals(mid) && keep.getReview().getReviewId().equals(reviewId)))

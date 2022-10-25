@@ -157,7 +157,7 @@ public class GroupEntity extends TimeEntity {
         }
     }
 
-    public void checkReviewMaster(Long reviewId) throws CustomException {
+    public void checkReviewMaster(String reviewId) throws CustomException {
         if (this.getReviewEntities().stream()
                 .filter(r -> r.getReviewId().equals(reviewId))
                 .noneMatch(r -> r.getMasterMid().equals(CryptUtils.getMid()))) {
@@ -173,7 +173,7 @@ public class GroupEntity extends TimeEntity {
         }
     }
 
-    public void deleteReview(Long reviewId) throws CustomException {
+    public void deleteReview(String reviewId) throws CustomException {
         this.checkReviewMaster(reviewId);
         ReviewEntity review = this.getReviewEntities().stream().filter(r-> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
         this.reviewEntities.remove(review);

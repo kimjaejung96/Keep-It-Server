@@ -26,17 +26,17 @@ public class ReviewDto {
 
     @Getter
     public static class UpdateReviewDto extends ReviewDto{
-        private long reviewId;
+        private String reviewId;
     }
 
     @Getter
     public static class ResponseSelectReviewsInGroup {
         private final List<SelectReviewsInGroup> reviewData;
-        private final Long lastReviewId;
+        private final Long lastReviewSeq;
 
-        public ResponseSelectReviewsInGroup(List<SelectReviewsInGroup> reviewData, Long lastReviewId) {
+        public ResponseSelectReviewsInGroup(List<SelectReviewsInGroup> reviewData, Long lastReviewSeq) {
             this.reviewData = reviewData;
-            this.lastReviewId = lastReviewId;
+            this.lastReviewSeq = lastReviewSeq;
         }
     }
     @Getter
@@ -54,7 +54,9 @@ public class ReviewDto {
         }
         @Getter
         public static class Review {
-            private final Long reviewId;
+            private final String reviewId;
+
+            private final Long reviewSeq;
             private final String content;
             private final Integer commentCount;
             private final String createDt;
@@ -63,8 +65,9 @@ public class ReviewDto {
             private final List<String> images;
 
             @QueryProjection
-            public Review(Long reviewId, String content, Integer commentCount, LocalDateTime createDt, String images, Integer keepCount, Boolean isKeep) {
+            public Review(String reviewId, Long reviewSeq, String content, Integer commentCount, LocalDateTime createDt, String images, Integer keepCount, Boolean isKeep) {
                 this.reviewId = reviewId;
+                this.reviewSeq = reviewSeq;
                 this.content = content;
                 this.commentCount = commentCount;
                 this.createDt = String.valueOf(createDt);

@@ -11,6 +11,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "DAILY_COMMENT")
@@ -21,9 +22,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class DailyCommentEntity extends TimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "COMMENT_ID", columnDefinition = "bigint")
-    private Long commentId;
+    @Column(name = "COMMENT_ID", columnDefinition = "char(36)")
+    private String commentId;
 
     @Column(name = "COMMENT", columnDefinition = "varchar(1500)")
     private String comment;
@@ -49,10 +49,11 @@ public class DailyCommentEntity extends TimeEntity {
     @JoinColumn(name = "PARENT_COMMENT_ID", referencedColumnName = "COMMENT_ID")
     private DailyCommentEntity parentComment;
 
-    public DailyCommentEntity(Long commentId) { this.commentId = commentId; }
+    public DailyCommentEntity(String commentId) { this.commentId = commentId; }
 
     public static DailyCommentEntity createComment(CommentDto.CreateComment comment, Long dailyId) {
         return DailyCommentEntity.builder()
+                .commentId(UUID.randomUUID().toString())
                 .comment(comment.getComment())
                 .imageUrl(comment.getImage())
                 .status(CommentStatus.CREATED)
