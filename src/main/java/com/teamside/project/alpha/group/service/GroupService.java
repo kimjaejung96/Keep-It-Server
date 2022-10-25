@@ -29,4 +29,5 @@ public interface GroupService {
     Object selectDailyInGroup(Long groupId, String targetMid, Long pageSize, Long lastDailyId);
 
     GroupDto.GroupHome selectGroupHome(Long groupId);
+    void follow(Long groupId, String targetMid) throws CustomException;
 }

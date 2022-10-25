@@ -186,6 +186,14 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @PostMapping("/{groupId}/members/{targetMid}/follow")
+    public ResponseEntity<ResponseObject> follow(@PathVariable Long groupId, @PathVariable String targetMid) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        groupService.follow(groupId, targetMid);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+
 
     @GetMapping("/random")
     public ResponseEntity<ResponseObject> random(){

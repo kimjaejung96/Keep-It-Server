@@ -5,6 +5,9 @@ import lombok.Getter;
 @Getter
 public enum MQRoutingKey {
     MARKETING("kps.marketing"),
+    GROUP_DELETE("kps.group_delete"),
+    GROUP_JOIN("kps.group_join"),
+    MY_FOLLOW("kps.my_follow"),
     TEST("kps.test")
     ;
 

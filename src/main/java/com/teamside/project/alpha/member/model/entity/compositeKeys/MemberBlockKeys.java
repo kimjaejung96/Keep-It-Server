@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 
 @EqualsAndHashCode
-public class MemberKeys implements Serializable {
+public class MemberBlockKeys implements Serializable {
     private String mid;
     private String targetMid;
 }

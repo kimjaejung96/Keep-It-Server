@@ -10,7 +10,6 @@ import com.teamside.project.alpha.group.domain.review.model.entity.ReviewEntity;
 import com.teamside.project.alpha.group.model.converter.CategoryConverter;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.enumurate.Category;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +17,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -64,6 +65,8 @@ public class GroupEntity extends TimeEntity {
 
     @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyEntity> dailyEntities;
+    @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<MemberFollowEntity> memberFollowEntities;
 
     public GroupEntity(GroupDto group) {
         this.name = group.getName();
@@ -80,6 +83,7 @@ public class GroupEntity extends TimeEntity {
 
         this.reviewEntities = new ArrayList<>();
         this.dailyEntities = new ArrayList<>();
+        this.memberFollowEntities = new ArrayList<>();
     }
 
     private void setMasterMember(){
@@ -183,4 +187,21 @@ public class GroupEntity extends TimeEntity {
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
         this.getDailyEntities().remove(daily);
     }
+
+    public Boolean follow(Long groupId, String targetMid) {
+        String mid = CryptUtils.getMid();
+        // 이미 팔로중이면 취소
+        Optional<MemberFollowEntity> followEntity = this.getMemberFollowEntities().stream()
+                .filter(follow -> follow.getMid().equals(mid) && follow.getTargetMid().equals(targetMid) && Objects.equals(follow.getGroupId(), groupId))
+                .findFirst();
+
+        if (followEntity.isPresent()) {
+            this.memberFollowEntities.remove(followEntity.get());
+            return false;
+        } else {
+            this.memberFollowEntities.add(new MemberFollowEntity(groupId, mid, targetMid));
+            return true;
+        }
+    }
+
 }

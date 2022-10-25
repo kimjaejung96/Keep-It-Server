@@ -80,12 +80,6 @@ public class MemberController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
-    @PostMapping("/{targetMid}/follow")
-    public ResponseEntity<ResponseObject> follow(@PathVariable String targetMid) throws CustomException {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        memberService.follow(targetMid);
-        return new ResponseEntity<>(responseObject, HttpStatus.OK);
-    }
 
     @PostMapping("/{targetMid}/block")
     public ResponseEntity<ResponseObject> block(@PathVariable String targetMid) throws CustomException {

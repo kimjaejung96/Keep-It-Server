@@ -99,20 +99,6 @@ public class MemberServiceImpl implements MemberService {
         return memberRepo.searchMembers(name, groupId).orElse(Collections.emptyList());
     }
 
-    @Override
-    @Transactional
-    public void follow(String targetMid) throws CustomException {
-        String mid = CryptUtils.getMid();
-        Optional<MemberEntity> targetMember = memberRepo.findByMid(targetMid);
-        Optional<MemberEntity> member = memberRepo.findByMid(mid);
-
-        // 이미 팔로중이면 팔로우 취소
-        if (member.isPresent() && targetMember.isPresent()) {
-            member.get().follow(mid, targetMid);
-        } else {
-            throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
-        }
-    }
 
     @Override
     @Transactional

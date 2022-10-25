@@ -53,10 +53,6 @@ public class MemberEntity extends TimeEntity {
     @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     private RefreshTokenEntity refreshTokenEntity;
     @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<MemberFollowEntity> memberFollowEntities;
-    @OneToMany(mappedBy = "targetMember",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<MemberFollowEntity> memberFollowTargetEntities;
-    @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<MemberBlockEntity> memberBlockEntities;
     @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<GroupMemberMappingEntity> groupMemberMappingEntities;
@@ -101,18 +97,6 @@ public class MemberEntity extends TimeEntity {
         this.fcmToken = "";
     }
 
-    public void follow(String mid, String targetMid) {
-        // 이미 팔로중이면 취소
-        Optional<MemberFollowEntity> followEntity = this.getMemberFollowEntities().stream()
-                .filter(follow -> follow.getMid().equals(mid) && follow.getTargetMid().equals(targetMid))
-                .findFirst();
-
-        if (followEntity.isPresent()) {
-            this.memberFollowEntities.remove(followEntity.get());
-        } else {
-            this.memberFollowEntities.add(new MemberFollowEntity(mid, targetMid));
-        }
-    }
 
     public void block(String mid, String targetMid) {
         // 이미 차단중이면 해제
@@ -134,8 +118,6 @@ public class MemberEntity extends TimeEntity {
         this.fcmToken = "";
         this.refreshTokenEntity = null;
         this.memberBlockEntities = null;
-        this.memberFollowEntities = null;
-        this.memberFollowTargetEntities = null;
         this.isDelete = true;
         // status -> true
     }

@@ -1,7 +1,7 @@
 package com.teamside.project.alpha.member.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
-import com.teamside.project.alpha.member.model.entity.compositeKeys.MemberKeys;
+import com.teamside.project.alpha.member.model.entity.compositeKeys.MemberBlockKeys;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Table(name = "MEMBER_BLOCK")
-@IdClass(MemberKeys.class)
+@IdClass(MemberBlockKeys.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberBlockEntity extends CreateDtEntity {
     @Id

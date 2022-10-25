@@ -15,9 +15,8 @@ public class MsgService {
     private final ObjectMapper objectMapper;
 
     public <T> void publishMsg(MQExchange exchange, MQRoutingKey routingKey, T message) {
-        MsgContent msgContent = new MsgContent(message);
         try {
-            amqpTemplate.convertAndSend(exchange.getValue(), routingKey.getValue(), objectMapper.writeValueAsString(msgContent));
+            amqpTemplate.convertAndSend(exchange.getValue(), routingKey.getValue(), objectMapper.writeValueAsString(message));
         } catch (JsonProcessingException e) {
             System.out.println("Error sending message");
         }

@@ -4,6 +4,9 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
+import com.teamside.project.alpha.common.msg.MsgService;
+import com.teamside.project.alpha.common.msg.enumurate.MQExchange;
+import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.daily.model.dto.DailyDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
@@ -14,24 +17,22 @@ import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
+    private final MsgService msgService;
 
 
-    public GroupServiceImpl(GroupRepository groupRepository) {
-        this.groupRepository = groupRepository;
-    }
 
 
     @Override
@@ -275,5 +276,21 @@ public class GroupServiceImpl implements GroupService {
                 group.getReviewEntities().stream().count(),
                 group.getDailyEntities().stream().count()
                 );
+    }
+
+    @Override
+    @Transactional
+    public void follow(Long groupId, String targetMid)  {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        Boolean isFollow = group.follow(groupId, targetMid);
+
+        // TODO: 2022/10/25 임시 object 생성
+        if(Boolean.TRUE.equals(isFollow)) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("receiverMid", targetMid);
+            data.put("sendMid", CryptUtils.getMid());
+            data.put("groupId", groupId);
+            CompletableFuture.runAsync(() -> msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data));
+        }
     }
 }

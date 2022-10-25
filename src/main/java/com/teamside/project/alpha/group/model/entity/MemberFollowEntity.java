@@ -1,7 +1,7 @@
-package com.teamside.project.alpha.member.model.entity;
+package com.teamside.project.alpha.group.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
-import com.teamside.project.alpha.member.model.entity.compositeKeys.MemberKeys;
+import com.teamside.project.alpha.group.model.entity.compositeKeys.MemberFollowKeys;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +11,12 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Table(name = "MEMBER_FOLLOW")
-@IdClass(MemberKeys.class)
+@IdClass(MemberFollowKeys.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberFollowEntity extends CreateDtEntity {
+    @Id
+    @Column(name = "GROUP_ID")
+    private Long groupId;
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")
     private String mid;
@@ -24,15 +27,12 @@ public class MemberFollowEntity extends CreateDtEntity {
 
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MID", referencedColumnName = "MID")
-    private MemberEntity member;
+    @JoinColumn(name = "GROUP_ID",  referencedColumnName = "GROUP_ID")
+    private GroupEntity group;
 
-    @MapsId
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TARGET_MID", referencedColumnName = "MID")
-    private MemberEntity targetMember;
 
-    public MemberFollowEntity(String mid, String targetMid) {
+    public MemberFollowEntity(Long groupId, String mid, String targetMid) {
+        this.groupId = groupId;
         this.mid = mid;
         this.targetMid = targetMid;
     }
