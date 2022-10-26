@@ -13,6 +13,8 @@ import com.teamside.project.alpha.group.model.enumurate.Category;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.*;
@@ -20,6 +22,8 @@ import java.util.*;
 @Entity
 @Getter
 @Table(name = "GROUP_LIST")
+@DynamicUpdate
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupEntity extends TimeEntity {
     @Id

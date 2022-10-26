@@ -5,6 +5,7 @@ import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.common.enumurate.CommentStatus;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
+@DynamicInsert
 @Builder
 @AllArgsConstructor
 public class ReviewCommentEntity extends TimeEntity {

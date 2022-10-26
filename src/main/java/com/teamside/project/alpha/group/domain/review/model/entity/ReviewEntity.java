@@ -11,6 +11,7 @@ import com.teamside.project.alpha.place.model.entity.PlaceEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Table(name = "REVIEW")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
+@DynamicInsert
 public class ReviewEntity extends TimeEntity {
     @Id
     @Column(name = "REVIEW_ID", columnDefinition = "char(36)")

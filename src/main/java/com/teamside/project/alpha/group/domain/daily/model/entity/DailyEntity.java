@@ -10,6 +10,7 @@ import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @Table(name = "DAILY")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
+@DynamicInsert
 public class DailyEntity extends TimeEntity {
     @Id
     @Column(name = "DAILY_ID", columnDefinition = "char(36)")
