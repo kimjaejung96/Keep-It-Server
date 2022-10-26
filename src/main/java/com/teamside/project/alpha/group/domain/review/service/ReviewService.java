@@ -10,7 +10,7 @@ public interface ReviewService {
 
     ReviewDto.ResponseReviewDetail selectReviewDetail(String groupId, String reviewId);
 
-    void createComment(String groupId, CommentDto.CreateComment comment, String reviewId);
+    String createComment(String groupId, CommentDto.CreateComment comment, String reviewId);
 
     void keepReview(String groupId, String reviewId);
 

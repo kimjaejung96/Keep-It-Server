@@ -62,7 +62,7 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void createComment(String groupId, String dailyId, CommentDto.CreateComment comment) throws CustomException {
+    public String createComment(String groupId, String dailyId, CommentDto.CreateComment comment) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
 
@@ -78,7 +78,7 @@ public class DailyServiceImpl implements DailyService {
                     .orElseThrow(() -> new CustomException(ApiExceptionCode.COMMENT_NOT_ACCESS));
         }
 
-        daily.createComment(comment, dailyId);
+        return daily.createComment(comment, dailyId);
     }
 
     @Override
