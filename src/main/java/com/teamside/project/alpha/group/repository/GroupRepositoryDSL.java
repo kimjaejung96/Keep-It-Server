@@ -15,16 +15,16 @@ public interface GroupRepositoryDSL {
     List<GroupDto.SearchGroupDto> searchGroup(Long lastGroupId, Long pageSize, String search);
     List<GroupDto.MyGroupDto> selectMyGroups(String mId, MyGroupType type);
     List<GroupDto.SearchGroupDto> random();
-    Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, Long groupId);
+    Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, String groupId);
     Optional<Integer> selectLatestFavoriteOrd(String mid);
     List<GroupMemberMappingEntity> selectFavoriteMappingGroups(String mid);
-    GroupDto.GroupInfoDto selectGroup(Long groupId);
+    GroupDto.GroupInfoDto selectGroup(String groupId);
     List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
     List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize);
-    GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId);
-    List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(Long groupId, String targetId, Long pageSize, Long lastReviewId);
-    List<DailyDto.DailyInGroup> selectDailyInGroup(Long groupId, String targetId, Long pageSize, Long lastDailyId);
-    ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, String reviewId);
-    GroupDto.GroupHome selectGroupHome(Long groupId);
-    DailyDto.ResponseDailyDetail selectDaily(Long groupId, Long dailyId);
+    GroupDto.GroupMemberProfileDto groupMemberProfile(String groupId, String memberId);
+    List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(String groupId, String targetId, Long pageSize, Long lastReviewId);
+    List<DailyDto.DailyInGroup> selectDailyInGroup(String groupId, String targetId, Long pageSize, Long lastDailyId);
+    ReviewDto.ResponseReviewDetail selectReviewDetail(String groupId, String reviewId);
+    GroupDto.GroupHome selectGroupHome(String groupId);
+    DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId);
 }

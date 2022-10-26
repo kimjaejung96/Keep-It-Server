@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepoDSL {
-    Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, Long groupId);
+    Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, String groupId);
 }

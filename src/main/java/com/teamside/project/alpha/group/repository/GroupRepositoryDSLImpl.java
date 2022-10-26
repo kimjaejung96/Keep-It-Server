@@ -55,10 +55,11 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<GroupDto.SearchGroupDto> searchGroup(Long lastGroupId, Long pageSize, String search) {
+    public List<GroupDto.SearchGroupDto> searchGroup(Long lastGroupSeq, Long pageSize, String search) {
         return jpaQueryFactory
                 .select(new QGroupDto_SearchGroupDto(
                         group.groupId,
+                        group.seq,
                         group.name,
                         group.category,
                         group.profileUrl,
@@ -67,17 +68,17 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
                 .where(
-                        gtGroupId(lastGroupId),
+                        gtGroupId(lastGroupSeq),
                         containSearch(search)
                 )
                 .limit(pageSize)
                 .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate)
-                .orderBy(group.groupId.asc())
+                .orderBy(group.seq.asc())
                 .fetch();
     }
 
-    public BooleanExpression gtGroupId(Long lastGroupId) {
-        return lastGroupId != null ? group.groupId.gt(lastGroupId) : null;
+    public BooleanExpression gtGroupId(Long lastGroupSeq) {
+        return lastGroupSeq != null ? group.seq.gt(lastGroupSeq) : null;
     }
 
     public BooleanExpression containSearch(String search) {
@@ -123,6 +124,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         return jpaQueryFactory
                 .select(new QGroupDto_SearchGroupDto(
                         group.groupId,
+                        group.seq,
                         group.name,
                         group.category,
                         group.profileUrl,
@@ -137,7 +139,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, Long groupId) {
+    public Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, String groupId) {
         return Optional.ofNullable(jpaQueryFactory
                 .select(groupMemberMapping)
                 .from(group)
@@ -170,7 +172,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public GroupDto.GroupInfoDto selectGroup(Long groupId) {
+    public GroupDto.GroupInfoDto selectGroup(String groupId) {
         BooleanExpression booleanExpression = new CaseBuilder()
                 .when(groupMemberMapping.mid.eq(CryptUtils.getMid()).and(groupMemberMapping.favorite.eq(true)))
                 .then(1)
@@ -225,6 +227,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         return jpaQueryFactory
                 .select(new QGroupDto_SearchGroupDto(
                         group.groupId,
+                        group.seq,
                         group.name,
                         group.category,
                         group.profileUrl,
@@ -241,10 +244,11 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize) {
+    public List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupSeq, Long pageSize) {
         return jpaQueryFactory
                 .select(new QGroupDto_SearchGroupDto(
                         group.groupId,
+                        group.seq,
                         group.name,
                         group.category,
                         group.profileUrl,
@@ -252,19 +256,19 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         groupMemberMapping.count().as("participantCount")))
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
-                .where(ltGroupId(lastGroupId))
+                .where(ltGroupId(lastGroupSeq))
                 .limit(pageSize)
                 .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate)
-                .orderBy(group.groupId.desc())
+                .orderBy(group.seq.desc())
                 .fetch();
     }
 
-    public BooleanExpression ltGroupId(Long lastGroupId) {
-        return lastGroupId != null ? group.groupId.lt(lastGroupId) : null;
+    public BooleanExpression ltGroupId(Long lastGroupSeq) {
+        return lastGroupSeq != null ? group.seq.lt(lastGroupSeq) : null;
     }
 
     @Override
-    public GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId) {
+    public GroupDto.GroupMemberProfileDto groupMemberProfile(String groupId, String memberId) {
         // mid - targetMid
         return jpaQueryFactory
                 .select(new QGroupDto_GroupMemberProfileDto(
@@ -289,7 +293,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(Long groupId, String targetId, Long pageSize, Long seq) {
+    public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(String groupId, String targetId, Long pageSize, Long seq) {
          return jpaQueryFactory.select(new QReviewDto_SelectReviewsInGroup(
                 new QReviewDto_SelectReviewsInGroup_Review(
                         review.reviewId,
@@ -316,16 +320,17 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                  .innerJoin(place).on(review.place.placeId.eq(place.placeId))
                  .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId).and(reviewKeep.memberMid.eq(CryptUtils.getMid())))
                  .where(review.group.groupId.eq(groupId), eqReviewMaster(targetId), ltReviewId(seq))
-                 .orderBy(review.reviewId.desc())
+                 .orderBy(review.seq.desc())
                  .limit(pageSize)
                  .fetch();
     }
 
     @Override
-    public List<DailyDto.DailyInGroup> selectDailyInGroup(Long groupId, String targetId, Long pageSize, Long lastDailyId) {
+    public List<DailyDto.DailyInGroup> selectDailyInGroup(String groupId, String targetId, Long pageSize, Long lastDailyId) {
         return jpaQueryFactory
                 .select(new QDailyDto_DailyInGroup(
                         daily.dailyId,
+                        daily.seq,
                         daily.title,
                         daily.image,
                         member.name,
@@ -335,7 +340,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(daily)
                 .innerJoin(member).on(member.mid.eq(daily.masterMid))
                 .where(daily.group.groupId.eq(groupId), eqDailyMaster(targetId), ltDailyId(lastDailyId))
-                .orderBy(daily.dailyId.desc())
+                .orderBy(daily.seq.desc())
                 .limit(pageSize)
                 .fetch();
     }
@@ -349,8 +354,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         return targetId != null ? review.masterMid.eq(targetId) : null;
     }
 
-    private BooleanExpression ltDailyId(Long lastDailyId) {
-        return lastDailyId != null ? daily.dailyId.lt(lastDailyId) : null;
+    private BooleanExpression ltDailyId(Long lastDailySeq) {
+        return lastDailySeq != null ? daily.seq.lt(lastDailySeq) : null;
     }
 
 
@@ -359,7 +364,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public ReviewDto.ResponseReviewDetail selectReviewDetail(Long groupId, String reviewId) {
+    public ReviewDto.ResponseReviewDetail selectReviewDetail(String groupId, String reviewId) {
         ReviewDto.ReviewDetail reviewDetail = jpaQueryFactory
                 .select(new QReviewDto_ReviewDetail(
                         review, member, place
@@ -382,7 +387,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(member).on(member.mid.eq(reviewComment.masterMid))
                 .leftJoin(targetMember).on(member.mid.eq(reviewComment.targetMemberMid))
                 .where(reviewComment.review.reviewId.eq(reviewId))
-                .orderBy(reviewComment.commentId.asc())
+                .orderBy(reviewComment.seq.asc())
                 .fetch();
 
         result.stream()
@@ -396,13 +401,13 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         return result;
     }
 
-    public GroupDto.GroupHome selectGroupHome(Long groupId) {
+    public GroupDto.GroupHome selectGroupHome(String groupId) {
 
         return null;
     }
 
     @Override
-    public DailyDto.ResponseDailyDetail selectDaily(Long groupId, Long dailyId) {
+    public DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId) {
         String mid = CryptUtils.getMid();
 
         DailyDto.DailyDetail dailyDetail = jpaQueryFactory
@@ -432,7 +437,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         return new DailyDto.ResponseDailyDetail(dailyDetail, comments, loginMember);
     }
 
-    public List<CommentDto> getDailyComments(Long dailyId) {
+    public List<CommentDto> getDailyComments(String dailyId) {
         QMemberEntity targetMember = new QMemberEntity("targetMember");
 
         List<CommentDto> result = jpaQueryFactory
@@ -441,7 +446,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(member).on(member.mid.eq(dailyComment.masterMid))
                 .leftJoin(targetMember).on(targetMember.mid.eq(dailyComment.targetMemberMid))
                 .where(dailyComment.daily.dailyId.eq(dailyId))
-                .orderBy(dailyComment.commentId.asc())
+                .orderBy(dailyComment.seq.asc())
                 .fetch();
 
         result.stream()

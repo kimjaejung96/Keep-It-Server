@@ -15,6 +15,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -23,9 +24,11 @@ import java.util.Optional;
 @DynamicUpdate
 public class DailyEntity extends TimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "DAILY_ID", columnDefinition = "bigint")
-    private Long dailyId;
+    @Column(name = "DAILY_ID", columnDefinition = "char(36)")
+    private String dailyId;
+
+    @Column(name = "SEQ", columnDefinition = "BIGINT(20) NOT NULL UNIQUE KEY auto_increment")
+    private Long seq;
 
     @Column(name = "TITLE", columnDefinition = "varchar(50)")
     private String title;
@@ -49,7 +52,8 @@ public class DailyEntity extends TimeEntity {
     @OneToMany(mappedBy = "daily", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyKeepEntity> dailyKeepEntities;
 
-    public DailyEntity(Long groupId, DailyDto dailyDto) {
+    public DailyEntity(String groupId, DailyDto dailyDto) {
+        this.dailyId = UUID.randomUUID().toString();
         this.title = dailyDto.getTitle();
         this.content = dailyDto.getContent();
         this.image = dailyDto.getImage();
@@ -57,7 +61,7 @@ public class DailyEntity extends TimeEntity {
         this.masterMid = CryptUtils.getMid();
     }
 
-    public DailyEntity(Long dailyId) {
+    public DailyEntity(String dailyId) {
         this.dailyId = dailyId;
     }
     public void updateDaily(DailyDto.UpdateDailyDto dailyDto) {
@@ -72,11 +76,11 @@ public class DailyEntity extends TimeEntity {
         }
     }
 
-    public void createComment(CommentDto.CreateComment comment, Long dailyId) {
+    public void createComment(CommentDto.CreateComment comment, String dailyId) {
         this.dailyCommentEntities.add(DailyCommentEntity.createComment(comment, dailyId));
     }
 
-    public void keepDaily(Long dailyId, String mid) {
+    public void keepDaily(String dailyId, String mid) {
         Optional<DailyKeepEntity> dailyEntity = this.dailyKeepEntities.stream()
                 .filter(daily -> (daily.getMemberMid().equals(mid) && daily.getDaily().getDailyId().equals(dailyId)))
                 .findFirst();

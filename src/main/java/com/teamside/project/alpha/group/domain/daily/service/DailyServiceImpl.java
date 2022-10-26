@@ -25,7 +25,7 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void createDaily(Long groupId, DailyDto dailyDto) throws CustomException {
+    public void createDaily(String groupId, DailyDto dailyDto) throws CustomException {
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         groupEntity.checkExistMember(CryptUtils.getMid());
 
@@ -34,7 +34,7 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void updateDaily(Long groupId, DailyDto.UpdateDailyDto dailyDto) throws CustomException {
+    public void updateDaily(String groupId, DailyDto.UpdateDailyDto dailyDto) throws CustomException {
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         groupEntity.checkExistMember(CryptUtils.getMid());
 
@@ -48,13 +48,13 @@ public class DailyServiceImpl implements DailyService {
     }
 
     @Override
-    public DailyDto.ResponseDailyDetail selectDaily(Long groupId, Long dailyId) {
+    public DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId) {
         return groupRepository.selectDaily(groupId, dailyId);
     }
 
     @Override
     @Transactional
-    public void deleteDaily(Long groupId, Long dailyId) throws CustomException {
+    public void deleteDaily(String groupId, String dailyId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
         group.deleteDaily(dailyId);
@@ -62,7 +62,7 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void createComment(Long groupId, Long dailyId, CommentDto.CreateComment comment) throws CustomException {
+    public void createComment(String groupId, String dailyId, CommentDto.CreateComment comment) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
 
@@ -83,7 +83,7 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void updateComment(Long groupId, Long dailyId, Long commentId, CommentDto.CreateComment comment) {
+    public void updateComment(String groupId, String dailyId, Long commentId, CommentDto.CreateComment comment) {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(mid);
@@ -104,7 +104,7 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void deleteComment(Long groupId, Long dailyId, Long commentId) {
+    public void deleteComment(String groupId, String dailyId, Long commentId) {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(mid);
@@ -125,7 +125,7 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void keepDaily(Long groupId, Long dailyId) {
+    public void keepDaily(String groupId, String dailyId) {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(mid);

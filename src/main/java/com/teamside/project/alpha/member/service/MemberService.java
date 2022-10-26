@@ -13,7 +13,7 @@ public interface MemberService {
     void withdrawal() throws CustomException;
     void checkExistsName(String name) throws CustomException;
     void inquiry(InquiryDto inquiryDto);
-    List<MemberDto.InviteMemberList> search(String name, Long groupId);
+    List<MemberDto.InviteMemberList> search(String name, String groupId);
     void block(String targetMid) throws CustomException;
 
     void updateFcm(String fcmToken);

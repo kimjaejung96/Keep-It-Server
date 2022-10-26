@@ -24,7 +24,7 @@ public class DailyKeepEntity extends CreateDtEntity {
     @Column(name = "MEMBER", columnDefinition = "char(36)")
     private String memberMid;
 
-    public DailyKeepEntity(Long dailyId, String mid) {
+    public DailyKeepEntity(String dailyId, String mid) {
         this.daily = new DailyEntity(dailyId);
         this.memberMid = mid;
     }

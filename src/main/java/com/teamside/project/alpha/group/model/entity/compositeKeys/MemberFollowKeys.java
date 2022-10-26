@@ -8,5 +8,5 @@ import java.io.Serializable;
 public class MemberFollowKeys implements Serializable {
     private String mid;
     private String targetMid;
-    private Long groupId;
+    private String groupId;
 }

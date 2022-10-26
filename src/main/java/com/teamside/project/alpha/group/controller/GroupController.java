@@ -26,14 +26,14 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping("/{groupId}/reviews")
-    public ResponseEntity<ResponseObject> selectReviewsInGroup(@PathVariable Long groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastReviewId) throws CustomException {
+    public ResponseEntity<ResponseObject> selectReviewsInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastReviewId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectReviewsInGroup(groupId, targetMid, pageSize, lastReviewId));
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @GetMapping("/{groupId}/daily")
-    public ResponseEntity<ResponseObject> selectDailyInGroup(@PathVariable Long groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastDailyId) throws CustomException {
+    public ResponseEntity<ResponseObject> selectDailyInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastDailyId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectDailyInGroup(groupId, targetMid, pageSize, lastDailyId));
 
@@ -50,7 +50,7 @@ public class GroupController {
     }
 
     @PostMapping("/{groupId}/join")
-    public ResponseEntity<ResponseObject> joinGroup(@PathVariable Long groupId, @RequestParam(required = false) String password) throws CustomException {
+    public ResponseEntity<ResponseObject> joinGroup(@PathVariable String groupId, @RequestParam(required = false) String password) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.joinGroup(groupId, password);
 
@@ -58,7 +58,7 @@ public class GroupController {
     }
 
     @DeleteMapping("/{groupId}/leave")
-    public ResponseEntity<ResponseObject> leaveGroup(@PathVariable Long groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> leaveGroup(@PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.leaveGroup(groupId);
 
@@ -66,7 +66,7 @@ public class GroupController {
     }
 
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<ResponseObject> deleteGroup(@PathVariable Long groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> deleteGroup(@PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.deleteGroup(groupId);
 
@@ -81,7 +81,7 @@ public class GroupController {
      * @throws CustomException
      */
     @GetMapping("/{groupId}")
-    public ResponseEntity<ResponseObject> selectGroup(@PathVariable Long groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> selectGroup(@PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectGroup(groupId));
 
@@ -120,13 +120,13 @@ public class GroupController {
     }
 
     @PostMapping("/{groupId}/favorite")
-    public ResponseEntity<ResponseObject> editFavorite(@PathVariable Long groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> editFavorite(@PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.editFavorite(groupId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @PostMapping("/{groupId}/members/{memberId}")
-    public ResponseEntity<ResponseObject> inviteMember(@PathVariable Long groupId,
+    public ResponseEntity<ResponseObject> inviteMember(@PathVariable String groupId,
                                                        @PathVariable String memberId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.inviteMember(groupId, memberId);
@@ -167,7 +167,7 @@ public class GroupController {
     }
 
     @GetMapping("/{groupId}/members/{memberId}")
-    public ResponseEntity<ResponseObject> groupMemberProfile(@PathVariable Long groupId,
+    public ResponseEntity<ResponseObject> groupMemberProfile(@PathVariable String groupId,
                                                              @PathVariable String memberId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.groupMemberProfile(groupId, memberId));
@@ -180,14 +180,14 @@ public class GroupController {
      * @return
      */
     @GetMapping("/{groupId}/home")
-    public ResponseEntity<ResponseObject> groupHomePage(@PathVariable Long groupId) {
+    public ResponseEntity<ResponseObject> groupHomePage(@PathVariable String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectGroupHome(groupId));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
     @PostMapping("/{groupId}/members/{targetMid}/follow")
-    public ResponseEntity<ResponseObject> follow(@PathVariable Long groupId, @PathVariable String targetMid) throws CustomException {
+    public ResponseEntity<ResponseObject> follow(@PathVariable String groupId, @PathVariable String targetMid) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.follow(groupId, targetMid);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);

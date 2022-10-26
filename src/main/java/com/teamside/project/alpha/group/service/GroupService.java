@@ -11,23 +11,23 @@ public interface GroupService {
     void createGroup(GroupDto group) throws CustomException;
     void updateGroup(GroupDto group) throws CustomException;
     void isExistGroupName(String groupName) throws CustomException;
-    void deleteGroup(Long groupId) throws CustomException;
-    GroupDto.GroupInfoDto selectGroup(Long groupId) throws CustomException;
+    void deleteGroup(String groupId) throws CustomException;
+    GroupDto.GroupInfoDto selectGroup(String groupId) throws CustomException;
     GroupDto.ResponseSearchGroupDto selectGroups(Long lastGroupId, Long pageSize);
     List<GroupDto.SearchGroupDto> random();
-    void joinGroup(Long groupId, String password) throws CustomException;
-    void leaveGroup(Long groupId) throws CustomException;
+    void joinGroup(String groupId, String password) throws CustomException;
+    void leaveGroup(String groupId) throws CustomException;
     GroupDto.ResponseMyGroupDto selectMyGroups(MyGroupType type);
-    void editFavorite(Long groupId) throws CustomException;
-    void inviteMember(Long groupId, String memberId) throws CustomException;
+    void editFavorite(String groupId) throws CustomException;
+    void inviteMember(String groupId, String memberId) throws CustomException;
     GroupDto.ResponseSearchGroupDto searchGroup(Long lastGroupId, Long pageSize, String search);
     void updateOrd(GroupDto.RequestUpdateOrdDto request) throws CustomException;
     List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
-    GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId);
-    ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(Long groupId, String targetMid, Long pageSize, Long lastReviewId);
+    GroupDto.GroupMemberProfileDto groupMemberProfile(String groupId, String memberId);
+    ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(String groupId, String targetMid, Long pageSize, Long lastReviewId);
 
-    Object selectDailyInGroup(Long groupId, String targetMid, Long pageSize, Long lastDailyId);
+    Object selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailyId);
 
-    GroupDto.GroupHome selectGroupHome(Long groupId);
-    void follow(Long groupId, String targetMid) throws CustomException;
+    GroupDto.GroupHome selectGroupHome(String groupId);
+    void follow(String groupId, String targetMid) throws CustomException;
 }

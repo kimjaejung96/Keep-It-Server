@@ -15,10 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @Getter
@@ -26,9 +23,11 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupEntity extends TimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "GROUP_ID", columnDefinition = "bigint")
-    private Long groupId;
+    @Column(name = "GROUP_ID", columnDefinition = "char(36)")
+    private String groupId;
+
+    @Column(name = "SEQ", columnDefinition = "BIGINT(20) NOT NULL UNIQUE KEY auto_increment")
+    private Long seq;
 
     @Column(name = "NAME", columnDefinition = "varchar(20)")
     private String name;
@@ -69,6 +68,7 @@ public class GroupEntity extends TimeEntity {
     private List<MemberFollowEntity> memberFollowEntities;
 
     public GroupEntity(GroupDto group) {
+        this.groupId = UUID.randomUUID().toString();
         this.name = group.getName();
         this.description = group.getDescription();
         this.password = group.getUsePrivate() ?  group.getPassword() : "";
@@ -147,7 +147,7 @@ public class GroupEntity extends TimeEntity {
         }
     }
 
-    public GroupEntity(Long groupId) {
+    public GroupEntity(String groupId) {
         this.groupId = groupId;
     }
 
@@ -165,7 +165,7 @@ public class GroupEntity extends TimeEntity {
         }
     }
 
-    public void checkDailyMaster(Long dailyId) throws CustomException {
+    public void checkDailyMaster(String dailyId) throws CustomException {
         if (this.getDailyEntities().stream()
                 .filter(d -> d.getDailyId().equals(dailyId))
                 .noneMatch(d -> d.getMasterMid().equals(CryptUtils.getMid()))) {
@@ -179,7 +179,7 @@ public class GroupEntity extends TimeEntity {
         this.reviewEntities.remove(review);
     }
 
-    public void deleteDaily(Long dailyId) throws CustomException {
+    public void deleteDaily(String dailyId) throws CustomException {
         this.checkDailyMaster(dailyId);
         DailyEntity daily = this.getDailyEntities().stream()
                 .filter(d -> d.getDailyId() == dailyId)
@@ -188,7 +188,7 @@ public class GroupEntity extends TimeEntity {
         this.getDailyEntities().remove(daily);
     }
 
-    public Boolean follow(Long groupId, String targetMid) {
+    public Boolean follow(String groupId, String targetMid) {
         String mid = CryptUtils.getMid();
         // 이미 팔로중이면 취소
         Optional<MemberFollowEntity> followEntity = this.getMemberFollowEntities().stream()

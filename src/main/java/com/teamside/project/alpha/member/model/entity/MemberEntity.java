@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class MemberEntity extends TimeEntity {
     @Column(name = "NAME", columnDefinition = "varchar(20)")
     private String name;
 
-    @Column(name = "PHONE", columnDefinition = "char(24)")
+    @Column(name = "PHONE", columnDefinition = "char(64)")
     private String phone;
 
     @Column(name = "PROFILE_URL", columnDefinition = "varchar(255)")
@@ -40,6 +41,9 @@ public class MemberEntity extends TimeEntity {
 
     @Column(name="FCM_TOKEN", columnDefinition = "varchar(170)")
     private String fcmToken;
+
+    @Column(name="FCM_TOKEN_LIFE", columnDefinition = "DATETIME")
+    private LocalDateTime fcmTokenLife;
 
     @Column(name="TYPE", columnDefinition = "varchar(50)")
     @Enumerated(EnumType.STRING)
@@ -66,6 +70,7 @@ public class MemberEntity extends TimeEntity {
         this.phone = CryptUtils.encrypt(signUpDto.getMember().getPhone());
         this.profileUrl = Objects.requireNonNullElse(signUpDto.getMember().getProfileUrl(), "");
         this.fcmToken = Objects.requireNonNullElse(signUpDto.getMember().getFcmToken(), "");
+        this.fcmTokenLife = LocalDateTime.now();
         this.type = Objects.requireNonNullElse(type, SignUpType.PHONE);
         this.isDelete = false;
 
@@ -124,6 +129,12 @@ public class MemberEntity extends TimeEntity {
 
     public void updateFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
+        this.fcmTokenLife = LocalDateTime.now();
+    }
+
+    public void changeRefreshToken(String refreshToken) {
+        this.fcmTokenLife = LocalDateTime.now();
+        this.refreshTokenEntity.changeRefreshToken(refreshToken);
     }
 
 }

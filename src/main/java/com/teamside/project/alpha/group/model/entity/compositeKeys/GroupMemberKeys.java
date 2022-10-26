@@ -7,6 +7,6 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class GroupMemberKeys implements Serializable {
     private String mid;
-    private Long groupId;
+    private String groupId;
 
 }

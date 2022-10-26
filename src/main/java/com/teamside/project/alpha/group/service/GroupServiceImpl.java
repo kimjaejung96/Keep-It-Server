@@ -67,7 +67,7 @@ public class GroupServiceImpl implements GroupService {
         }
     }
     @Override
-    public void deleteGroup(Long groupId) throws CustomException {
+    public void deleteGroup(String groupId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkGroupMaster();
 
@@ -76,7 +76,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public GroupDto.GroupInfoDto selectGroup(Long groupId) throws CustomException {
+    public GroupDto.GroupInfoDto selectGroup(String groupId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
         GroupDto.GroupInfoDto result = groupRepository.selectGroup(groupId);
@@ -97,7 +97,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public GroupDto.ResponseSearchGroupDto selectGroups(Long lastGroupId, Long pageSize) {
         List<GroupDto.SearchGroupDto> groupList = groupRepository.selectGroups(lastGroupId, pageSize);
-        Long responseLastGroupId = groupList.size() == pageSize ? groupList.get((int) (pageSize-1L)).getGroupId() : null;
+        Long responseLastGroupId = groupList.size() == pageSize ? groupList.get((int) (pageSize-1L)).getGroupSeq() : null;
 
         return new GroupDto.ResponseSearchGroupDto(null, responseLastGroupId, groupList);
     }
@@ -106,7 +106,7 @@ public class GroupServiceImpl implements GroupService {
     public GroupDto.ResponseSearchGroupDto searchGroup(Long lastGroupId, Long pageSize, String search) {
         List<GroupDto.SearchGroupDto> groupList = groupRepository.searchGroup(lastGroupId, pageSize, search.replaceAll(KeepitConstant.REGEXP_EMOJI, ""));
         Long totalCount = lastGroupId == null ? groupRepository.countByNameContaining(search) : null;
-        Long responseLastGroupId = groupList.size() == pageSize ? groupList.get((int) (pageSize-1L)).getGroupId() : null;
+        Long responseLastGroupId = groupList.size() == pageSize ? groupList.get((int) (pageSize-1L)).getGroupSeq() : null;
 
         return new GroupDto.ResponseSearchGroupDto(totalCount, responseLastGroupId, groupList);
     }
@@ -118,7 +118,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void joinGroup(Long groupId, String password) throws CustomException {
+    public void joinGroup(String groupId, String password) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkJoinPossible(group, password);
 
@@ -131,7 +131,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void leaveGroup(Long groupId) throws CustomException {
+    public void leaveGroup(String groupId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.removeMember(CryptUtils.getMid());
     }
@@ -162,7 +162,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void editFavorite(Long groupId) throws CustomException {
+    public void editFavorite(String groupId) throws CustomException {
         String mId = CryptUtils.getMid();
 
         GroupMemberMappingEntity groupMemberMapping = groupRepository.selectGroupMemberMappingEntity(mId, groupId)
@@ -182,7 +182,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void inviteMember(Long groupId, String memberId)  {
+    public void inviteMember(String groupId, String memberId)  {
 
     }
 
@@ -218,7 +218,7 @@ public class GroupServiceImpl implements GroupService {
             throw new CustomException(ApiExceptionCode.DUPLICATE_ORD);
         }
 
-        List<Long> ids = request.stream()
+        List<String> ids = request.stream()
                 .map(dto -> dto.getGroupId())
                 .collect(Collectors.toList());
 
@@ -244,12 +244,12 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public GroupDto.GroupMemberProfileDto groupMemberProfile(Long groupId, String memberId) {
+    public GroupDto.GroupMemberProfileDto groupMemberProfile(String groupId, String memberId) {
         return groupRepository.groupMemberProfile(groupId, memberId);
     }
 
     @Override
-    public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(Long groupId, String targetMid, Long pageSize, Long seq) {
+    public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(String groupId, String targetMid, Long pageSize, Long seq) {
         List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, seq);
         Long responseLastGroupId = reviewsInGroup.isEmpty() ? null : reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewSeq();
 
@@ -257,16 +257,16 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public DailyDto.ResponseDailyInGroup selectDailyInGroup(Long groupId, String targetMid, Long pageSize, Long lastDailyId) {
+    public DailyDto.ResponseDailyInGroup selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailyId) {
         List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailyId);
-        Long responseLastDailyId = dailyInGroup.isEmpty() ? null : dailyInGroup.get(dailyInGroup.size() - 1).getDailyId();
+        Long responseLastDailySeq = dailyInGroup.isEmpty() ? null : dailyInGroup.get(dailyInGroup.size() - 1).getDailySeq();
 
-        return new DailyDto.ResponseDailyInGroup(dailyInGroup, responseLastDailyId);
+        return new DailyDto.ResponseDailyInGroup(dailyInGroup, responseLastDailySeq);
     }
 
     @Override
     @Transactional
-    public GroupDto.GroupHome selectGroupHome(Long groupId) {
+    public GroupDto.GroupHome selectGroupHome(String groupId) {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
 
@@ -280,7 +280,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void follow(Long groupId, String targetMid)  {
+    public void follow(String groupId, String targetMid)  {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         Boolean isFollow = group.follow(groupId, targetMid);
 

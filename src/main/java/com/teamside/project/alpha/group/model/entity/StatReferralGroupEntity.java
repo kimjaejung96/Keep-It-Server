@@ -27,12 +27,12 @@ public class StatReferralGroupEntity {
     private String referralType;
 
     @Column(name = "GROUP_ID")
-    private Long groupId;
+    private String groupId;
 
     @Column(name = "CATEGORY")
     private String category;
 
-    public StatReferralGroupEntity(Long seq, Long rankNum, LocalDateTime statDt, String referralType, Long groupId, String category) {
+    public StatReferralGroupEntity(Long seq, Long rankNum, LocalDateTime statDt, String referralType, String groupId, String category) {
         this.seq = seq;
         this.rankNum = rankNum;
         this.statDt = statDt;

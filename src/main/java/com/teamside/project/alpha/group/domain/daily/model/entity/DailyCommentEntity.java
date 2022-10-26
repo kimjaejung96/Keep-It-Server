@@ -6,7 +6,6 @@ import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.common.enumurate.CommentStatus;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -24,6 +23,9 @@ public class DailyCommentEntity extends TimeEntity {
     @Id
     @Column(name = "COMMENT_ID", columnDefinition = "char(36)")
     private String commentId;
+
+    @Column(name = "SEQ", columnDefinition = "BIGINT(20) NOT NULL UNIQUE KEY auto_increment")
+    private Long seq;
 
     @Column(name = "COMMENT", columnDefinition = "varchar(1500)")
     private String comment;
@@ -51,7 +53,7 @@ public class DailyCommentEntity extends TimeEntity {
 
     public DailyCommentEntity(String commentId) { this.commentId = commentId; }
 
-    public static DailyCommentEntity createComment(CommentDto.CreateComment comment, Long dailyId) {
+    public static DailyCommentEntity createComment(CommentDto.CreateComment comment, String dailyId) {
         return DailyCommentEntity.builder()
                 .commentId(UUID.randomUUID().toString())
                 .comment(comment.getComment())

@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupDto {
-    private Long groupId;
+    private String groupId;
     @NotNull
     @Pattern(regexp = KeepitConstant.REGEXP_GROUP_NAME, message = "그룹 이름이 올바르지 않습니다.")
     @Size(min = 4, max = 20, message = "그룹 제목은 4~20자 입니다.")
@@ -94,15 +94,17 @@ public class GroupDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class SearchGroupDto {
-        private Long groupId;
+        private String groupId;
+        private Long groupSeq;
         private String name;
         private Category category;
         private String profileUrl;
         private Boolean usePrivate;
         private Long participantCount;
         @QueryProjection
-        public SearchGroupDto(Long groupId, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount) {
+        public SearchGroupDto(String groupId, Long groupSeq, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount) {
             this.groupId = groupId;
+            this.groupSeq = groupSeq;
             this.name = name;
             this.category = category;
             this.profileUrl = profileUrl;
@@ -114,7 +116,7 @@ public class GroupDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class MyGroupDto {
-        private Long groupId;
+        private String groupId;
         private String name;
         private Category category;
         private String profileUrl;
@@ -124,7 +126,7 @@ public class GroupDto {
         private Boolean isMaster;
         private Integer ord;
         @QueryProjection
-        public MyGroupDto(Long groupId, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount, Boolean favorite, Boolean isMaster, Integer ord) {
+        public MyGroupDto(String groupId, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount, Boolean favorite, Boolean isMaster, Integer ord) {
             this.groupId = groupId;
             this.name = name;
             this.category = category;
@@ -155,12 +157,12 @@ public class GroupDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ResponseSearchGroupDto {
         private Long totalCount;
-        private Long lastGroupId;
+        private Long lastGroupSeq;
         private List<SearchGroupDto> groupList;
 
-        public ResponseSearchGroupDto(Long totalCount, Long lastGroupId, List<SearchGroupDto> groupList) {
+        public ResponseSearchGroupDto(Long totalCount, Long lastGroupSeq, List<SearchGroupDto> groupList) {
             this.totalCount = totalCount;
-            this.lastGroupId = lastGroupId;
+            this.lastGroupSeq = lastGroupSeq;
             this.groupList = groupList;
         }
     }

@@ -20,7 +20,7 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
     QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
 
     @Override
-    public Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, Long groupId) {
+    public Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, String groupId) {
         List<MemberDto.InviteMemberList> result;
         if (groupId == null) {
             result = jpaQueryFactory

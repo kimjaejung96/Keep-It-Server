@@ -22,7 +22,7 @@ public class DailyDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class UpdateDailyDto extends DailyDto {
-        private Long dailyId;
+        private String dailyId;
     }
 
     @Getter
@@ -40,7 +40,9 @@ public class DailyDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class DailyInGroup {
-        private Long dailyId;
+        private String dailyId;
+
+        private Long dailySeq;
 
         private String title;
 
@@ -53,8 +55,9 @@ public class DailyDto {
         private String createDt;
 
         @QueryProjection
-        public DailyInGroup(Long dailyId, String title, String image, String name, Integer commentCount, String createDt) {
+        public DailyInGroup(String dailyId, Long dailySeq, String title, String image, String name, Integer commentCount, String createDt) {
             this.dailyId = dailyId;
+            this.dailySeq = dailySeq;
             this.title = title;
             this.image = image;
             this.name = name;

@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class MemberFollowEntity extends CreateDtEntity {
     @Id
     @Column(name = "GROUP_ID")
-    private Long groupId;
+    private String groupId;
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")
     private String mid;
@@ -31,7 +31,7 @@ public class MemberFollowEntity extends CreateDtEntity {
     private GroupEntity group;
 
 
-    public MemberFollowEntity(Long groupId, String mid, String targetMid) {
+    public MemberFollowEntity(String groupId, String mid, String targetMid) {
         this.groupId = groupId;
         this.mid = mid;
         this.targetMid = targetMid;

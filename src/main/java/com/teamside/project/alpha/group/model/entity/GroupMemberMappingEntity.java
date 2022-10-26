@@ -28,8 +28,8 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
     private MemberEntity member;
 
     @Id
-    @Column(name = "GROUP_ID", columnDefinition = "bigint")
-    private Long groupId;
+    @Column(name = "GROUP_ID", columnDefinition = "char(36)")
+    private String groupId;
 
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,7 +50,7 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
         this.member = member;
     }
 
-    public GroupMemberMappingEntity(String mid, Long groupId) {
+    public GroupMemberMappingEntity(String mid, String groupId) {
         this.mid = mid;
         this.groupId = groupId;
         this.favorite = false;

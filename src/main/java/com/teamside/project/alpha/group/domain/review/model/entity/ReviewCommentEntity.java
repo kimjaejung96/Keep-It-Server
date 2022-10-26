@@ -22,6 +22,9 @@ public class ReviewCommentEntity extends TimeEntity {
     @Column(name = "COMMENT_ID", columnDefinition = "char(36)")
     private String commentId;
 
+    @Column(name = "SEQ", columnDefinition = "BIGINT(20) NOT NULL UNIQUE KEY auto_increment")
+    private Long seq;
+
     @Column(name = "COMMENT", columnDefinition = "varchar(1500)")
     private String comment;
 

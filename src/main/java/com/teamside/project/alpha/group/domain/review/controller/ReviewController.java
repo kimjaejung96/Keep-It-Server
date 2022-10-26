@@ -28,7 +28,7 @@ public class ReviewController {
      * @return
      */
     @PostMapping("")
-    public ResponseEntity<ResponseObject> createReview(@PathVariable Long groupId, @Valid @RequestBody ReviewDto review) {
+    public ResponseEntity<ResponseObject> createReview(@PathVariable String groupId, @Valid @RequestBody ReviewDto review) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         reviewService.createReview(groupId, review);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
@@ -42,7 +42,7 @@ public class ReviewController {
      * @throws CustomException
      */
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<ResponseObject> deleteReview(@PathVariable Long groupId, @PathVariable String reviewId) throws CustomException {
+    public ResponseEntity<ResponseObject> deleteReview(@PathVariable String groupId, @PathVariable String reviewId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.deleteReview(groupId, reviewId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
@@ -55,7 +55,7 @@ public class ReviewController {
      * @return
      */
     @PatchMapping("")
-    public ResponseEntity<ResponseObject> updateReview(@PathVariable Long groupId, @Valid @RequestBody ReviewDto.UpdateReviewDto review) {
+    public ResponseEntity<ResponseObject> updateReview(@PathVariable String groupId, @Valid @RequestBody ReviewDto.UpdateReviewDto review) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.updateReview(groupId, review);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
@@ -67,7 +67,7 @@ public class ReviewController {
      * @return
      */
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ResponseObject> selectReviewDetail(@PathVariable Long groupId, @PathVariable String reviewId) {
+    public ResponseEntity<ResponseObject> selectReviewDetail(@PathVariable String groupId, @PathVariable String reviewId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(reviewService.selectReviewDetail(groupId, reviewId));
 
@@ -83,7 +83,7 @@ public class ReviewController {
      * @return
      */
     @PostMapping("/{reviewId}/comment")
-    public ResponseEntity<ResponseObject> createComment(@PathVariable Long groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable String reviewId) {
+    public ResponseEntity<ResponseObject> createComment(@PathVariable String groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable String reviewId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         reviewService.createComment(groupId, comment, reviewId);
 
@@ -99,7 +99,7 @@ public class ReviewController {
      * @return
      */
     @PatchMapping("/{reviewId}/comment/{commentId}")
-    public ResponseEntity<ResponseObject> updateComment(@PathVariable Long groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable String reviewId, @PathVariable Long commentId) {
+    public ResponseEntity<ResponseObject> updateComment(@PathVariable String groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable String reviewId, @PathVariable Long commentId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.updateComment(groupId, comment, reviewId, commentId);
 
@@ -114,7 +114,7 @@ public class ReviewController {
      * @return
      */
     @DeleteMapping("/{reviewId}/comment/{commentId}")
-    public ResponseEntity<ResponseObject> deleteComment(@PathVariable Long groupId, @PathVariable String reviewId, @PathVariable Long commentId) {
+    public ResponseEntity<ResponseObject> deleteComment(@PathVariable String groupId, @PathVariable String reviewId, @PathVariable Long commentId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.deleteComment(groupId, reviewId, commentId);
 
@@ -128,7 +128,7 @@ public class ReviewController {
      * @return
      */
     @PostMapping("/{reviewId}/keep")
-    public ResponseEntity<ResponseObject> keepReview(@PathVariable Long groupId, @PathVariable String reviewId) {
+    public ResponseEntity<ResponseObject> keepReview(@PathVariable String groupId, @PathVariable String reviewId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.keepReview(groupId, reviewId);
 
