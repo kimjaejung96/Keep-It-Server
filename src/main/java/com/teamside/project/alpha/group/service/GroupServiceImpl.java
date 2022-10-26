@@ -288,7 +288,7 @@ public class GroupServiceImpl implements GroupService {
         if(Boolean.TRUE.equals(isFollow)) {
             Map<String, Object> data = new HashMap<>();
             data.put("receiverMid", targetMid);
-            data.put("sendMid", CryptUtils.getMid());
+            data.put("senderMid", CryptUtils.getMid());
             data.put("groupId", groupId);
             CompletableFuture.runAsync(() -> msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data));
         }

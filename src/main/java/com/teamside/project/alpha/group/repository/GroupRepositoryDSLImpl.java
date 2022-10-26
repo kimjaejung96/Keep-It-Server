@@ -212,7 +212,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         )
                         .from(groupMemberMapping)
                         .innerJoin(member).on(groupMemberMapping.mid.eq(member.mid))
-                        .leftJoin(memberFollow).on(memberFollow.mid.eq(CryptUtils.getMid()).and(memberFollow.targetMid.eq(member.mid)))
+                        .leftJoin(memberFollow).on(memberFollow.group.groupId.eq(groupId).and(memberFollow.mid.eq(CryptUtils.getMid()).and(memberFollow.targetMid.eq(member.mid))))
 //                        .where(groupMemberMapping.groupId.eq(groupId).and(member.mid.ne(CryptUtils.getMid())))
                         .where(groupMemberMapping.groupId.eq(groupId))
                         .fetch()
@@ -287,7 +287,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .leftJoin(daily)
                     .on(daily.masterMid.eq(member.mid).and(daily.group.groupId.eq(groupId)))
                 .leftJoin(memberFollow)
-                    .on(memberFollow.mid.eq(member.mid).and(memberFollow.targetMid.eq(CryptUtils.getMid())))
+                    .on(memberFollow.group.groupId.eq(groupId).and(memberFollow.mid.eq(member.mid).and(memberFollow.targetMid.eq(CryptUtils.getMid()))))
                 .where(member.mid.eq(memberId))
                 .fetchOne();
     }
