@@ -76,8 +76,10 @@ public class DailyEntity extends TimeEntity {
         }
     }
 
-    public void createComment(CommentDto.CreateComment comment, String dailyId) {
-        this.dailyCommentEntities.add(DailyCommentEntity.createComment(comment, dailyId));
+    public String createComment(CommentDto.CreateComment comment, String dailyId) {
+        DailyCommentEntity dailyComment = DailyCommentEntity.createComment(comment, dailyId);
+        this.dailyCommentEntities.add(dailyComment);
+        return dailyComment.getCommentId();
     }
 
     public void keepDaily(String dailyId, String mid) {

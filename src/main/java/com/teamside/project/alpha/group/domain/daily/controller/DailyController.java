@@ -55,7 +55,7 @@ public class DailyController {
                                                         @PathVariable String dailyId,
                                                         @RequestBody @Valid CommentDto.CreateComment comment) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
-        dailyService.createComment(groupId, dailyId, comment);
+        responseObject.setBody(dailyService.createComment(groupId, dailyId, comment));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

@@ -76,7 +76,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public void createComment(String groupId, CommentDto.CreateComment comment, String reviewId) {
+    public String createComment(String groupId, CommentDto.CreateComment comment, String reviewId) {
         GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(CryptUtils.getMid());
 
@@ -92,15 +92,8 @@ public class ReviewServiceImpl implements ReviewService {
         if (comment.getParentCommentId() != null && review.getReviewCommentEntities().stream().noneMatch(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))) {
             throw new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS);
         }
-//        if (comment.getParentCommentId() != null) {
-//            review.getReviewCommentEntities().stream()
-//                    .filter(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))
-//                    .findAny()
-//                    .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS));
-//        }
 
-        review.createComment(comment, reviewId);
-
+        return review.createComment(comment, reviewId);
     }
 
     @Override
