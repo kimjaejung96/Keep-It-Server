@@ -24,6 +24,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Aspect
@@ -107,7 +108,7 @@ public class ApiLog {
             logs.append("\n").append("PROCESS_TIME : ").append(stopWatch.getTotalTimeMillis() * 0.001);
             log.info("\n" + logs);
             ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc.toString(), apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
-            logService.insertLog(apiLogEntity);
+            CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
         }
 
 
