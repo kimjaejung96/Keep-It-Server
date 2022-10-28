@@ -202,6 +202,14 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 멤버 팔로우
+     *
+     * @param groupId
+     * @param targetMid
+     * @return
+     * @throws CustomException
+     */
     @PostMapping("/{groupId}/members/{targetMid}/follow")
     public ResponseEntity<ResponseObject> follow(@PathVariable String groupId, @PathVariable String targetMid) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

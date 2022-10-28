@@ -24,8 +24,18 @@ public class MemberFollowEntity extends CreateDtEntity {
     @Id
     @Column(name = "TARGET_MID", columnDefinition = "char(36)")
     private String targetMid;
+
+    //targetMid 팔로우 한 대상 알림 여부
     @Column(name = "ALARM_YN", columnDefinition = "boolean default false")
     private Boolean alarmYn;
+
+    // 팔로우 알림 최초1회 여부
+    @Column(name = "SEND_ALARM_YN")
+    private Boolean sendAlarmYn;
+
+    // 팔로우 여부
+    @Column(name = "FOLLOW_YN")
+    private Boolean followYn;
 
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
