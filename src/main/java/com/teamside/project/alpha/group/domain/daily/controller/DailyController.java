@@ -62,7 +62,7 @@ public class DailyController {
     @PatchMapping("/{dailyId}/comment/{commentId}")
     public ResponseEntity<ResponseObject> updateComment(@PathVariable String groupId,
                                                         @PathVariable String dailyId,
-                                                        @PathVariable Long commentId,
+                                                        @PathVariable String commentId,
                                                         @RequestBody @Valid CommentDto.CreateComment comment) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         dailyService.updateComment(groupId, dailyId, commentId, comment);
@@ -72,7 +72,7 @@ public class DailyController {
     @DeleteMapping("/{dailyId}/comment/{commentId}")
     public ResponseEntity<ResponseObject> deleteComment(@PathVariable String groupId,
                                                         @PathVariable String dailyId,
-                                                        @PathVariable Long commentId) {
+                                                        @PathVariable String commentId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         dailyService.deleteComment(groupId, dailyId, commentId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
