@@ -51,7 +51,7 @@ public class MemberEntity extends CreateDtEntity {
 
     @Column(name = "IS_DELETE", columnDefinition = "boolean")
     private Boolean isDelete;
-    @Column(name = "UPDATE_DT",nullable = false, columnDefinition = "DATETIME")
+    @Column(name = "UPDATE_DT",nullable = true, columnDefinition = "DATETIME")
     private LocalDateTime updateTime;
 
 

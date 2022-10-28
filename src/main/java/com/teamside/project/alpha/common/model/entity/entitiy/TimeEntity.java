@@ -19,6 +19,6 @@ public class TimeEntity {
     private LocalDateTime createTime;
 
     @LastModifiedDate
-    @Column(name = "UPDATE_DT",nullable = false, columnDefinition = "DATETIME")
+    @Column(name = "UPDATE_DT", columnDefinition = "DATETIME")
     private LocalDateTime updateTime;
 }
