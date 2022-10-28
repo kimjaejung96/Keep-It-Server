@@ -59,6 +59,8 @@ public class MemberEntity extends CreateDtEntity {
     private TermsEntity termsEntity;
     @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     private RefreshTokenEntity refreshTokenEntity;
+    @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
+    private AlarmSetting alarmSetting;
     @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<MemberBlockEntity> memberBlockEntities;
     @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)

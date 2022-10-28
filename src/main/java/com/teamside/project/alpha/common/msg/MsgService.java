@@ -14,13 +14,13 @@ public class MsgService {
     private final AmqpTemplate amqpTemplate;
     private final ObjectMapper objectMapper;
 
-    public <T> void publishMsg(MQExchange exchange, MQRoutingKey routingKey, T message) {
+    public <T> Boolean publishMsg(MQExchange exchange, MQRoutingKey routingKey, T message) {
         try {
             amqpTemplate.convertAndSend(exchange.getValue(), routingKey.getValue(), objectMapper.writeValueAsString(message));
+            return true;
         } catch (JsonProcessingException e) {
             System.out.println("Error sending message");
         }
-
-
+        return false;
     }
 }

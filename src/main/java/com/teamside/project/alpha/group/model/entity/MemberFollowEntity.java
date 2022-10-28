@@ -5,6 +5,7 @@ import com.teamside.project.alpha.group.model.entity.compositeKeys.MemberFollowK
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Table(name = "MEMBER_FOLLOW")
 @IdClass(MemberFollowKeys.class)
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberFollowEntity extends CreateDtEntity {
     @Id
@@ -47,5 +49,16 @@ public class MemberFollowEntity extends CreateDtEntity {
         this.groupId = groupId;
         this.mid = mid;
         this.targetMid = targetMid;
+        this.alarmYn = false;
+        this.sendAlarmYn = false;
+        this.followYn = true;
+    }
+
+    public void updateFollowStatus() {
+        this.followYn = !this.followYn;
+    }
+
+    public void successSendAlarm() {
+        this.sendAlarmYn = true;
     }
 }

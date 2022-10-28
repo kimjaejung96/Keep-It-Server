@@ -18,7 +18,10 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -195,20 +198,21 @@ public class GroupEntity extends TimeEntity {
 
     public Boolean follow(String groupId, String targetMid) {
         String mid = CryptUtils.getMid();
-        // 이미 팔로중이면 취소
-        Optional<MemberFollowEntity> followEntity = this.getMemberFollowEntities().stream()
-                .filter(follow -> follow.getMid().equals(mid) && follow.getTargetMid().equals(targetMid) && Objects.equals(follow.getGroupId(), groupId))
+
+        Optional<MemberFollowEntity> memberFollowEntity = this.getMemberFollowEntities().stream()
+                .filter(d -> d.getMid().equals(mid)
+                        && d.getTargetMid().equals(targetMid)
+                )
                 .findFirst();
 
-        if (followEntity.isPresent()) {
-            this.memberFollowEntities.remove(followEntity.get());
-            return false;
-        } else {
+        if (memberFollowEntity.isEmpty()) {
             this.memberFollowEntities.add(new MemberFollowEntity(groupId, mid, targetMid));
             return true;
+        } else {
+            memberFollowEntity.get().updateFollowStatus();
+            return memberFollowEntity.get().getSendAlarmYn();
         }
     }
-
     public void exileMember(String targetMid) {
         GroupMemberMappingEntity groupMemberMapping = this.groupMemberMappingEntity.stream().filter(d -> d.getMid().equals(targetMid)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         groupMemberMapping.updateStatus(GroupMemberStatus.EXILE);

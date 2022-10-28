@@ -17,6 +17,7 @@ import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
+import com.teamside.project.alpha.member.repository.MemberRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
     private final MsgService msgService;
+    private final MemberRepo memberRepository;
 
 
 
@@ -281,17 +283,27 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void follow(String groupId, String targetMid)  {
+        String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        Boolean isFollow = group.follow(groupId, targetMid);
+        Boolean alarmSendYn = group.follow(groupId, targetMid);
+
+        if (Boolean.TRUE.equals(alarmSendYn)) {
+            MemberEntity member = memberRepository.findByMid(targetMid).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+            if (!member.getAlarmSetting().isAllSetting() || !member.getAlarmSetting().isFollow()) {
+                return;
+            }
+        }
 
         // TODO: 2022/10/25 임시 object 생성
-        if(Boolean.TRUE.equals(isFollow)) {
-            Map<String, Object> data = new HashMap<>();
-            data.put("receiverMid", targetMid);
-            data.put("senderMid", CryptUtils.getMid());
-            data.put("groupId", groupId);
-            CompletableFuture.runAsync(() -> msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data));
-        }
+        Map<String, Object> data = new HashMap<>();
+//        data.put("receiverMid", targetMid);
+//        data.put("senderMid", CryptUtils.getMid());
+//        data.put("groupId", groupId);
+        data.put("receiverMid", "29c8b6b7-e4ce-41a0-823f-a0148c5e663c");
+        data.put("senderMid", "6a5f3047-c1e6-4b67-a4a2-9d848c41e84b");
+        data.put("groupId", 120);
+
+        CompletableFuture.supplyAsync(() -> msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data));
     }
 
     @Override
