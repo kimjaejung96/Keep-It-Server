@@ -83,7 +83,7 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void updateComment(String groupId, String dailyId, Long commentId, CommentDto.CreateComment comment) {
+    public void updateComment(String groupId, String dailyId, String commentId, CommentDto.CreateComment comment) {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(mid);
@@ -104,7 +104,7 @@ public class DailyServiceImpl implements DailyService {
 
     @Override
     @Transactional
-    public void deleteComment(String groupId, String dailyId, Long commentId) {
+    public void deleteComment(String groupId, String dailyId, String commentId) {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(mid);

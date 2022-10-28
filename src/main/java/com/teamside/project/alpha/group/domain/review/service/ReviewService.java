@@ -16,7 +16,7 @@ public interface ReviewService {
 
     void deleteReview(String groupId, String reviewId) throws CustomException;
 
-    void updateComment(String groupId, CommentDto.CreateComment comment, String reviewId, Long commentId);
+    void updateComment(String groupId, CommentDto.CreateComment comment, String reviewId, String commentId);
 
-    void deleteComment(String groupId, String reviewId, Long commentId);
+    void deleteComment(String groupId, String reviewId, String commentId);
 }
