@@ -293,4 +293,12 @@ public class GroupServiceImpl implements GroupService {
             CompletableFuture.runAsync(() -> msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data));
         }
     }
+
+    @Override
+    @Transactional
+    public void exileMember(String groupId, String memberId) {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkGroupMaster();
+        group.exileMember(memberId);
+    }
 }

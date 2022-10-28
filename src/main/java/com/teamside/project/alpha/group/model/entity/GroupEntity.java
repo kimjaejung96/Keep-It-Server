@@ -10,6 +10,7 @@ import com.teamside.project.alpha.group.domain.review.model.entity.ReviewEntity;
 import com.teamside.project.alpha.group.model.converter.CategoryConverter;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.enumurate.Category;
+import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -206,6 +207,11 @@ public class GroupEntity extends TimeEntity {
             this.memberFollowEntities.add(new MemberFollowEntity(groupId, mid, targetMid));
             return true;
         }
+    }
+
+    public void exileMember(String targetMid) {
+        GroupMemberMappingEntity groupMemberMapping = this.groupMemberMappingEntity.stream().filter(d -> d.getMid().equals(targetMid)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        groupMemberMapping.updateStatus(GroupMemberStatus.EXILE);
     }
 
 }

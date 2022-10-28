@@ -4,7 +4,6 @@ import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -22,27 +21,32 @@ public class AlarmSetting extends TimeEntity {
     @Column(name = "ALL_SETTING", columnDefinition = "boolean")
     private boolean allSetting;
 
+    //새 멤버 참여
     @Column(name = "NEW_MEMBER", columnDefinition = "boolean")
     private boolean newMember;
 
+    // 새 리뷰 글
     @Column(name = "NEW_REVIEW", columnDefinition = "boolean")
     private boolean newReview;
 
+    // 새 일상 글
     @Column(name = "NEW_DAILY", columnDefinition = "boolean")
     private boolean newDaily;
 
+    // 댓글 알림
     @Column(name = "COMMENT", columnDefinition = "boolean")
     private boolean comment;
 
+    // 내 글이 킵 됐을때 알림
     @Column(name = "KEEP", columnDefinition = "boolean")
     private boolean keep;
 
+    //탈퇴, 초대 알림
     @Column(name = "JOIN_OUT", columnDefinition = "boolean")
     private boolean joinOut;
 
+    // 팔로우 되었을 때
     @Column(name = "FOLLOW", columnDefinition = "boolean")
     private boolean follow;
 
-    @OneToMany(mappedBy = "alarmSetting",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ReviewAlarmSetting> reviewAlarmSettings;
 }

@@ -133,6 +133,22 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+
+    /**
+     * 그룹 내 멤버 내보내기
+     * @param groupId
+     * @param memberId
+     * @return
+     * @throws CustomException
+     */
+    @PostMapping("/{groupId}/members/{memberId}")
+    public ResponseEntity<ResponseObject> exileMember(@PathVariable String groupId,
+                                                       @PathVariable String memberId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        groupService.exileMember(groupId, memberId);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
     @PostMapping("/ords")
     public ResponseEntity<ResponseObject> updateOrd(@RequestBody GroupDto.RequestUpdateOrdDto request) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

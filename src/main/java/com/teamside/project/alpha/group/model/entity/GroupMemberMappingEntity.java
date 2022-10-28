@@ -41,6 +41,10 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
 
     @Column(name = "FAVORITE", columnDefinition = "boolean")
     private Boolean favorite;
+    @Column(name = "REVIEW_ALARM", columnDefinition = "boolean default false")
+    private Boolean reviewAlarm;
+    @Column(name = "DAILY_ALARM", columnDefinition = "boolean default false")
+    private Boolean dailyAlarm;
 
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
@@ -64,5 +68,8 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
 
     public void updateOrd(Integer ord) {
         this.ord = ord;
+    }
+    public void updateStatus(GroupMemberStatus status) {
+        this.status = status;
     }
 }

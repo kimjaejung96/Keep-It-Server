@@ -30,4 +30,6 @@ public interface GroupService {
 
     GroupDto.GroupHome selectGroupHome(String groupId);
     void follow(String groupId, String targetMid) throws CustomException;
+
+    void exileMember(String groupId, String memberId);
 }

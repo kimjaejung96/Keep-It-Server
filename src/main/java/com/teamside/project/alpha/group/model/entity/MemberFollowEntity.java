@@ -24,6 +24,8 @@ public class MemberFollowEntity extends CreateDtEntity {
     @Id
     @Column(name = "TARGET_MID", columnDefinition = "char(36)")
     private String targetMid;
+    @Column(name = "ALARM_YN", columnDefinition = "boolean default false")
+    private Boolean alarmYn;
 
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
