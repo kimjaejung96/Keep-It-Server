@@ -141,7 +141,7 @@ public class GroupController {
      * @return
      * @throws CustomException
      */
-    @PostMapping("/{groupId}/members/{memberId}")
+    @PostMapping("/{groupId}/members/{memberId}/exile")
     public ResponseEntity<ResponseObject> exileMember(@PathVariable String groupId,
                                                        @PathVariable String memberId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
