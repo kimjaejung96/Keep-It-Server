@@ -103,6 +103,7 @@ public class MemberEntity extends CreateDtEntity {
     }
     private void deleteFcmToken() {
         this.fcmToken = "";
+        this.fcmTokenLife = null;
     }
 
 
@@ -124,6 +125,7 @@ public class MemberEntity extends CreateDtEntity {
         this.phone = "";
         this.profileUrl = "";
         this.fcmToken = "";
+        this.fcmTokenLife = null;
         this.refreshTokenEntity = null;
         this.memberBlockEntities = null;
         this.isDelete = true;
@@ -132,6 +134,9 @@ public class MemberEntity extends CreateDtEntity {
 
     public void updateFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
+        updateFcmTokenLife();
+    }
+    public void updateFcmTokenLife() {
         this.fcmTokenLife = LocalDateTime.now();
     }
 

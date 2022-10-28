@@ -199,4 +199,10 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ApiExceptionCode.INVALID_AUTH_TYPE);
         }
     }
+
+    @Override
+    public void updateFcmTokenLife() {
+        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        member.updateFcmTokenLife();
+    }
 }

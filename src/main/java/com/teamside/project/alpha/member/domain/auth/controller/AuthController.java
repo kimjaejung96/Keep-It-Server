@@ -83,6 +83,7 @@ public class AuthController {
                 .refreshToken(authService.refreshRefreshToken())
                 .build();
 
+        authService.updateFcmTokenLife();
         responseObject.setBody(jwtTokens);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
@@ -98,6 +99,9 @@ public class AuthController {
         JwtTokens jwtTokens = JwtTokens.builder()
                 .accessToken(authService.refreshAccessToken(refreshToken))
                 .build();
+
+        authService.updateFcmTokenLife();
+
         responseObject.setBody(jwtTokens);
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }

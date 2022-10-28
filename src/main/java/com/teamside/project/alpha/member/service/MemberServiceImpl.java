@@ -4,8 +4,6 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.msg.MsgService;
-import com.teamside.project.alpha.common.msg.enumurate.MQExchange;
-import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.member.domain.auth.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.domain.auth.service.AuthService;
@@ -42,8 +40,6 @@ public class MemberServiceImpl implements MemberService {
         member.createRefreshToken(jwtTokens.getRefreshToken());
 
         memberRepo.save(member);
-
-        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.TEST, member.getMid()+"가 가입했습니다.");
         return jwtTokens;
     }
 
