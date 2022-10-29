@@ -49,6 +49,9 @@ public class ReviewEntity extends TimeEntity {
     @Column(name = "IMAGES", columnDefinition = "varchar(1000)")
     private String images;
 
+    @Column(name = "IS_DELETE", columnDefinition = "boolean")
+    private Boolean isDelete;
+
     @OneToMany(mappedBy = "review", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReviewCommentEntity> reviewCommentEntities;
 
@@ -62,6 +65,7 @@ public class ReviewEntity extends TimeEntity {
         this.masterMid = CryptUtils.getMid();
         this.content = review.getContent();
         this.images = String.join(",", review.getImages());
+        this.isDelete = false;
     }
 
     public ReviewEntity(String reviewId) {
@@ -97,5 +101,9 @@ public class ReviewEntity extends TimeEntity {
         } else {
             this.getReviewKeepEntities().add(new ReviewKeepEntity(reviewId, mid));
         }
+    }
+
+    public void deleteReview() {
+        this.isDelete = true;
     }
 }

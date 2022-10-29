@@ -69,11 +69,12 @@ public class GroupServiceImpl implements GroupService {
         }
     }
     @Override
+    @Transactional
     public void deleteGroup(String groupId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkGroupMaster();
 
-        groupRepository.delete(group);
+        group.deleteGroup();
     }
 
     @Override
@@ -128,14 +129,14 @@ public class GroupServiceImpl implements GroupService {
             throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
         }
         group.addMember(CryptUtils.getMid());
-
     }
 
     @Override
     @Transactional
     public void leaveGroup(String groupId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.removeMember(CryptUtils.getMid());
+
+        group.leaveGroup();
     }
 
     @Override

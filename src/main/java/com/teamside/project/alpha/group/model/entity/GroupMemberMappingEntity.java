@@ -71,5 +71,11 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
     }
     public void updateStatus(GroupMemberStatus status) {
         this.status = status;
+        if (status.equals(GroupMemberStatus.EXIT)) {
+            this.favorite = false;
+            this.ord = null;
+            this.reviewAlarm = false;
+            this.dailyAlarm = false;
+        }
     }
 }

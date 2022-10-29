@@ -48,6 +48,9 @@ public class DailyEntity extends TimeEntity {
     @Column(name = "MASTER", columnDefinition = "char(36)")
     private String masterMid;
 
+    @Column(name = "IS_DELETE", columnDefinition = "boolean")
+    private Boolean isDelete;
+
     @OneToMany(mappedBy = "daily", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DailyCommentEntity> dailyCommentEntities;
 
@@ -61,6 +64,7 @@ public class DailyEntity extends TimeEntity {
         this.image = dailyDto.getImage();
         this.group = new GroupEntity(groupId);
         this.masterMid = CryptUtils.getMid();
+        this.isDelete = false;
     }
 
     public DailyEntity(String dailyId) {
@@ -94,5 +98,9 @@ public class DailyEntity extends TimeEntity {
         } else {
             this.getDailyKeepEntities().add(new DailyKeepEntity(dailyId, mid));
         }
+    }
+
+    public void deleteDaily() {
+        this.isDelete = true;
     }
 }

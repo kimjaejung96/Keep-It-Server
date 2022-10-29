@@ -98,7 +98,15 @@ public class GroupEntity extends TimeEntity {
         this.masterMid = CryptUtils.getMid();
     }
     public void addMember(String mid) {
-        this.groupMemberMappingEntity.add(new GroupMemberMappingEntity(mid, this.groupId));
+        Optional<GroupMemberMappingEntity> groupMemberMapping = this.getGroupMemberMappingEntity().stream()
+                .filter(g -> g.getMid().equals(CryptUtils.getMid()))
+                .findFirst();
+
+        if (groupMemberMapping.isPresent()) {
+            groupMemberMapping.get().updateStatus(GroupMemberStatus.JOIN);
+        } else {
+            this.groupMemberMappingEntity.add(new GroupMemberMappingEntity(mid, this.groupId));
+        }
     }
     public void removeMember(String mid) {
         GroupMemberMappingEntity findEntity = this.groupMemberMappingEntity.stream()
@@ -123,9 +131,21 @@ public class GroupEntity extends TimeEntity {
                 throw new CustomException(ApiExceptionCode.PASSWORD_IS_INCORRECT);
             }
         }
-        if (group.getGroupMemberMappingEntity().stream().anyMatch(g -> g.getMid().equals(CryptUtils.getMid()))) {
-            throw new CustomException(ApiExceptionCode.ALREADY_JOINED_GROUP);
+
+        Optional<GroupMemberMappingEntity> groupMemberMapping = group.getGroupMemberMappingEntity().stream()
+                .filter(g -> g.getMid().equals(CryptUtils.getMid()))
+                .findFirst();
+
+        if (groupMemberMapping.isPresent()) {
+            GroupMemberStatus status = groupMemberMapping.get().getStatus();
+
+            if (status.equals(GroupMemberStatus.JOIN)) {
+                throw new CustomException(ApiExceptionCode.ALREADY_JOINED_GROUP);
+            } else if (status.equals(GroupMemberStatus.EXILE)) {
+                throw new CustomException(ApiExceptionCode.EXILED_GROUP);
+            }
         }
+
         if (group.getGroupMemberMappingEntity().size() >= this.memberQuantity) {
             throw new CustomException(ApiExceptionCode.MEMBER_QUANTITY_IS_FULL);
         }
@@ -183,17 +203,22 @@ public class GroupEntity extends TimeEntity {
 
     public void deleteReview(String reviewId) throws CustomException {
         this.checkReviewMaster(reviewId);
-        ReviewEntity review = this.getReviewEntities().stream().filter(r-> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
-        this.reviewEntities.remove(review);
+        ReviewEntity review = this.getReviewEntities().stream()
+                .filter(r-> r.getReviewId().equals(reviewId))
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+
+        review.deleteReview();
     }
 
     public void deleteDaily(String dailyId) throws CustomException {
         this.checkDailyMaster(dailyId);
         DailyEntity daily = this.getDailyEntities().stream()
-                .filter(d -> d.getDailyId() == dailyId)
+                .filter(d -> d.getDailyId().equals(dailyId))
                 .findFirst()
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
-        this.getDailyEntities().remove(daily);
+
+        daily.deleteDaily();
     }
 
     public Boolean follow(String groupId, String targetMid) {
@@ -218,4 +243,16 @@ public class GroupEntity extends TimeEntity {
         groupMemberMapping.updateStatus(GroupMemberStatus.EXILE);
     }
 
+    public void deleteGroup() {
+        this.isDelete = true;
+    }
+
+    public void leaveGroup() {
+        GroupMemberMappingEntity groupMemberMapping = this.groupMemberMappingEntity.stream()
+                .filter(d -> d.getMid().equals(CryptUtils.getMid()))
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+
+        groupMemberMapping.updateStatus(GroupMemberStatus.EXIT);
+    }
 }

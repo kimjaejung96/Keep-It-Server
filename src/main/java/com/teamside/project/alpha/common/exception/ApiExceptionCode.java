@@ -35,6 +35,7 @@ public enum ApiExceptionCode {
     DAILY_NOT_EXIST(815, "일상글이 존재하지 않습니다."),
     COMMENT_NOT_ACCESS(816, "대댓글의 댓글의 리뷰가 아닙니다."),
     COMMENT_NOT_EXIST(817, "댓글이 존재하지 않습니다."),
+    EXILED_GROUP(817, "해당 그룹은 그룹장에 의해 강제 탈퇴 되어 참여할실 수 없는 그룹입니다."),
 
 
     VALIDATION_ERROR(998, "밸리데이션이 올바르지 않습니다."),
