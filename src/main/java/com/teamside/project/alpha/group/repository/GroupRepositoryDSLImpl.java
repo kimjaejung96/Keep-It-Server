@@ -193,7 +193,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 )
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
-                .leftJoin(review).on(group.groupId.eq(review.group.groupId))
+                .leftJoin(review).on(group.groupId.eq(review.group.groupId), review.isDelete.eq(false))
                 .where(group.groupId.eq(groupId))
                 .groupBy(group.groupId)
                 .fetchOne();
@@ -212,7 +212,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         )
                         .from(groupMemberMapping)
                         .innerJoin(member).on(groupMemberMapping.mid.eq(member.mid))
-                        .leftJoin(memberFollow).on(memberFollow.group.groupId.eq(groupId).and(memberFollow.mid.eq(CryptUtils.getMid()).and(memberFollow.targetMid.eq(member.mid))))
+                        .leftJoin(memberFollow)
+                            .on(memberFollow.group.groupId.eq(groupId), memberFollow.mid.eq(CryptUtils.getMid()),
+                                memberFollow.targetMid.eq(member.mid), memberFollow.followYn.eq(true))
 //                        .where(groupMemberMapping.groupId.eq(groupId).and(member.mid.ne(CryptUtils.getMid())))
                         .where(groupMemberMapping.groupId.eq(groupId))
                         .fetch()
@@ -283,11 +285,12 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ))
                 .from(member)
                 .leftJoin(review)
-                    .on(review.masterMid.eq(member.mid).and(review.group.groupId.eq(groupId)))
+                    .on(review.masterMid.eq(member.mid), review.group.groupId.eq(groupId), review.isDelete.eq(false))
                 .leftJoin(daily)
-                    .on(daily.masterMid.eq(member.mid).and(daily.group.groupId.eq(groupId)))
+                    .on(daily.masterMid.eq(member.mid), daily.group.groupId.eq(groupId), daily.isDelete.eq(false))
                 .leftJoin(memberFollow)
-                    .on(memberFollow.group.groupId.eq(groupId).and(memberFollow.mid.eq(member.mid).and(memberFollow.targetMid.eq(CryptUtils.getMid()))))
+                    .on(memberFollow.group.groupId.eq(groupId), memberFollow.mid.eq(CryptUtils.getMid()),
+                        memberFollow.targetMid.eq(member.mid), memberFollow.followYn.eq(true))
                 .where(member.mid.eq(memberId))
                 .fetchOne();
     }
@@ -319,7 +322,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                  .innerJoin(member).on(review.masterMid.eq(member.mid))
                  .innerJoin(place).on(review.place.placeId.eq(place.placeId))
                  .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId).and(reviewKeep.memberMid.eq(CryptUtils.getMid())))
-                 .where(review.group.groupId.eq(groupId), eqReviewMaster(targetId), ltReviewId(seq))
+                 .where(review.group.groupId.eq(groupId), review.isDelete.eq(false), eqReviewMaster(targetId), ltReviewId(seq))
                  .orderBy(review.seq.desc())
                  .limit(pageSize)
                  .fetch();
@@ -339,7 +342,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ))
                 .from(daily)
                 .innerJoin(member).on(member.mid.eq(daily.masterMid))
-                .where(daily.group.groupId.eq(groupId), eqDailyMaster(targetId), ltDailyId(lastDailyId))
+                .where(daily.group.groupId.eq(groupId), daily.isDelete.eq(false), eqDailyMaster(targetId), ltDailyId(lastDailyId))
                 .orderBy(daily.seq.desc())
                 .limit(pageSize)
                 .fetch();
