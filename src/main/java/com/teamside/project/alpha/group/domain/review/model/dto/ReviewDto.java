@@ -125,6 +125,7 @@ public class ReviewDto {
     public static class ReviewDetail {
         private String reviewContent;
         private String memberName;
+        private String memberMid;
         private String memberProfileUrl;
         private String placeName;
         private String placeAddress;
@@ -138,6 +139,7 @@ public class ReviewDto {
         public ReviewDetail(ReviewEntity review, MemberEntity member, PlaceEntity place) {
             this.reviewContent = review.getContent();
             this.memberName = member.getName();
+            this.memberMid = member.getMid();
             this.memberProfileUrl = member.getProfileUrl();
             this.placeName = place.getPlaceName();
             this.placeAddress = place.getAddress();
