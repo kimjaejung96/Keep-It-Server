@@ -49,8 +49,8 @@ public class AlarmSetting extends TimeEntity {
     @Column(name = "FOLLOW", columnDefinition = "boolean")
     private boolean follow;
 
-    public AlarmSetting(String mid, boolean allSetting, boolean newMember, boolean newReview, boolean newDaily, boolean comment, boolean keep, boolean joinOut, boolean follow) {
-        this.member = new MemberEntity(mid);
+    public AlarmSetting(MemberEntity member, boolean allSetting, boolean newMember, boolean newReview, boolean newDaily, boolean comment, boolean keep, boolean joinOut, boolean follow) {
+        this.member = member;
         this.allSetting = allSetting;
         this.newMember = newMember;
         this.newReview = newReview;
