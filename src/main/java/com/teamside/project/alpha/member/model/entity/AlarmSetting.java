@@ -50,7 +50,7 @@ public class AlarmSetting extends TimeEntity {
     private boolean follow;
 
     public AlarmSetting(String mid, boolean allSetting, boolean newMember, boolean newReview, boolean newDaily, boolean comment, boolean keep, boolean joinOut, boolean follow) {
-        this.mid = mid;
+        this.member = new MemberEntity(mid);
         this.allSetting = allSetting;
         this.newMember = newMember;
         this.newReview = newReview;
