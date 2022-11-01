@@ -8,7 +8,7 @@ import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import java.util.List;
 
 public interface GroupService {
-    void createGroup(GroupDto group) throws CustomException;
+    String createGroup(GroupDto group) throws CustomException;
     void updateGroup(GroupDto group) throws CustomException;
     void isExistGroupName(String groupName) throws CustomException;
     void deleteGroup(String groupId) throws CustomException;

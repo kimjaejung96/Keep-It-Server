@@ -44,7 +44,7 @@ public class GroupController {
     @PostMapping
     public ResponseEntity<ResponseObject> createGroup(@RequestBody @Valid GroupDto group) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
-        groupService.createGroup(group);
+        responseObject.setBody(groupService.createGroup(group));
 
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }

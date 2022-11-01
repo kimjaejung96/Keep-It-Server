@@ -39,7 +39,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void createGroup(GroupDto group) throws CustomException {
+    public String createGroup(GroupDto group) throws CustomException {
         if (groupRepository.countByMasterMid(CryptUtils.getMid()) >= GroupConstant.GROUP_MAKE_POSSIBLE_COUNT) {
             throw new CustomException(ApiExceptionCode.CAN_NOT_CREATE_GROUP);
         }
@@ -48,6 +48,8 @@ public class GroupServiceImpl implements GroupService {
 
         GroupEntity newGroupEntity = groupRepository.save(groupEntity);
         newGroupEntity.addMember(newGroupEntity.getMasterMid());
+
+        return newGroupEntity.getGroupId();
     }
 
     @Override
