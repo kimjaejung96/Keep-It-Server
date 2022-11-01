@@ -188,12 +188,16 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                                         .then(true)
                                         .otherwise(false),
                                 groupMemberMapping.count(),
-                                review.count()
+                                ExpressionUtils.as(
+                                        JPAExpressions
+                                                .select(review.count())
+                                                .from(review)
+                                                .where(group.groupId.eq(review.group.groupId), review.isDelete.eq(false)),
+                                "inReviews")
                         )
                 )
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
-                .leftJoin(review).on(group.groupId.eq(review.group.groupId), review.isDelete.eq(false))
                 .where(group.groupId.eq(groupId))
                 .groupBy(group.groupId)
                 .fetchOne();
