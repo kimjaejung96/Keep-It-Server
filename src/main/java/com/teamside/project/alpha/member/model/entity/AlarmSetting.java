@@ -60,4 +60,8 @@ public class AlarmSetting extends TimeEntity {
         this.joinOut = joinOut;
         this.follow = follow;
     }
+
+    public AlarmSetting() {
+
+    }
 }
