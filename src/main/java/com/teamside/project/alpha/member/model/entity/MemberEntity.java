@@ -78,6 +78,7 @@ public class MemberEntity extends CreateDtEntity {
         this.fcmTokenLife = LocalDateTime.now();
         this.type = Objects.requireNonNullElse(type, SignUpType.PHONE);
         this.isDelete = false;
+        this.alarmSetting = new AlarmSetting(this.mid, true, true, true, true, true, true, true, true);
 
         createTerms(signUpDto.getTerms());
     }
