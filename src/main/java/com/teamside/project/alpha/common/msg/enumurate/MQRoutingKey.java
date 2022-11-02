@@ -8,6 +8,8 @@ public enum MQRoutingKey {
     GROUP_DELETE("kps.group_delete"),
     GROUP_JOIN("kps.group_join"),
     MY_FOLLOW("kps.my_follow"),
+    NEW_REVIEW("kps.group_new_review"),
+    FOLLOW_CONTENTS_REGISTER("kps.follow_contents_registered"),
     TEST("kps.test")
     ;
 

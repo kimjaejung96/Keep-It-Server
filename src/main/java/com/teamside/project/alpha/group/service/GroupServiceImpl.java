@@ -131,6 +131,10 @@ public class GroupServiceImpl implements GroupService {
             throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
         }
         group.addMember(CryptUtils.getMid());
+        Map<String, String> data = new HashMap<>();
+        data.put("senderMid", CryptUtils.getMid());
+        data.put("groupId", groupId);
+        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_JOIN, data);
     }
 
     @Override
@@ -299,12 +303,9 @@ public class GroupServiceImpl implements GroupService {
 
         // TODO: 2022/10/25 임시 object 생성
         Map<String, Object> data = new HashMap<>();
-//        data.put("receiverMid", targetMid);
-//        data.put("senderMid", CryptUtils.getMid());
-//        data.put("groupId", groupId);
-        data.put("receiverMid", "29c8b6b7-e4ce-41a0-823f-a0148c5e663c");
-        data.put("senderMid", "6a5f3047-c1e6-4b67-a4a2-9d848c41e84b");
-        data.put("groupId", 120);
+        data.put("receiverMid", targetMid);
+        data.put("senderMid", CryptUtils.getMid());
+        data.put("groupId", groupId);
 
         CompletableFuture.supplyAsync(() -> msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data));
     }

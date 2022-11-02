@@ -151,8 +151,9 @@ public class GroupEntity extends TimeEntity {
         }
     }
 
-    public void createReview(ReviewEntity review) {
+    public String createReview(ReviewEntity review) {
         this.reviewEntities.add(review);
+        return review.getReviewId();
     }
 
     public void createDaily(DailyEntity dailyEntity) {

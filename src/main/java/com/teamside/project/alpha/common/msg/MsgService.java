@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.msg.enumurate.MQExchange;
 import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class MsgService {
     private final AmqpTemplate amqpTemplate;

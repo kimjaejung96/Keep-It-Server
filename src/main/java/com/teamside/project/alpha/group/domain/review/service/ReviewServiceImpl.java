@@ -3,6 +3,9 @@ package com.teamside.project.alpha.group.domain.review.service;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
+import com.teamside.project.alpha.common.msg.MsgService;
+import com.teamside.project.alpha.common.msg.enumurate.MQExchange;
+import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
@@ -12,22 +15,23 @@ import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.place.repository.PlaceRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private final GroupRepository groupRepository;
     private final PlaceRepository placeRepository;
     private final MemberRepo memberRepo;
+    private final MsgService msgService;
 
-    public ReviewServiceImpl(GroupRepository groupRepository, PlaceRepository placeRepository, MemberRepo memberRepo) {
-        this.groupRepository = groupRepository;
-        this.placeRepository = placeRepository;
-        this.memberRepo = memberRepo;
-    }
 
     @Override
     @Transactional
@@ -39,7 +43,23 @@ public class ReviewServiceImpl implements ReviewService {
         group.checkExistMember(CryptUtils.getMid());
         group.checkExistReview(review.getPlaceId());
 
-        group.createReview(new ReviewEntity(groupId, review));
+        String reviewId = group.createReview(new ReviewEntity(groupId, review));
+
+        CompletableFuture.runAsync(() -> {
+            Map<String, Object> newReview = new HashMap<>();
+            newReview.put("groupId", groupId);
+            newReview.put("reviewId", reviewId);
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.NEW_REVIEW, newReview);
+
+            Map<String, String> newContent = new HashMap<>();
+            newContent.put("senderMid", CryptUtils.getMid());
+            newContent.put("groupId", groupId);
+            newContent.put("notiType", "R");
+            newContent.put("contentsId", reviewId);
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.FOLLOW_CONTENTS_REGISTER, newContent);
+        });
+
+
     }
 
     @Override
