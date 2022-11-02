@@ -36,11 +36,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void createReview(String groupId, ReviewDto review) {
+        String mid = CryptUtils.getMid();
         checkExistPlace(review.getPlaceId());
 
         GroupEntity group = selectExistGroup(groupId);
 
-        group.checkExistMember(CryptUtils.getMid());
+        group.checkExistMember(mid);
         group.checkExistReview(review.getPlaceId());
 
         String reviewId = group.createReview(new ReviewEntity(groupId, review));
@@ -52,7 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
             msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.NEW_REVIEW, newReview);
 
             Map<String, String> newContent = new HashMap<>();
-            newContent.put("senderMid", CryptUtils.getMid());
+            newContent.put("senderMid", mid);
             newContent.put("groupId", groupId);
             newContent.put("notiType", "R");
             newContent.put("contentsId", reviewId);
