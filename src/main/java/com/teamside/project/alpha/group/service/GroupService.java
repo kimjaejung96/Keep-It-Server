@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface GroupService {
     String createGroup(GroupDto group) throws CustomException;
-    void updateGroup(GroupDto group) throws CustomException;
+    void updateGroup(String groupId, GroupDto groupDto) throws CustomException;
     void isExistGroupName(String groupName) throws CustomException;
     void deleteGroup(String groupId) throws CustomException;
     GroupDto.GroupInfoDto selectGroup(String groupId) throws CustomException;

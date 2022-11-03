@@ -87,10 +87,10 @@ public class GroupController {
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
-    @PatchMapping
-    public ResponseEntity<ResponseObject> updateGroup(@RequestBody @Valid GroupDto group) throws CustomException {
+    @PatchMapping("/{groupId}")
+    public ResponseEntity<ResponseObject> updateGroup(@RequestBody @Valid GroupDto groupDto, @PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        groupService.updateGroup(group);
+        groupService.updateGroup(groupId, groupDto);
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }

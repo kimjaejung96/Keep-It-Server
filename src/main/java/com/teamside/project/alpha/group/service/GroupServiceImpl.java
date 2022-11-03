@@ -53,13 +53,13 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void updateGroup(GroupDto group) throws CustomException {
-        GroupEntity groupEntity = groupRepository.findByGroupId(group.getGroupId()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+    public void updateGroup(String groupId, GroupDto groupDto) throws CustomException {
+        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
-        if (!groupEntity.getName().equals(group.getName())) isExistGroupName(group.getName());
+        if (!groupEntity.getName().equals(groupDto.getName())) isExistGroupName(groupDto.getName());
         groupEntity.checkGroupMaster();
 
-        groupEntity.updateGroup(group);
+        groupEntity.updateGroup(groupDto);
 
         groupRepository.save(groupEntity);
     }
