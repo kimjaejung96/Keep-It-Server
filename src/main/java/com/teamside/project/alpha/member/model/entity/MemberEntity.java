@@ -5,6 +5,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.member.domain.auth.model.entity.RefreshTokenEntity;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
@@ -130,7 +131,8 @@ public class MemberEntity extends CreateDtEntity {
         this.fcmToken = "";
         this.fcmTokenLife = null;
         this.refreshTokenEntity = null;
-        this.memberBlockEntities = null;
+        this.memberBlockEntities.clear();
+        this.groupMemberMappingEntities.forEach(d -> d.updateStatus(GroupMemberStatus.WITHDRAWAL));
         this.isDelete = true;
         // status -> true
     }

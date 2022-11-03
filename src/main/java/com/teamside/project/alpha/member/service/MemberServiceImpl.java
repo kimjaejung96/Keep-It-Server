@@ -56,13 +56,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void withdrawal() throws CustomException {
-        Optional<MemberEntity> member = memberRepo.findByMid(CryptUtils.getMid());
-        if (member.isPresent()) {
-//            memberRepo.delete(member.get());
-            member.get().deleteMember();
-        } else throw new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND);
-
+    @Transactional
+    public void withdrawal()  {
+        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        member.deleteMember();
     }
 
     private void checkExistName(String name) throws CustomException {
