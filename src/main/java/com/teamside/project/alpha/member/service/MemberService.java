@@ -2,6 +2,7 @@ package com.teamside.project.alpha.member.service;
 
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.member.domain.auth.model.dto.JwtTokens;
+import com.teamside.project.alpha.member.model.dto.AlarmDto;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 
@@ -17,4 +18,5 @@ public interface MemberService {
     void block(String targetMid) throws CustomException;
 
     void updateFcm(String fcmToken);
+    void updateAlarm(AlarmDto alarmDto);
 }

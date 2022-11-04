@@ -7,6 +7,7 @@ import com.teamside.project.alpha.common.msg.MsgService;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.member.domain.auth.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.domain.auth.service.AuthService;
+import com.teamside.project.alpha.member.model.dto.AlarmDto;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.entity.InquiryEntity;
@@ -113,5 +114,14 @@ public class MemberServiceImpl implements MemberService {
     public void updateFcm(String fcmToken) {
         MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         member.updateFcmToken(fcmToken);
+    }
+
+    @Override
+    @Transactional
+    public void updateAlarm(AlarmDto alarmDto) {
+        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid())
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+
+        member.updateAlarm(alarmDto);
     }
 }
