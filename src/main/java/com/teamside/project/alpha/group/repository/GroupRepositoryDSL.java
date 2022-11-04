@@ -27,4 +27,5 @@ public interface GroupRepositoryDSL {
     ReviewDto.ResponseReviewDetail selectReviewDetail(String groupId, String reviewId);
     GroupDto.GroupHome selectGroupHome(String groupId);
     DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId);
+    long countJoinGroup(String mid);
 }

@@ -146,7 +146,11 @@ public class GroupEntity extends TimeEntity {
             }
         }
 
-        if (group.getGroupMemberMappingEntity().size() >= this.memberQuantity) {
+        long joinMemberCount = group.getGroupMemberMappingEntity().stream()
+                .filter(g -> g.getStatus().equals(GroupMemberStatus.JOIN))
+                .count();
+
+        if (joinMemberCount >= this.memberQuantity) {
             throw new CustomException(ApiExceptionCode.MEMBER_QUANTITY_IS_FULL);
         }
     }

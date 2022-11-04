@@ -40,7 +40,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public String createGroup(GroupDto group) throws CustomException {
-        if (groupRepository.countByMasterMid(CryptUtils.getMid()) >= GroupConstant.GROUP_MAKE_POSSIBLE_COUNT) {
+        if (groupRepository.countByMasterMidAndIsDelete(CryptUtils.getMid(), false) >= GroupConstant.GROUP_MAKE_POSSIBLE_COUNT) {
             throw new CustomException(ApiExceptionCode.CAN_NOT_CREATE_GROUP);
         }
         isExistGroupName(group.getName());
@@ -127,12 +127,16 @@ public class GroupServiceImpl implements GroupService {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkJoinPossible(group, password);
 
-        if (groupRepository.countByGroupMemberMappingEntity(new GroupMemberMappingEntity(new MemberEntity(CryptUtils.getMid()))) >= GroupConstant.MEMBER_JOIN_POSSIBLE_COUNT) {
+        String mid = CryptUtils.getMid();
+        // 내가 참여한 그룹 갯수 (status - join)
+        long joinGroupCount = groupRepository.countJoinGroup(mid);
+
+        if (joinGroupCount >= GroupConstant.MEMBER_JOIN_POSSIBLE_COUNT) {
             throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
         }
-        group.addMember(CryptUtils.getMid());
+        group.addMember(mid);
         Map<String, String> data = new HashMap<>();
-        data.put("senderMid", CryptUtils.getMid());
+        data.put("senderMid", mid);
         data.put("groupId", groupId);
         msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_JOIN, data);
     }

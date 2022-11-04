@@ -21,6 +21,7 @@ import com.teamside.project.alpha.group.domain.review.model.entity.QReviewEntity
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewKeepEntity;
 import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.*;
+import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
@@ -66,7 +67,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         group.usePrivate,
                         groupMemberMapping.count().as("participantCount")))
                 .from(group)
-                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId)
+                        .and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
                 .where(
                         gtGroupId(lastGroupSeq),
                         containSearch(search)
@@ -98,7 +100,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                                 JPAExpressions
                                         .select(groupMemberMapping.count())
                                         .from(groupMemberMapping)
-                                        .where(groupMemberMapping.groupId.eq(group.groupId)),
+                                        .where(groupMemberMapping.groupId.eq(group.groupId), groupMemberMapping.status.eq(GroupMemberStatus.JOIN)),
                         "participantCount"),
                         groupMemberMapping.favorite,
                         new CaseBuilder()
@@ -112,6 +114,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(group).on(groupMemberMapping.groupId.eq(group.groupId))
                 .where(
                         groupMemberMapping.member.mid.eq(mId),
+                        groupMemberMapping.status.eq(GroupMemberStatus.JOIN),
                         isFavorite(type))
                 .fetch();
     }
@@ -131,7 +134,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         group.usePrivate,
                         groupMemberMapping.count().as("participantCount")))
                 .from(group)
-                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId)
+                        .and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
                 .orderBy(Expressions.numberTemplate(Long.class,"function('rand')").asc())
                 .limit(10)
                 .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate)
@@ -166,8 +170,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         return jpaQueryFactory
                 .select(groupMemberMapping)
                 .from(groupMemberMapping)
-                .where(groupMemberMapping.mid.eq(mid)
-                        .and(groupMemberMapping.favorite.eq(true)))
+                .where(groupMemberMapping.mid.eq(mid),
+                        groupMemberMapping.favorite.eq(true),
+                        groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
                 .fetch();
     }
 
@@ -197,7 +202,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         )
                 )
                 .from(group)
-                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId)
+                        .and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
                 .where(group.groupId.eq(groupId))
                 .groupBy(group.groupId)
                 .fetchOne();
@@ -220,7 +226,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                             .on(memberFollow.group.groupId.eq(groupId), memberFollow.mid.eq(CryptUtils.getMid()),
                                 memberFollow.targetMid.eq(member.mid), memberFollow.followYn.eq(true))
 //                        .where(groupMemberMapping.groupId.eq(groupId).and(member.mid.ne(CryptUtils.getMid())))
-                        .where(groupMemberMapping.groupId.eq(groupId))
+                        .where(groupMemberMapping.groupId.eq(groupId), groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
                         .fetch()
         );
 
@@ -241,7 +247,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         groupMemberMapping.count().as("participantCount")))
                 .from(statReferralGroup)
                 .innerJoin(group).on(statReferralGroup.groupId.eq(group.groupId))
-                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId).and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
                 .where(statReferralGroup.referralType.eq(referralType), statReferralGroup.category.eq(category))
                 .limit(10)
                 .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate, statReferralGroup.statDt, statReferralGroup.rankNum)
@@ -261,7 +267,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         group.usePrivate,
                         groupMemberMapping.count().as("participantCount")))
                 .from(group)
-                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId)
+                        .and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
                 .where(ltGroupId(lastGroupSeq))
                 .limit(pageSize)
                 .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate)
@@ -465,5 +472,15 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         result.removeIf(d -> d.getParentCommentId() != null);
 
         return result;
+    }
+
+    @Override
+    public long countJoinGroup(String mid) {
+        return jpaQueryFactory
+                .select(groupMemberMapping.count())
+                .from(groupMemberMapping)
+                .where(groupMemberMapping.mid.eq(mid),
+                        groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
+                .fetchOne();
     }
 }

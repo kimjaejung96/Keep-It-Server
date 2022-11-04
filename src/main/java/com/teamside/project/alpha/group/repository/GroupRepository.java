@@ -11,5 +11,5 @@ public interface GroupRepository  extends JpaRepository<GroupEntity, Long>, Grou
     Optional<GroupEntity> findByGroupId(String groupId);
     Long countByGroupMemberMappingEntity(GroupMemberMappingEntity groupMemberMappingEntity);
     Long countByNameContaining(String search);
-    Long countByMasterMid(String memberMid);
+    Long countByMasterMidAndIsDelete(String memberMid, boolean isDelete);
 }
