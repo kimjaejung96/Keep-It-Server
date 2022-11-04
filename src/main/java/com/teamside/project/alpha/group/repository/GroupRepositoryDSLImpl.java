@@ -69,7 +69,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId)
                         .and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
-                .where(
+                .where(group.isDelete.eq(false),
                         gtGroupId(lastGroupSeq),
                         containSearch(search)
                 )
@@ -136,6 +136,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId)
                         .and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
+                .where(group.isDelete.eq(false))
                 .orderBy(Expressions.numberTemplate(Long.class,"function('rand')").asc())
                 .limit(10)
                 .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate)
@@ -204,7 +205,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId)
                         .and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
-                .where(group.groupId.eq(groupId))
+                .where(group.isDelete.eq(false)
+                        .and(group.groupId.eq(groupId)))
                 .groupBy(group.groupId)
                 .fetchOne();
 
@@ -248,7 +250,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(statReferralGroup)
                 .innerJoin(group).on(statReferralGroup.groupId.eq(group.groupId))
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId).and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
-                .where(statReferralGroup.referralType.eq(referralType), statReferralGroup.category.eq(category))
+                .where(group.isDelete.eq(false),
+                        statReferralGroup.referralType.eq(referralType), statReferralGroup.category.eq(category))
                 .limit(10)
                 .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate, statReferralGroup.statDt, statReferralGroup.rankNum)
                 .orderBy(statReferralGroup.statDt.desc(), statReferralGroup.rankNum.asc())
@@ -269,7 +272,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId)
                         .and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
-                .where(ltGroupId(lastGroupSeq))
+                .where(group.isDelete.eq(false), ltGroupId(lastGroupSeq))
                 .limit(pageSize)
                 .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate)
                 .orderBy(group.seq.desc())
@@ -413,11 +416,6 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
 
         return result;
-    }
-
-    public GroupDto.GroupHome selectGroupHome(String groupId) {
-
-        return null;
     }
 
     @Override

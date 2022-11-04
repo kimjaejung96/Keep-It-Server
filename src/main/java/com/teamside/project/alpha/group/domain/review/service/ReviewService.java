@@ -19,4 +19,6 @@ public interface ReviewService {
     void updateComment(String groupId, CommentDto.CreateComment comment, String reviewId, String commentId);
 
     void deleteComment(String groupId, String reviewId, String commentId);
+
+    Object getNextComments(String groupId, String reviewId);
 }

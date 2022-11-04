@@ -31,10 +31,6 @@ public class MemberFollowEntity extends CreateDtEntity {
     @Column(name = "ALARM_YN", columnDefinition = "boolean default false")
     private Boolean alarmYn;
 
-    // 팔로우 알림 최초1회 여부
-    @Column(name = "SEND_ALARM_YN")
-    private Boolean sendAlarmYn;
-
     // 팔로우 여부
     @Column(name = "FOLLOW_YN")
     private Boolean followYn;
@@ -50,7 +46,6 @@ public class MemberFollowEntity extends CreateDtEntity {
         this.mid = mid;
         this.targetMid = targetMid;
         this.alarmYn = false;
-        this.sendAlarmYn = false;
         this.followYn = true;
     }
 
@@ -58,7 +53,4 @@ public class MemberFollowEntity extends CreateDtEntity {
         this.followYn = !this.followYn;
     }
 
-    public void successSendAlarm() {
-        this.sendAlarmYn = true;
-    }
 }

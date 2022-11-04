@@ -240,7 +240,7 @@ public class GroupEntity extends TimeEntity {
             return true;
         } else {
             memberFollowEntity.get().updateFollowStatus();
-            return memberFollowEntity.get().getSendAlarmYn();
+            return false;
         }
     }
     public void exileMember(String targetMid) {

@@ -42,7 +42,6 @@ public class ReviewServiceImpl implements ReviewService {
         GroupEntity group = selectExistGroup(groupId);
 
         group.checkExistMember(mid);
-        group.checkExistReview(review.getPlaceId());
 
         String reviewId = group.createReview(new ReviewEntity(groupId, review));
 
@@ -164,6 +163,11 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewComment.deleteComment();
 
+    }
+
+    @Override
+    public Object getNextComments(String groupId, String reviewId) {
+        return null;
     }
 
     private GroupEntity selectExistGroup(String groupId) {

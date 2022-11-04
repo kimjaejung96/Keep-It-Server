@@ -16,7 +16,6 @@ import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.GroupRepository;
-import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -294,24 +293,17 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void follow(String groupId, String targetMid)  {
-        String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        Boolean alarmSendYn = group.follow(groupId, targetMid);
+        boolean alarmYn = group.follow(groupId, targetMid);
 
-        if (Boolean.TRUE.equals(alarmSendYn)) {
-            MemberEntity member = memberRepository.findByMid(targetMid).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
-            if (!member.getAlarmSetting().isAllSetting() || !member.getAlarmSetting().isFollow()) {
-                return;
-            }
+        if (alarmYn) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("receiverMid", targetMid);
+            data.put("senderMid", CryptUtils.getMid());
+            data.put("groupId", groupId);
+
+            CompletableFuture.supplyAsync(() -> msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data));
         }
-
-        // TODO: 2022/10/25 임시 object 생성
-        Map<String, Object> data = new HashMap<>();
-        data.put("receiverMid", targetMid);
-        data.put("senderMid", CryptUtils.getMid());
-        data.put("groupId", groupId);
-
-        CompletableFuture.supplyAsync(() -> msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data));
     }
 
     @Override
