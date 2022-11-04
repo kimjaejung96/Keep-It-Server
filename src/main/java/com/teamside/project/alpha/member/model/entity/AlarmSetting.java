@@ -1,12 +1,15 @@
 package com.teamside.project.alpha.member.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
+import com.teamside.project.alpha.member.model.dto.AlarmDto;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@DynamicUpdate
 @Table(name = "ALARM_SETTING")
 public class AlarmSetting extends TimeEntity {
     @Id
@@ -63,5 +66,16 @@ public class AlarmSetting extends TimeEntity {
 
     public AlarmSetting() {
 
+    }
+
+    public void updateAlarm(AlarmDto alarmDto) {
+        this.allSetting = alarmDto.isAllSetting();
+        this.newMember = alarmDto.isNewMember();
+        this.newReview = alarmDto.isNewReview();
+        this.newDaily = alarmDto.isNewDaily();
+        this.comment = alarmDto.isComment();
+        this.keep = alarmDto.isKeep();
+        this.joinOut = alarmDto.isJoinOut();
+        this.follow = alarmDto.isFollow();
     }
 }

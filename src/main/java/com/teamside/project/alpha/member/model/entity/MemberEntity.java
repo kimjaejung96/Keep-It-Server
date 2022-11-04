@@ -6,6 +6,7 @@ import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.member.domain.auth.model.entity.RefreshTokenEntity;
+import com.teamside.project.alpha.member.model.dto.AlarmDto;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
 import lombok.AccessLevel;
@@ -148,4 +149,7 @@ public class MemberEntity extends CreateDtEntity {
         this.refreshTokenEntity.changeRefreshToken(refreshToken);
     }
 
+    public void updateAlarm(AlarmDto alarmDto) {
+        this.alarmSetting.updateAlarm(alarmDto);
+    }
 }

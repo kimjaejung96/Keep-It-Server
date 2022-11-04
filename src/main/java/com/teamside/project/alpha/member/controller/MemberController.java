@@ -5,6 +5,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.domain.auth.model.dto.JwtTokens;
+import com.teamside.project.alpha.member.model.dto.AlarmDto;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.service.MemberService;
@@ -94,7 +95,12 @@ public class MemberController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
-
+    @PatchMapping("/alarms")
+    public ResponseEntity<ResponseObject> updateAlarmSetting(@RequestBody AlarmDto alarmDto) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        memberService.updateAlarm(alarmDto);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
 
 
 
