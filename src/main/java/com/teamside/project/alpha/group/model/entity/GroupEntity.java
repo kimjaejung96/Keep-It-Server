@@ -260,4 +260,10 @@ public class GroupEntity extends TimeEntity {
 
         groupMemberMapping.updateStatus(GroupMemberStatus.EXIT);
     }
+
+    public void checkDeletedReview(String reviewId) {
+        this.reviewEntities.stream()
+                .filter(review -> review.getReviewId().equals(reviewId) && review.getIsDelete())
+                .findFirst().ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.DELETED_REVIEW);});
+    }
 }

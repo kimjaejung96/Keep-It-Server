@@ -91,6 +91,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public ReviewDto.ResponseReviewDetail selectReviewDetail(String groupId, String reviewId) {
         GroupEntity group = selectExistGroup(groupId);
+        group.checkDeletedReview(reviewId);
         group.checkExistMember(CryptUtils.getMid());
         return groupRepository.selectReviewDetail(groupId, reviewId);
     }
