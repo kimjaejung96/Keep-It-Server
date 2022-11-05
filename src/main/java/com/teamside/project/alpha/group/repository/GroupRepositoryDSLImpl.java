@@ -113,6 +113,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(groupMemberMapping)
                 .innerJoin(group).on(groupMemberMapping.groupId.eq(group.groupId))
                 .where(
+                        group.isDelete.eq(false),
                         groupMemberMapping.member.mid.eq(mId),
                         groupMemberMapping.status.eq(GroupMemberStatus.JOIN),
                         isFavorite(type))
