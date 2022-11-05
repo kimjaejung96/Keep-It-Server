@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface GroupRepositoryDSL {
 //    void groupNameCheck(String groupName) throws CustomException;
 
-    List<GroupDto.SearchGroupDto> searchGroup(Long lastGroupId, Long pageSize, String search);
+    List<GroupDto.SearchGroupDto> searchGroup(Long lastGroupSeq, Long pageSize, String search);
     List<GroupDto.MyGroupDto> selectMyGroups(String mId, MyGroupType type);
     List<GroupDto.SearchGroupDto> random();
     Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, String groupId);
