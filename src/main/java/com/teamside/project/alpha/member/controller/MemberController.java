@@ -95,6 +95,13 @@ public class MemberController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/alarms")
+    public ResponseEntity<ResponseObject> selectAlarm() {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(memberService.selectAlarm());
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
     @PatchMapping("/alarms")
     public ResponseEntity<ResponseObject> updateAlarmSetting(@RequestBody AlarmDto alarmDto) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
