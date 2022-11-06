@@ -37,8 +37,8 @@ public enum ApiExceptionCode {
     COMMENT_NOT_EXIST(817, "댓글이 존재하지 않습니다."),
     EXILED_GROUP(818, "해당 그룹은 그룹장에 의해 강제 탈퇴 되어 참여할 수 없는 그룹입니다."),
     DELETED_REVIEW(819, "삭제된 리뷰입니다."),
-
     INVALID_ALARM_TYPE(820, "유효하지 않는 알람 타입입니다."),
+    FOLLOW_NOT_FOUND(821, "팔로우를 찾을 수 없습니다."),
 
 
     VALIDATION_ERROR(998, "밸리데이션이 올바르지 않습니다."),

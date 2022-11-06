@@ -53,4 +53,6 @@ public class MemberFollowEntity extends CreateDtEntity {
         this.followYn = !this.followYn;
     }
 
+    public void updateFollowAlarm() { this.alarmYn = !this.alarmYn; }
+
 }

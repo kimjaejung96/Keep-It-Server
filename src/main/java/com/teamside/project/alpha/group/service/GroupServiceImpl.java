@@ -337,4 +337,18 @@ public class GroupServiceImpl implements GroupService {
 
         groupMemberMapping.updateGroupAlarm(alarmType);
     }
+
+    @Override
+    public List<GroupDto.MyFollow> selectMyFollow() {
+        return groupRepository.selectMyFollow();
+    }
+
+    @Override
+    @Transactional
+    public void updateFollowAlarm(GroupDto.MyFollow myFollow) {
+        GroupEntity group = groupRepository.findByGroupId(myFollow.getGroupId())
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+
+        group.updateFollowAlarm(CryptUtils.getMid(), myFollow.getMid());
+    }
 }

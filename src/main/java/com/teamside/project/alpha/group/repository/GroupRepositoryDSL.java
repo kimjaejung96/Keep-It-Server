@@ -29,4 +29,6 @@ public interface GroupRepositoryDSL {
     long countJoinGroup(String mid);
 
     List<GroupDto.GroupAlarmSetting> selectGroupAlarm(String alarmType);
+
+    List<GroupDto.MyFollow> selectMyFollow();
 }

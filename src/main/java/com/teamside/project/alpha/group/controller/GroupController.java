@@ -231,7 +231,19 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/follow")
+    public ResponseEntity<ResponseObject> selectFollow() {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.selectMyFollow());
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
 
+    @PatchMapping("/follow")
+    public ResponseEntity<ResponseObject> updateFollowAlarm(@RequestBody GroupDto.MyFollow myFollow) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        groupService.updateFollowAlarm(myFollow);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
 
     @GetMapping("/random")
     public ResponseEntity<ResponseObject> random(){

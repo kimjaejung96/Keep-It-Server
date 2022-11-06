@@ -36,4 +36,8 @@ public interface GroupService {
     List<GroupDto.GroupAlarmSetting> selectGroupReviewAlarm(String alarmType) throws CustomException;
 
     void updateGroupAlarm(GroupDto.GroupAlarmSetting groupAlarmSetting) throws CustomException;
+
+    List<GroupDto.MyFollow> selectMyFollow();
+
+    void updateFollowAlarm(GroupDto.MyFollow myFollow);
 }

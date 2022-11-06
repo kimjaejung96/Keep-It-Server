@@ -225,4 +225,30 @@ public class GroupDto {
             this.alarmYn = alarmType.equals("REVIEW") ? reviewAlarmYn : dailyAlarmYn;
         }
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class MyFollow {
+        private String groupId;
+
+        private String groupName;
+
+        private String mid;
+
+        private String profileUrl;
+
+        private String memberName;
+
+        private boolean alarmYn;
+
+        @QueryProjection
+        public MyFollow(String groupId, String groupName, String mid, String profileUrl, String memberName, boolean alarmYn) {
+            this.groupId = groupId;
+            this.groupName = groupName;
+            this.mid = mid;
+            this.profileUrl = profileUrl;
+            this.memberName = memberName;
+            this.alarmYn = alarmYn;
+        }
+    }
 }

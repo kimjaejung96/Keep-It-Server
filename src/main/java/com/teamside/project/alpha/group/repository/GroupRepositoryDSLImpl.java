@@ -498,4 +498,24 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .orderBy(groupMemberMapping.createTime.asc())
                 .fetch();
     }
+
+    @Override
+    public List<GroupDto.MyFollow> selectMyFollow() {
+        return jpaQueryFactory
+                .select(new QGroupDto_MyFollow(
+                        group.groupId,
+                        group.name,
+                        member.mid,
+                        member.profileUrl,
+                        member.name,
+                        memberFollow.alarmYn
+                ))
+                .from(memberFollow)
+                .innerJoin(memberFollow.group, group)
+                .innerJoin(member).on(memberFollow.targetMid.eq(member.mid))
+                .where(memberFollow.mid.eq(CryptUtils.getMid()),
+                        memberFollow.followYn.eq(true))
+                .orderBy(memberFollow.createTime.asc())
+                .fetch();
+    }
 }

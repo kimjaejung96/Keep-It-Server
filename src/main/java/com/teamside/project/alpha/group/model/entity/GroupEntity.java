@@ -266,4 +266,14 @@ public class GroupEntity extends TimeEntity {
                 .filter(review -> review.getReviewId().equals(reviewId) && review.getIsDelete())
                 .findFirst().ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.DELETED_REVIEW);});
     }
+
+    public void updateFollowAlarm(String mid, String targetMid) {
+        MemberFollowEntity memberFollowEntity = this.getMemberFollowEntities().stream()
+                .filter(d -> d.getMid().equals(mid)
+                        && d.getTargetMid().equals(targetMid))
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.FOLLOW_NOT_FOUND));
+
+        memberFollowEntity.updateFollowAlarm();
+    }
 }
