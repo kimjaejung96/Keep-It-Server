@@ -313,4 +313,28 @@ public class GroupServiceImpl implements GroupService {
         group.checkGroupMaster();
         group.exileMember(memberId);
     }
+
+    @Override
+    public List<GroupDto.GroupAlarmSetting> selectGroupReviewAlarm(String alarmType) throws CustomException {
+        if (!alarmType.equals("REVIEW") && !alarmType.equals("DAILY")) {
+            throw new CustomException(ApiExceptionCode.INVALID_ALARM_TYPE);
+        }
+
+        return groupRepository.selectGroupAlarm(alarmType);
+    }
+
+    @Override
+    @Transactional
+    public void updateGroupAlarm(GroupDto.GroupAlarmSetting groupAlarmSetting) throws CustomException {
+        String alarmType = groupAlarmSetting.getAlarmType() == null ? "" : groupAlarmSetting.getAlarmType();
+        if (!alarmType.equals("REVIEW") && !alarmType.equals("DAILY")) {
+            throw new CustomException(ApiExceptionCode.INVALID_ALARM_TYPE);
+        }
+
+        String mId = CryptUtils.getMid();
+        GroupMemberMappingEntity groupMemberMapping = groupRepository.selectGroupMemberMappingEntity(mId, groupAlarmSetting.getGroupId())
+                .orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_MEMBER_NOT_FOUND));
+
+        groupMemberMapping.updateGroupAlarm(alarmType);
+    }
 }

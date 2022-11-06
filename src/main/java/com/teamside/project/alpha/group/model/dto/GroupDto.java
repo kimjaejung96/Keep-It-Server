@@ -208,4 +208,21 @@ public class GroupDto {
             this.dailyCount = dailyCount;
         }
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class GroupAlarmSetting {
+        private String groupId;
+        private String groupName;
+        private boolean alarmYn;
+
+        private String alarmType;
+
+        @QueryProjection
+        public GroupAlarmSetting(String groupId, String groupName, boolean reviewAlarmYn, boolean dailyAlarmYn, String alarmType) {
+            this.groupId = groupId;
+            this.groupName = groupName;
+            this.alarmYn = alarmType.equals("REVIEW") ? reviewAlarmYn : dailyAlarmYn;
+        }
+    }
 }

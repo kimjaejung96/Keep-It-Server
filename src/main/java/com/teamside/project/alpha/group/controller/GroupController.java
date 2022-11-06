@@ -217,6 +217,20 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/alarms")
+    public ResponseEntity<ResponseObject> selectGroupAlarm(@RequestParam String alarmType) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.selectGroupReviewAlarm(alarmType));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @PatchMapping("/alarms")
+    public ResponseEntity<ResponseObject> updateGroupAlarm(@RequestBody GroupDto.GroupAlarmSetting groupAlarmSetting) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        groupService.updateGroupAlarm(groupAlarmSetting);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
 
 
     @GetMapping("/random")

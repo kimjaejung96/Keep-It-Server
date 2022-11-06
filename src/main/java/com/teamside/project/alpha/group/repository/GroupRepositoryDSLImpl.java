@@ -148,11 +148,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     public Optional<GroupMemberMappingEntity> selectGroupMemberMappingEntity(String mid, String groupId) {
         return Optional.ofNullable(jpaQueryFactory
                 .select(groupMemberMapping)
-                .from(group)
-                .innerJoin(groupMemberMapping)
-                    .on(group.groupId.eq(groupMemberMapping.groupId))
-                .where(groupMemberMapping.mid.eq(mid)
-                        .and(groupMemberMapping.groupId.eq(groupId)))
+                .from(groupMemberMapping)
+                .where(groupMemberMapping.mid.eq(mid),
+                        groupMemberMapping.groupId.eq(groupId))
                 .fetchOne());
     }
 
@@ -481,5 +479,23 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .where(groupMemberMapping.mid.eq(mid),
                         groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
                 .fetchOne();
+    }
+
+    @Override
+    public List<GroupDto.GroupAlarmSetting> selectGroupAlarm(String alarmType) {
+        return jpaQueryFactory
+                .select(new QGroupDto_GroupAlarmSetting(
+                        group.groupId,
+                        group.name,
+                        groupMemberMapping.reviewAlarm,
+                        groupMemberMapping.dailyAlarm,
+                        Expressions.constant(alarmType)
+                ))
+                .from(groupMemberMapping)
+                .innerJoin(groupMemberMapping.group, group)
+                .where(groupMemberMapping.status.eq(GroupMemberStatus.JOIN),
+                        groupMemberMapping.mid.eq(CryptUtils.getMid()))
+                .orderBy(groupMemberMapping.createTime.asc())
+                .fetch();
     }
 }

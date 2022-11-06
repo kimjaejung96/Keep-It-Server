@@ -78,4 +78,12 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
             this.dailyAlarm = false;
         }
     }
+
+    public void updateGroupAlarm(String alarmType) {
+        if (alarmType.equals("REVIEW")) {
+            this.reviewAlarm = !this.reviewAlarm;
+        } else {
+            this.dailyAlarm = !this.dailyAlarm;
+        }
+    }
 }
