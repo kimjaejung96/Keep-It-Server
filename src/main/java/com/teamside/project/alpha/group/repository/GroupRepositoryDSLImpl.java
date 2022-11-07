@@ -28,12 +28,17 @@ import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
+    @PersistenceContext
+    private EntityManager entityManager;
     private final JPAQueryFactory jpaQueryFactory;
+
 
     QReviewKeepEntity reviewKeep = QReviewKeepEntity.reviewKeepEntity;
     QGroupEntity group = QGroupEntity.groupEntity;
@@ -518,4 +523,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .orderBy(memberFollow.createTime.asc())
                 .fetch();
     }
+
+//    public void commentz() {
+//        entityManager.
+//    }
 }

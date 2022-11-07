@@ -116,13 +116,6 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         ReviewCommentEntity createdComment = review.createComment(comment, reviewId);
-        /**
-         * - receiverMid
-         * - groupId
-         * - reviewId
-         * - parentCommentId
-         * - commentId
-         */
 
         Map<String, String> data = new HashMap<>();
         data.put("receiverMid", review.getMasterMid());
