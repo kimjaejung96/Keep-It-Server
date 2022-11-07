@@ -134,7 +134,7 @@ public class ReviewDto {
         private String reviewCreateDt;
         private int keepCount;
         private Boolean isKeep;
-        private int reviewCount;
+        private int commentCount;
 
         @QueryProjection
         public ReviewDetail(ReviewEntity review, MemberEntity member, PlaceEntity place) {
@@ -149,7 +149,7 @@ public class ReviewDto {
             this.reviewCreateDt = String.valueOf(review.getCreateTime());
             this.keepCount = review.getReviewKeepEntities().size();
             this.isKeep = review.getReviewKeepEntities().stream().anyMatch(r -> r.getMemberMid().equals(CryptUtils.getMid()));
-            this.reviewCount = review.getReviewCommentEntities().size();
+            this.commentCount = review.getReviewCommentEntities().size();
         }
     }
 
