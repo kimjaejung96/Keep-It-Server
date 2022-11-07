@@ -10,6 +10,8 @@ public enum MQRoutingKey {
     MY_FOLLOW("kps.my_follow"),
     NEW_REVIEW("kps.group_new_review"),
     FOLLOW_CONTENTS_REGISTER("kps.follow_contents_registered"),
+    MY_REVIEW_COMMENT("my_review_comment"),
+
     TEST("kps.test")
     ;
 

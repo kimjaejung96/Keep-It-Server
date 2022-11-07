@@ -115,7 +115,23 @@ public class ReviewServiceImpl implements ReviewService {
             throw new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS);
         }
 
-        return review.createComment(comment, reviewId);
+        ReviewCommentEntity createdComment = review.createComment(comment, reviewId);
+        /**
+         * - receiverMid
+         * - groupId
+         * - reviewId
+         * - parentCommentId
+         * - commentId
+         */
+
+        Map<String, String> data = new HashMap<>();
+        data.put("receiverMid", review.getMasterMid());
+        data.put("groupId", groupId);
+        data.put("parentCommentId", createdComment.getParentComment() != null?createdComment.getParentComment().getCommentId() : null);
+        data.put("commentId", createdComment.getCommentId());
+
+        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, data);
+        return createdComment.getCommentId();
     }
 
     @Override

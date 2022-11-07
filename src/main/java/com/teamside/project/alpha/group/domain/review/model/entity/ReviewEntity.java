@@ -84,10 +84,10 @@ public class ReviewEntity extends TimeEntity {
         }
     }
 
-    public String createComment(CommentDto.CreateComment comment, String reviewId) {
+    public ReviewCommentEntity createComment(CommentDto.CreateComment comment, String reviewId) {
         ReviewCommentEntity reviewCommentEntity = ReviewCommentEntity.createComment(comment, reviewId);
         this.reviewCommentEntities.add(reviewCommentEntity);
-        return reviewCommentEntity.getCommentId();
+        return reviewCommentEntity;
     }
 
     public void keepReview(String reviewId, String mid) {
