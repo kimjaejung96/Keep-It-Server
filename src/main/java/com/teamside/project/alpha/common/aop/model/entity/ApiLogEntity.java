@@ -38,7 +38,9 @@ public class ApiLogEntity extends CreateDtEntity {
     public ApiLogEntity(String mid, String name, String description, String status, float processTime, int code) {
         this.mid = mid;
         this.name = name;
-        this.description = description;
+        if (description.length() > 5000) {
+            this.description = description.substring(0, 5000);
+        } else this.description = description;
         this.status = status;
         this.processTime = processTime;
         this.code = code;
