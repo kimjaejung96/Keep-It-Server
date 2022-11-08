@@ -20,5 +20,5 @@ public interface ReviewService {
 
     void deleteComment(String groupId, String reviewId, String commentId);
 
-    Object getNextComments(String groupId, String reviewId);
+    CommentDto.CommentDetail getNextComments(String groupId, String reviewId, Integer nextOffset, int limit);
 }

@@ -5,9 +5,7 @@ import com.teamside.project.alpha.group.common.enumurate.CommentStatus;
 import com.teamside.project.alpha.group.domain.daily.model.entity.DailyCommentEntity;
 import com.teamside.project.alpha.group.domain.review.model.entity.ReviewCommentEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -15,7 +13,9 @@ import java.util.List;
 
 
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class CommentDto {
     private String commentId;
     private String memberName;
@@ -86,4 +86,21 @@ public class CommentDto {
         private String parentCommentId;
         private String targetMid;
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class CommentDetail {
+        private Integer nextOffset;
+        private List<CommentDto> comments;
+
+        public CommentDetail(Integer nextOffset,int limit, List<CommentDto> comments) {
+            if (nextOffset == null || nextOffset == 0) {
+                this.nextOffset = limit+1;
+            } else if (comments.size() == limit) {
+                this.nextOffset = nextOffset + limit + 1;
+            } else this.nextOffset = null;
+            this.comments = comments;
+        }
+    }
+
 }

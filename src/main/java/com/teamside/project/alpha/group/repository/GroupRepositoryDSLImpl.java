@@ -9,6 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.common.dto.QCommentDto;
+import com.teamside.project.alpha.group.common.enumurate.CommentStatus;
 import com.teamside.project.alpha.group.domain.daily.model.dto.DailyDto;
 import com.teamside.project.alpha.group.domain.daily.model.dto.QDailyDto_DailyDetail;
 import com.teamside.project.alpha.group.domain.daily.model.dto.QDailyDto_DailyInGroup;
@@ -30,6 +31,8 @@ import org.apache.logging.log4j.util.Strings;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -402,24 +405,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     private List<CommentDto> getReviewComments(String reviewId) {
-        QMemberEntity targetMember = new QMemberEntity("targetMember");
-        List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member, targetMember))
-                .from(reviewComment)
-                .innerJoin(member).on(member.mid.eq(reviewComment.masterMid))
-                .leftJoin(targetMember).on(member.mid.eq(reviewComment.targetMemberMid))
-                .where(reviewComment.review.reviewId.eq(reviewId))
-                .orderBy(reviewComment.seq.asc())
-                .fetch();
-
-        result.stream()
-                .filter(commentDto ->  commentDto.getParentCommentId() != null)
-                .forEach(comment -> result.stream()
-                        .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
-                        .forEach(dd -> dd.insertChildComments(comment)));
-        result.removeIf(d -> d.getParentCommentId() != null);
-
-
-        return result;
+        return this.getReviewCommentDetail("", reviewId, 0, 5).getComments();
     }
 
     @Override
@@ -524,7 +510,96 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .fetch();
     }
 
-//    public void commentz() {
-//        entityManager.
-//    }
+
+    @Override
+    public CommentDto.CommentDetail getReviewCommentDetail(String groupId, String reviewId, Integer nextOffset, int limit) {
+        List<CommentDto> comments = new ArrayList<>();
+        String queryString = "WITH RECURSIVE CMTCTE(" +
+                " COMMENT_ID," +
+                " COMMENT," +
+                " IMAGE_URL," +
+                " STATUS," +
+                " CREATE_DT," +
+                " PARENT_COMMENT_ID," +
+                " DEPTH," +
+                " MEMBER_ID," +
+                " MEMBER_NAME," +
+                " MEMBER_PROFILE_URL," +
+                " TARGET_MID," +
+                " TARGET_NAME" +
+                ") AS (" +
+                " SELECT A.COMMENT_ID" +
+                "  , A.COMMENT" +
+                "  , A.IMAGE_URL" +
+                "  , A.STATUS" +
+                "  , A.CREATE_DT" +
+                "  , A.PARENT_COMMENT_ID" +
+                "  , A.SEQ AS DEPTH" +
+                "  , B.MID AS MEMBER_ID" +
+                "  , B.NAME AS MEMBER_NAME" +
+                "  , B.PROFILE_URL AS MEMBER_PROFILE_URL" +
+                "  , C.MID AS TARGET_MID" +
+                "  , C.NAME AS TARGET_NAME" +
+                " FROM REVIEW_COMMENT A" +
+                " INNER JOIN MEMBER B ON A.MASTER_MID = B.MID" +
+                " LEFT JOIN MEMBER C ON A.TARGET_MID  = C.MID " +
+                " WHERE A.REVIEW_ID = ?" +
+                "  AND A.PARENT_COMMENT_ID IS NULL" +
+                " UNION ALL" +
+                " SELECT A.COMMENT_ID" +
+                "  , A.COMMENT" +
+                "  , A.IMAGE_URL " +
+                "  , A.STATUS" +
+                "  , A.CREATE_DT" +
+                "  , A.PARENT_COMMENT_ID" +
+                "  , CTE.DEPTH AS DEPTH" +
+                "  , B.MID AS MEMBER_ID" +
+                "  , B.NAME AS MEMBER_NAME" +
+                "  , B.PROFILE_URL AS MEMBER_PROFILE_URL" +
+                "  , C.MID AS TARGET_MID" +
+                "  , C.NAME AS TARGET_NAME" +
+                " FROM REVIEW_COMMENT A" +
+                " INNER JOIN CMTCTE CTE" +
+                "  ON A.PARENT_COMMENT_ID = CTE.COMMENT_ID" +
+                " INNER JOIN MEMBER B ON A.MASTER_MID = B.MID" +
+                " LEFT JOIN MEMBER C ON A.TARGET_MID  = C.MID " +
+                ")" +
+                "SELECT COMMENT_ID," +
+                " COMMENT," +
+                " IMAGE_URL," +
+                " STATUS," +
+                " CREATE_DT," +
+                " IFNULL(PARENT_COMMENT_ID, '')," +
+                " MEMBER_ID," +
+                " MEMBER_NAME," +
+                " MEMBER_PROFILE_URL," +
+                " IFNULL(TARGET_MID, '')," +
+                " IFNULL(TARGET_NAME, '')" +
+                " FROM CMTCTE CTE" +
+                " ORDER BY CTE.DEPTH DESC, CTE.CREATE_DT DESC" +
+                " LIMIT ?, ?";
+        Query query =  entityManager.createNativeQuery(queryString);
+        List<Object[]> resultSets = query
+                .setParameter(1, reviewId)
+                .setParameter(2, nextOffset != null ? nextOffset : 0)
+                .setParameter(3, limit)
+                .getResultList();
+
+        resultSets.forEach(rs -> comments.add(CommentDto.builder()
+                        .commentId(rs[0].toString())
+                        .comment(rs[1].toString())
+                        .imageUrl(rs[2].toString())
+                        .status(CommentStatus.valueOf(rs[3].toString()))
+                        .createDt(rs[4].toString())
+                        .parentCommentId(!rs[5].toString().isBlank() ? rs[5].toString():null)
+                        .memberId(rs[6].toString())
+                        .memberName(rs[7].toString())
+                        .memberProfileUrl(rs[8].toString())
+                        .targetMid(!rs[9].toString().isBlank() ? rs[9].toString() : null)
+                        .targetName(!rs[10].toString().isBlank() ? rs[10].toString() : null)
+                .build()
+        ));
+
+        return new CommentDto.CommentDetail(nextOffset, limit, comments);
+    }
 }

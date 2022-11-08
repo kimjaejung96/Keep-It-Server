@@ -176,8 +176,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Object getNextComments(String groupId, String reviewId) {
-        return null;
+    public CommentDto.CommentDetail getNextComments(String groupId, String reviewId, Integer nextOffset, int limit) {
+        return groupRepository.getReviewCommentDetail(groupId, reviewId, nextOffset, limit);
     }
 
     private GroupEntity selectExistGroup(String groupId) {

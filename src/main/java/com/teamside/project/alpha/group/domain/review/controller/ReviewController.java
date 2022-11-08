@@ -21,11 +21,11 @@ import javax.validation.Valid;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    // TODO: 2022/11/04 댓글 정책 생성 후 개발 
-    @GetMapping("/{reviewId}/next_comment")
-    public ResponseEntity<ResponseObject> getNextComments(@PathVariable String groupId, @PathVariable String reviewId) {
+    @GetMapping("/{reviewId}/comments")
+    public ResponseEntity<ResponseObject> getNextComments(@PathVariable String groupId, @PathVariable String reviewId,
+                                                          @RequestParam(required = false) Integer nextOffset, @RequestParam int limit) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(reviewService.getNextComments(groupId, reviewId));
+        responseObject.setBody(reviewService.getNextComments(groupId, reviewId, nextOffset, limit));
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }

@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.group.repository;
 
+import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.daily.model.dto.DailyDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
@@ -31,4 +32,5 @@ public interface GroupRepositoryDSL {
     List<GroupDto.GroupAlarmSetting> selectGroupAlarm(String alarmType);
 
     List<GroupDto.MyFollow> selectMyFollow();
+    CommentDto.CommentDetail getReviewCommentDetail(String groupId, String reviewId, Integer nextOffset, int limit);
 }
