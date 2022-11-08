@@ -32,10 +32,8 @@ import org.apache.logging.log4j.util.Strings;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     @PersistenceContext
@@ -600,6 +598,6 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .build()
         ));
 
-        return new CommentDto.CommentDetail(nextOffset, limit, comments);
+        return new CommentDto.CommentDetail(nextOffset, limit, comments.stream().sorted(Comparator.comparing(CommentDto::getCreateDt)).collect(Collectors.toList()));
     }
 }
