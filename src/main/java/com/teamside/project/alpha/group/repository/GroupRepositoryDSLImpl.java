@@ -298,14 +298,20 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                                 .when(memberFollow.mid.isNull())
                                 .then(false)
                                 .otherwise(true),
-                        review.count(),
-                        daily.count()
+                        ExpressionUtils.as(
+                                JPAExpressions
+                                        .select(review.count())
+                                        .from(review)
+                                        .where(review.group.groupId.eq(groupId), review.masterMid.eq(memberId), review.isDelete.eq(false))
+                                , "reviewCount"),
+                        ExpressionUtils.as(
+                                JPAExpressions
+                                        .select(daily.count())
+                                        .from(daily)
+                                        .where(daily.group.groupId.eq(groupId), daily.masterMid.eq(memberId), daily.isDelete.eq(false))
+                                , "dailyCount")
                 ))
                 .from(member)
-                .leftJoin(review)
-                    .on(review.masterMid.eq(member.mid), review.group.groupId.eq(groupId), review.isDelete.eq(false))
-                .leftJoin(daily)
-                    .on(daily.masterMid.eq(member.mid), daily.group.groupId.eq(groupId), daily.isDelete.eq(false))
                 .leftJoin(memberFollow)
                     .on(memberFollow.group.groupId.eq(groupId), memberFollow.mid.eq(CryptUtils.getMid()),
                         memberFollow.targetMid.eq(member.mid), memberFollow.followYn.eq(true))
