@@ -263,7 +263,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(String groupId, String targetMid, Long pageSize, Long seq) {
         List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, seq);
-        Long responseLastGroupId = reviewsInGroup.isEmpty() ? null : reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewSeq();
+        Long responseLastGroupId = reviewsInGroup.size() == pageSize ? reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewSeq() : null;
 
         return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId);
     }
@@ -271,7 +271,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public DailyDto.ResponseDailyInGroup selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailyId) {
         List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailyId);
-        Long responseLastDailySeq = dailyInGroup.isEmpty() ? null : dailyInGroup.get(dailyInGroup.size() - 1).getDailySeq();
+        Long responseLastDailySeq = dailyInGroup.size() == pageSize ? dailyInGroup.get(dailyInGroup.size() - 1).getDailySeq() : null;
 
         return new DailyDto.ResponseDailyInGroup(dailyInGroup, responseLastDailySeq);
     }
