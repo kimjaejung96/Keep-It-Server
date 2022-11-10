@@ -125,17 +125,14 @@ public class MemberEntity extends CreateDtEntity {
         }
     }
 
-    public void deleteMember() {
-        this.name = "";
+    public void withdrawalMember() {
         this.phone = "";
-        this.profileUrl = "";
         this.fcmToken = "";
         this.fcmTokenLife = null;
         this.refreshTokenEntity = null;
         this.memberBlockEntities.clear();
         this.groupMemberMappingEntities.forEach(d -> d.updateStatus(GroupMemberStatus.WITHDRAWAL));
         this.isDelete = true;
-        // status -> true
     }
 
     public void updateFcmToken(String fcmToken) {

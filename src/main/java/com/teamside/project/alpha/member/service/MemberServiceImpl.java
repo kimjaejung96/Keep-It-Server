@@ -60,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void withdrawal()  {
         MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
-        member.deleteMember();
+        member.withdrawalMember();
     }
 
     private void checkExistName(String name) throws CustomException {
