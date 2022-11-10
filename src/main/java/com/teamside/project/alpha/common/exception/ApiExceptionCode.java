@@ -17,6 +17,8 @@ public enum ApiExceptionCode {
     AUTH_FAIL(701, "인증 실패"),
     MEMBER_ALREADY_EXIST(702, "멤버가 이미 존재합니다."),
     INVALID_AUTH_TYPE(703, "유효하지 않은 인증 타입입니다."),
+    MEMBER_IS_WITHDRAWAL(704, "탈퇴한 멤버입니다."),
+
     GROUP_NOT_FOUND(800, "그룹을 찾을 수 없습니다."),
     ALREADY_JOINED_GROUP(801, "멤버가 이미 참여하고 있습니다."),
     PASSWORD_IS_INCORRECT(802, "비밀번호가 틀렸습니다."),

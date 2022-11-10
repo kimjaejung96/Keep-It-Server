@@ -1,7 +1,9 @@
 package com.teamside.project.alpha.member.model.entity;
 
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
@@ -150,5 +152,11 @@ public class MemberEntity extends CreateDtEntity {
 
     public void updateAlarm(AlarmDto alarmDto) {
         this.alarmSetting.updateAlarm(alarmDto);
+    }
+
+    public void checkWithdrawal() {
+        if (this.isDelete) {
+            throw new CustomRuntimeException(ApiExceptionCode.MEMBER_IS_WITHDRAWAL);
+        }
     }
 }

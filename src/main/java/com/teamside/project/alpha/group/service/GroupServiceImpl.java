@@ -16,6 +16,7 @@ import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.GroupRepository;
+import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -257,6 +258,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDto.GroupMemberProfileDto groupMemberProfile(String groupId, String memberId) {
+        MemberEntity member = memberRepository.findByMid(memberId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        member.checkWithdrawal();
         return groupRepository.groupMemberProfile(groupId, memberId);
     }
 
