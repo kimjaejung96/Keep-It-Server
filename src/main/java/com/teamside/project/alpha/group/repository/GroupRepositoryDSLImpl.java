@@ -255,10 +255,15 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(group).on(statReferralGroup.groupId.eq(group.groupId))
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId).and(groupMemberMapping.status.eq(GroupMemberStatus.JOIN)))
                 .where(group.isDelete.eq(false),
-                        statReferralGroup.referralType.eq(referralType), statReferralGroup.category.eq(category))
-                .limit(10)
-                .groupBy(group.groupId, group.name, group.category, group.profileUrl, group.usePrivate, statReferralGroup.statDt, statReferralGroup.rankNum)
-                .orderBy(statReferralGroup.statDt.desc(), statReferralGroup.rankNum.asc())
+                        statReferralGroup.referralType.eq(referralType), statReferralGroup.category.eq(category),
+                        statReferralGroup.statDt.eq(
+                                JPAExpressions
+                                        .select(statReferralGroup.statDt.max())
+                                        .from(statReferralGroup)
+                            )
+                        )
+                .groupBy(group.groupId, group.seq, group.name, group.category, group.profileUrl, group.usePrivate, statReferralGroup.rankNum)
+                .orderBy(statReferralGroup.rankNum.asc())
                 .fetch();
     }
 
@@ -489,7 +494,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(groupMemberMapping.group, group)
                 .where(groupMemberMapping.status.eq(GroupMemberStatus.JOIN),
                         groupMemberMapping.mid.eq(CryptUtils.getMid()))
-                .orderBy(groupMemberMapping.createTime.asc())
+                .orderBy(group.name.asc())
                 .fetch();
     }
 
