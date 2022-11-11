@@ -413,7 +413,23 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     private List<CommentDto> getReviewComments(String reviewId) {
-        return this.getReviewCommentDetail("", reviewId, 0, 5).getComments();
+        QMemberEntity targetMember = new QMemberEntity("targetMember");
+        List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member, targetMember))
+                .from(reviewComment)
+                .innerJoin(member).on(member.mid.eq(reviewComment.masterMid))
+                .leftJoin(targetMember).on(member.mid.eq(reviewComment.targetMemberMid))
+                .where(reviewComment.review.reviewId.eq(reviewId))
+                .orderBy(reviewComment.seq.asc())
+                .fetch();
+
+        result.stream()
+                .filter(commentDto -> commentDto.getParentCommentId() != null)
+                .forEach(comment -> result.stream()
+                        .filter(co -> Objects.equals(co.getCommentId(), comment.getParentCommentId()))
+                        .forEach(dd -> dd.insertChildComments(comment)));
+        result.removeIf(d -> d.getParentCommentId() != null);
+
+        return result;
     }
 
     @Override
