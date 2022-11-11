@@ -159,4 +159,8 @@ public class MemberEntity extends CreateDtEntity {
             throw new CustomRuntimeException(ApiExceptionCode.MEMBER_IS_WITHDRAWAL);
         }
     }
+
+    public void updateTerms() {
+        this.termsEntity.updateTerms();
+    }
 }

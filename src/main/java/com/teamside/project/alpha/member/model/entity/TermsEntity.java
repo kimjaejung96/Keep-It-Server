@@ -2,11 +2,13 @@ package com.teamside.project.alpha.member.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@DynamicUpdate
 @Table(name = "TERMS")
 public class TermsEntity extends TimeEntity {
     @Id
@@ -43,5 +45,8 @@ public class TermsEntity extends TimeEntity {
 
     public TermsEntity() {
 
+    }
+    public void updateTerms() {
+        this.marketing = !this.marketing;
     }
 }

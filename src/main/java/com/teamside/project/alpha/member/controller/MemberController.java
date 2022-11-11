@@ -109,6 +109,13 @@ public class MemberController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @PatchMapping("/terms")
+    public ResponseEntity<ResponseObject> updateTerms() {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        memberService.updateTerms();
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
 
 
 
