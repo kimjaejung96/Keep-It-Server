@@ -37,7 +37,7 @@ public class DailyController {
     }
 
     @GetMapping("/{dailyId}")
-    public ResponseEntity<ResponseObject> selectDaily(@PathVariable String groupId, @PathVariable String dailyId) {
+    public ResponseEntity<ResponseObject> selectDaily(@PathVariable String groupId, @PathVariable String dailyId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(dailyService.selectDaily(groupId, dailyId));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);

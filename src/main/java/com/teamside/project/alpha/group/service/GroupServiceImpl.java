@@ -56,6 +56,8 @@ public class GroupServiceImpl implements GroupService {
     public void updateGroup(String groupId, GroupDto groupDto) throws CustomException {
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
+        groupEntity.checkGroupStatus();
+
         if (!groupEntity.getName().equals(groupDto.getName())) isExistGroupName(groupDto.getName());
         groupEntity.checkGroupMaster();
 
@@ -125,6 +127,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public void joinGroup(String groupId, String password) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkGroupStatus();
         group.checkJoinPossible(group, password);
 
         String mid = CryptUtils.getMid();

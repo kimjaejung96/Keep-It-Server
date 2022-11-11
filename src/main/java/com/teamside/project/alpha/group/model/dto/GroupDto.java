@@ -121,17 +121,19 @@ public class GroupDto {
         private Category category;
         private String profileUrl;
         private Boolean usePrivate;
+        private Boolean isDelete;
         private Long participantCount;
         private Boolean favorite;
         private Boolean isMaster;
         private Integer ord;
         @QueryProjection
-        public MyGroupDto(String groupId, String name, Category category, String profileUrl, Boolean usePrivate, Long participantCount, Boolean favorite, Boolean isMaster, Integer ord) {
+        public MyGroupDto(String groupId, String name, Category category, String profileUrl, Boolean usePrivate, Boolean isDelete, Long participantCount, Boolean favorite, Boolean isMaster, Integer ord) {
             this.groupId = groupId;
             this.name = name;
             this.category = category;
             this.profileUrl = profileUrl;
             this.usePrivate = usePrivate;
+            this.isDelete = isDelete;
             this.participantCount = participantCount;
             this.favorite = favorite;
             this.isMaster = isMaster;

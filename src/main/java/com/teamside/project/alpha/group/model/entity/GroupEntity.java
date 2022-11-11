@@ -276,4 +276,16 @@ public class GroupEntity extends TimeEntity {
 
         memberFollowEntity.updateFollowAlarm();
     }
+
+    public void checkDeletedDaily(String dailyId) {
+        this.dailyEntities.stream()
+                .filter(daily -> daily.getDailyId().equals(dailyId) && daily.getIsDelete())
+                .findFirst().ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.DELETED_DAILY);});
+    }
+
+    public void checkGroupStatus() {
+        if (this.isDelete) {
+            throw new CustomRuntimeException(ApiExceptionCode.DELETED_GROUP);
+        }
+    }
 }

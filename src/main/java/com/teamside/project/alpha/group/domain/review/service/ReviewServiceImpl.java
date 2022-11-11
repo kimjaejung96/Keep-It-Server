@@ -42,6 +42,7 @@ public class ReviewServiceImpl implements ReviewService {
         GroupEntity group = selectExistGroup(groupId);
 
         group.checkExistMember(mid);
+        group.checkGroupStatus();
 
         String reviewId = group.createReview(new ReviewEntity(groupId, review));
 
@@ -70,6 +71,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(CryptUtils.getMid());
+        group.checkGroupStatus();
 
         ReviewEntity reviewEntity = group.getReviewEntities()
                 .stream()
@@ -101,6 +103,7 @@ public class ReviewServiceImpl implements ReviewService {
     public String createComment(String groupId, CommentDto.CreateComment comment, String reviewId) {
         GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(CryptUtils.getMid());
+        group.checkGroupStatus();
 
         ReviewEntity review = group.getReviewEntities().stream()
                 .filter(r -> Objects.equals(r.getReviewId(), reviewId))
@@ -133,6 +136,7 @@ public class ReviewServiceImpl implements ReviewService {
         String mid = CryptUtils.getMid();
         GroupEntity group = selectExistGroup(groupId);
         group.checkExistMember(mid);
+        group.checkGroupStatus();
 
         ReviewEntity review = group.getReviewEntities().stream()
                 .filter(r -> Objects.equals(r.getReviewId(), reviewId))
@@ -154,6 +158,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public void updateComment(String groupId, CommentDto.CreateComment comment, String reviewId, String commentId) {
         GroupEntity group = selectExistGroup(groupId);
+        group.checkGroupStatus();
 
         ReviewEntity review = group.getReviewEntities().stream().filter(r -> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 

@@ -28,6 +28,7 @@ public class DailyServiceImpl implements DailyService {
     public void createDaily(String groupId, DailyDto dailyDto) throws CustomException {
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         groupEntity.checkExistMember(CryptUtils.getMid());
+        groupEntity.checkGroupStatus();
 
         groupEntity.createDaily(new DailyEntity(groupId, dailyDto));
     }
@@ -37,6 +38,7 @@ public class DailyServiceImpl implements DailyService {
     public void updateDaily(String groupId, DailyDto.UpdateDailyDto dailyDto) throws CustomException {
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         groupEntity.checkExistMember(CryptUtils.getMid());
+        groupEntity.checkGroupStatus();
 
         DailyEntity dailyEntity = groupEntity.getDailyEntities()
                 .stream()
@@ -48,7 +50,11 @@ public class DailyServiceImpl implements DailyService {
     }
 
     @Override
-    public DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId) {
+    public DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId) throws CustomException {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkDeletedDaily(dailyId);
+        group.checkExistMember(CryptUtils.getMid());
+
         return groupRepository.selectDaily(groupId, dailyId);
     }
 
@@ -65,6 +71,7 @@ public class DailyServiceImpl implements DailyService {
     public String createComment(String groupId, String dailyId, CommentDto.CreateComment comment) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(CryptUtils.getMid());
+        group.checkGroupStatus();
 
         DailyEntity daily = group.getDailyEntities().stream()
                 .filter(d -> Objects.equals(d.getDailyId(), dailyId))
@@ -87,6 +94,7 @@ public class DailyServiceImpl implements DailyService {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(mid);
+        group.checkGroupStatus();
 
         DailyEntity daily = group.getDailyEntities().stream()
                 .filter(d -> Objects.equals(d.getDailyId(), dailyId))
@@ -129,6 +137,7 @@ public class DailyServiceImpl implements DailyService {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(mid);
+        group.checkGroupStatus();
 
         DailyEntity daily = group.getDailyEntities().stream()
                 .filter(d -> Objects.equals(d.getDailyId(), dailyId))

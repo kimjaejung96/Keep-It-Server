@@ -9,7 +9,7 @@ public interface DailyService {
     void updateDaily(String groupId, DailyDto.UpdateDailyDto dailyDto) throws CustomException;
     String createComment(String groupId, String dailyId, CommentDto.CreateComment comment) throws CustomException;
     void keepDaily(String groupId, String dailyId);
-    DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId);
+    DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId) throws CustomException;
     void deleteDaily(String groupId, String dailyId) throws CustomException;
     void updateComment(String groupId, String dailyId, String commentId, CommentDto.CreateComment comment);
     void deleteComment(String groupId, String dailyId, String commentId);
