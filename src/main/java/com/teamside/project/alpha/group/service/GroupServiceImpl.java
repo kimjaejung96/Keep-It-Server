@@ -273,7 +273,10 @@ public class GroupServiceImpl implements GroupService {
         Long responseLastGroupId = reviewsInGroup.size() == pageSize ? reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewSeq() : null;
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
-        Long reviewCount = groupEntity.getReviewEntities().stream().filter(d -> !d.getIsDelete()).count();
+        Long reviewCount = groupEntity.getReviewEntities().stream()
+                .filter(d -> !d.getIsDelete())
+                .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
+                .count();
         return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId, reviewCount);
     }
 
@@ -283,7 +286,11 @@ public class GroupServiceImpl implements GroupService {
         List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailySeq);
         Long responseLastDailySeq = dailyInGroup.size() == pageSize ? dailyInGroup.get(dailyInGroup.size() - 1).getDailySeq() : null;
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        Long dailyCount = groupEntity.getDailyEntities().stream().filter(d -> !d.getIsDelete()).count();
+
+        Long dailyCount = groupEntity.getDailyEntities().stream()
+                .filter(d -> !d.getIsDelete())
+                .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
+                .count();
 
         return new DailyDto.ResponseDailyInGroup(dailyInGroup, responseLastDailySeq, dailyCount);
     }
