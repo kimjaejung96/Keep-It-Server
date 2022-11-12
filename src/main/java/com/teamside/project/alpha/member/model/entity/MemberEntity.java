@@ -93,8 +93,7 @@ public class MemberEntity extends CreateDtEntity {
                 terms.getTerms(),
                 terms.getCollect(),
                 terms.getGps(),
-                terms.getMarketing(),
-                terms.getAlarm());
+                terms.getMarketing());
     }
 
     public void createRefreshToken(String refreshToken) {

@@ -182,6 +182,12 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 멤버 프로필 조회
+     * @param groupId
+     * @param memberId
+     * @return
+     */
     @GetMapping("/{groupId}/members/{memberId}")
     public ResponseEntity<ResponseObject> groupMemberProfile(@PathVariable String groupId,
                                                              @PathVariable String memberId) {

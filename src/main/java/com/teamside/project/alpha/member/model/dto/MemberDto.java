@@ -42,8 +42,6 @@ public class MemberDto {
         private Boolean collect;
         @NotNull
         private Boolean marketing;
-        @NotNull
-        private Boolean alarm;
     }
 
     @Getter
