@@ -451,7 +451,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 )
                 .from(daily)
                 .innerJoin(member).on(member.mid.eq(daily.masterMid))
-                .leftJoin(daily.dailyKeepEntities, dailyKeep).on(dailyKeep.memberMid.eq(mid))
+                .leftJoin(daily.dailyKeepEntities, dailyKeep).on(dailyKeep.memberMid.eq(mid), dailyKeep.keepYn.eq(true))
                 .where(daily.dailyId.eq(dailyId), daily.group.groupId.eq(groupId))
                 .fetchOne();
 

@@ -94,7 +94,7 @@ public class DailyEntity extends TimeEntity {
                 .findFirst();
 
         if (dailyEntity.isPresent()) {
-            this.getDailyKeepEntities().remove(dailyEntity.get());
+            dailyEntity.get().updateKeep();
         } else {
             this.getDailyKeepEntities().add(new DailyKeepEntity(dailyId, mid));
         }
