@@ -50,6 +50,7 @@ public class DailyServiceImpl implements DailyService {
     }
 
     @Override
+    @Transactional
     public DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId) throws CustomException {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkDeletedDaily(dailyId);
