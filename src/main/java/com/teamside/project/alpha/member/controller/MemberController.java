@@ -110,9 +110,9 @@ public class MemberController {
     }
 
     @PatchMapping("/terms")
-    public ResponseEntity<ResponseObject> updateTerms() {
+    public ResponseEntity<ResponseObject> updateTerms(@RequestBody AlarmDto alarmDto) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        memberService.updateTerms();
+        memberService.updateTerms(alarmDto);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

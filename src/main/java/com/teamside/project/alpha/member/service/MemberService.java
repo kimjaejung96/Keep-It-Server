@@ -20,5 +20,5 @@ public interface MemberService {
     void updateFcm(String fcmToken);
     void updateAlarm(AlarmDto alarmDto);
     AlarmDto selectAlarm();
-    void updateTerms();
+    void updateTerms(AlarmDto alarmDto);
 }

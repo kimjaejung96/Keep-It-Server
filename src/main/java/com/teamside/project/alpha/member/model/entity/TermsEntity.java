@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.member.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
+import com.teamside.project.alpha.member.model.dto.AlarmDto;
 import lombok.Getter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -42,7 +43,7 @@ public class TermsEntity extends TimeEntity {
     public TermsEntity() {
 
     }
-    public void updateTerms() {
-        this.marketing = !this.marketing;
+    public void updateTerms(AlarmDto alarmDto) {
+        this.marketing = alarmDto.isMarketing();
     }
 }

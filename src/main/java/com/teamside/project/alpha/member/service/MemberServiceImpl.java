@@ -136,10 +136,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updateTerms() {
+    public void updateTerms(AlarmDto alarmDto) {
         MemberEntity member = memberRepo.findByMid(CryptUtils.getMid())
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
-        member.updateTerms();
+        member.updateTerms(alarmDto);
     }
 }

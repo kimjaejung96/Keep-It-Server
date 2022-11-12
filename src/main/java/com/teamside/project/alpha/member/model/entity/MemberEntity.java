@@ -159,7 +159,7 @@ public class MemberEntity extends CreateDtEntity {
         }
     }
 
-    public void updateTerms() {
-        this.termsEntity.updateTerms();
+    public void updateTerms(AlarmDto alarmDto) {
+        this.termsEntity.updateTerms(alarmDto);
     }
 }
