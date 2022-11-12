@@ -267,19 +267,25 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(String groupId, String targetMid, Long pageSize, Long seq) {
         List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, seq);
         Long responseLastGroupId = reviewsInGroup.size() == pageSize ? reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewSeq() : null;
+        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
-        return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId);
+        Long reviewCount = groupEntity.getReviewEntities().stream().filter(d -> !d.getIsDelete()).count();
+        return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId, reviewCount);
     }
 
     @Override
+    @Transactional
     public DailyDto.ResponseDailyInGroup selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailyId) {
         List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailyId);
         Long responseLastDailySeq = dailyInGroup.size() == pageSize ? dailyInGroup.get(dailyInGroup.size() - 1).getDailySeq() : null;
+        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        Long dailyCount = groupEntity.getDailyEntities().stream().filter(d -> !d.getIsDelete()).count();
 
-        return new DailyDto.ResponseDailyInGroup(dailyInGroup, responseLastDailySeq);
+        return new DailyDto.ResponseDailyInGroup(dailyInGroup, responseLastDailySeq, dailyCount);
     }
 
     @Override
@@ -290,9 +296,7 @@ public class GroupServiceImpl implements GroupService {
 
         return new GroupDto.GroupHome(group.getName(),
                 group.getGroupMemberMappingEntity().stream().filter(m -> !m.getMember().getIsDelete()).count(),
-                group.getReviewEntities().stream().filter(d-> Objects.equals(d.getMasterMid(), CryptUtils.getMid()) && !d.getIsDelete()).count(),
-                group.getReviewEntities().stream().filter(d -> !d.getIsDelete()).count(),
-                group.getDailyEntities().stream().filter(d -> !d.getIsDelete()).count()
+                group.getReviewEntities().stream().filter(d-> Objects.equals(d.getMasterMid(), CryptUtils.getMid()) && !d.getIsDelete()).count()
                 );
     }
 

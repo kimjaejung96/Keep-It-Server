@@ -303,19 +303,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         new CaseBuilder()
                                 .when(memberFollow.mid.isNull())
                                 .then(false)
-                                .otherwise(true),
-                        ExpressionUtils.as(
-                                JPAExpressions
-                                        .select(review.count())
-                                        .from(review)
-                                        .where(review.group.groupId.eq(groupId), review.masterMid.eq(memberId), review.isDelete.eq(false))
-                                , "reviewCount"),
-                        ExpressionUtils.as(
-                                JPAExpressions
-                                        .select(daily.count())
-                                        .from(daily)
-                                        .where(daily.group.groupId.eq(groupId), daily.masterMid.eq(memberId), daily.isDelete.eq(false))
-                                , "dailyCount")
+                                .otherwise(true)
                 ))
                 .from(member)
                 .leftJoin(memberFollow)

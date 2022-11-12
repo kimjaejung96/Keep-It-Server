@@ -180,16 +180,12 @@ public class GroupDto {
         private String mid;
         private String name;
         private Boolean isFollow;
-        private Long reviewCount;
-        private Long dailyCount;
 
         @QueryProjection
-        public GroupMemberProfileDto(String mid, String name, Boolean isFollow, Long reviewCount, Long dailyCount) {
+        public GroupMemberProfileDto(String mid, String name, Boolean isFollow) {
             this.mid = mid;
             this.name = name;
             this.isFollow = isFollow;
-            this.reviewCount = reviewCount;
-            this.dailyCount = dailyCount;
         }
     }
 
@@ -202,12 +198,10 @@ public class GroupDto {
         private long reviewCount;
         private long dailyCount;
 
-        public GroupHome(String groupName, long memberCount, long myReviewCount, long reviewCount, long dailyCount) {
+        public GroupHome(String groupName, long memberCount, long myReviewCount) {
             this.groupName = groupName;
             this.memberCount = memberCount;
             this.myReviewCount = myReviewCount;
-            this.reviewCount = reviewCount;
-            this.dailyCount = dailyCount;
         }
     }
 

@@ -33,10 +33,12 @@ public class ReviewDto {
     public static class ResponseSelectReviewsInGroup {
         private final List<SelectReviewsInGroup> reviewData;
         private final Long lastReviewSeq;
+        private final Long reviewCount;
 
-        public ResponseSelectReviewsInGroup(List<SelectReviewsInGroup> reviewData, Long lastReviewSeq) {
+        public ResponseSelectReviewsInGroup(List<SelectReviewsInGroup> reviewData, Long lastReviewSeq, Long reviewCount) {
             this.reviewData = reviewData;
             this.lastReviewSeq = lastReviewSeq;
+            this.reviewCount = reviewCount;
         }
     }
     @Getter
