@@ -29,12 +29,12 @@ public class DailyDto {
     public static class ResponseDailyInGroup {
         private final List<DailyInGroup> dailyData;
 
-        private final Long lastDailyId;
+        private final Long lastDailySeq;
         private final Long dailyCount;
 
-        public ResponseDailyInGroup(List<DailyInGroup> dailyData, Long lastDailyId, Long dailyCount) {
+        public ResponseDailyInGroup(List<DailyInGroup> dailyData, Long lastDailySeq, Long dailyCount) {
             this.dailyData = dailyData;
-            this.lastDailyId = lastDailyId;
+            this.lastDailySeq = lastDailySeq;
             this.dailyCount = dailyCount;
         }
     }

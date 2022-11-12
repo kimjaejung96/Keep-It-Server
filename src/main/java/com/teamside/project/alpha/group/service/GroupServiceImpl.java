@@ -279,8 +279,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public DailyDto.ResponseDailyInGroup selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailyId) {
-        List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailyId);
+    public DailyDto.ResponseDailyInGroup selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailySeq) {
+        List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailySeq);
         Long responseLastDailySeq = dailyInGroup.size() == pageSize ? dailyInGroup.get(dailyInGroup.size() - 1).getDailySeq() : null;
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         Long dailyCount = groupEntity.getDailyEntities().stream().filter(d -> !d.getIsDelete()).count();

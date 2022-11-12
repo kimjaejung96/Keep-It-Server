@@ -24,7 +24,7 @@ public interface GroupService {
     void updateOrd(GroupDto.RequestUpdateOrdDto request) throws CustomException;
     List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
     GroupDto.GroupMemberProfileDto groupMemberProfile(String groupId, String memberId);
-    ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(String groupId, String targetMid, Long pageSize, Long lastReviewId);
+    ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(String groupId, String targetMid, Long pageSize, Long lastReviewSeq);
 
     Object selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailyId);
 

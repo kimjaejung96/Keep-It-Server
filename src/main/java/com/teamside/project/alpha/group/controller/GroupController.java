@@ -26,16 +26,16 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping("/{groupId}/reviews")
-    public ResponseEntity<ResponseObject> selectReviewsInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastReviewId) throws CustomException {
+    public ResponseEntity<ResponseObject> selectReviewsInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastReviewSeq) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(groupService.selectReviewsInGroup(groupId, targetMid, pageSize, lastReviewId));
+        responseObject.setBody(groupService.selectReviewsInGroup(groupId, targetMid, pageSize, lastReviewSeq));
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @GetMapping("/{groupId}/daily")
-    public ResponseEntity<ResponseObject> selectDailyInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastDailyId) throws CustomException {
+    public ResponseEntity<ResponseObject> selectDailyInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastDailySeq) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(groupService.selectDailyInGroup(groupId, targetMid, pageSize, lastDailyId));
+        responseObject.setBody(groupService.selectDailyInGroup(groupId, targetMid, pageSize, lastDailySeq));
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }

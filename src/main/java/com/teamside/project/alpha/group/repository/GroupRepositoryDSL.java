@@ -23,8 +23,8 @@ public interface GroupRepositoryDSL {
     List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
     List<GroupDto.SearchGroupDto> selectGroups(Long lastGroupId, Long pageSize);
     GroupDto.GroupMemberProfileDto groupMemberProfile(String groupId, String memberId);
-    List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(String groupId, String targetId, Long pageSize, Long lastReviewId);
-    List<DailyDto.DailyInGroup> selectDailyInGroup(String groupId, String targetId, Long pageSize, Long lastDailyId);
+    List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(String groupId, String targetId, Long pageSize, Long lastReviewSeq);
+    List<DailyDto.DailyInGroup> selectDailyInGroup(String groupId, String targetId, Long pageSize, Long lastDailySeq);
     ReviewDto.ResponseReviewDetail selectReviewDetail(String groupId, String reviewId);
     DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId);
     long countJoinGroup(String mid);

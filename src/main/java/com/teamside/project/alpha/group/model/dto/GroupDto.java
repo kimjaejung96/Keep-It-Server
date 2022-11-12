@@ -195,8 +195,6 @@ public class GroupDto {
         private String groupName;
         private long memberCount;
         private long myReviewCount;
-        private long reviewCount;
-        private long dailyCount;
 
         public GroupHome(String groupName, long memberCount, long myReviewCount) {
             this.groupName = groupName;

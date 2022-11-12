@@ -314,7 +314,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(String groupId, String targetId, Long pageSize, Long seq) {
+    public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(String groupId, String targetId, Long pageSize, Long lastReviewSeq) {
          return jpaQueryFactory.select(new QReviewDto_SelectReviewsInGroup(
                 new QReviewDto_SelectReviewsInGroup_Review(
                         review.reviewId,
@@ -349,14 +349,14 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                  .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId),
                          reviewKeep.memberMid.eq(CryptUtils.getMid()),
                          reviewKeep.keepYn.eq(true))
-                 .where(review.group.groupId.eq(groupId), review.isDelete.eq(false), eqReviewMaster(targetId), ltReviewId(seq))
+                 .where(review.group.groupId.eq(groupId), review.isDelete.eq(false), eqReviewMaster(targetId), ltReviewId(lastReviewSeq))
                  .orderBy(review.seq.desc())
                  .limit(pageSize)
                  .fetch();
     }
 
     @Override
-    public List<DailyDto.DailyInGroup> selectDailyInGroup(String groupId, String targetId, Long pageSize, Long lastDailyId) {
+    public List<DailyDto.DailyInGroup> selectDailyInGroup(String groupId, String targetId, Long pageSize, Long lastDailySeq) {
         return jpaQueryFactory
                 .select(new QDailyDto_DailyInGroup(
                         daily.dailyId,
@@ -369,7 +369,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ))
                 .from(daily)
                 .innerJoin(member).on(member.mid.eq(daily.masterMid))
-                .where(daily.group.groupId.eq(groupId), daily.isDelete.eq(false), eqDailyMaster(targetId), ltDailyId(lastDailyId))
+                .where(daily.group.groupId.eq(groupId), daily.isDelete.eq(false), eqDailyMaster(targetId), ltDailyId(lastDailySeq))
                 .orderBy(daily.seq.desc())
                 .limit(pageSize)
                 .fetch();
