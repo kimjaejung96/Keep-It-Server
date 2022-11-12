@@ -323,7 +323,14 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         review.reviewCommentEntities.size(),
                         review.createTime,
                         review.images,
-                        review.reviewKeepEntities.size(),
+                        ExpressionUtils.as(
+                                JPAExpressions
+                                        .select(reviewKeep.count())
+                                        .from(reviewKeep)
+                                        .where(reviewKeep.review.reviewId.eq(review.reviewId),
+                                                reviewKeep.keepYn.eq(true)),
+                                "keepCount"
+                        ),
                         reviewKeep.isNotNull()),
                         new QReviewDto_SelectReviewsInGroup_Member(
                                 member.mid,
@@ -339,7 +346,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                  .from(review)
                  .innerJoin(member).on(review.masterMid.eq(member.mid))
                  .innerJoin(place).on(review.place.placeId.eq(place.placeId))
-                 .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId).and(reviewKeep.memberMid.eq(CryptUtils.getMid())))
+                 .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId),
+                         reviewKeep.memberMid.eq(CryptUtils.getMid()),
+                         reviewKeep.keepYn.eq(true))
                  .where(review.group.groupId.eq(groupId), review.isDelete.eq(false), eqReviewMaster(targetId), ltReviewId(seq))
                  .orderBy(review.seq.desc())
                  .limit(pageSize)

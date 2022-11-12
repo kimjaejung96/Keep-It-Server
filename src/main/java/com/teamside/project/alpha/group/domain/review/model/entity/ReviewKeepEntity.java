@@ -4,11 +4,13 @@ import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@DynamicUpdate
 @Table(name = "REVIEW_KEEP")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewKeepEntity extends CreateDtEntity {
@@ -24,8 +26,16 @@ public class ReviewKeepEntity extends CreateDtEntity {
     @Column(name = "MEMBER", columnDefinition = "char(36)")
     private String memberMid;
 
+    @Column(name = "KEEP_YN", columnDefinition = "boolean")
+    private boolean keepYn;
+
     public ReviewKeepEntity(String reviewId, String mid) {
         this.review = new ReviewEntity(reviewId);
         this.memberMid = mid;
+        this.keepYn = true;
+    }
+
+    public void updateKeep() {
+        this.keepYn = !this.keepYn;
     }
 }

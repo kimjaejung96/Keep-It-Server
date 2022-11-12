@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -62,12 +63,12 @@ public class ReviewDto {
             private final String content;
             private final Integer commentCount;
             private final String createDt;
-            private final Integer keepCount;
+            private final Long keepCount;
             private final Boolean isKeep;
             private final List<String> images;
 
             @QueryProjection
-            public Review(String reviewId, Long reviewSeq, String content, Integer commentCount, LocalDateTime createDt, String images, Integer keepCount, Boolean isKeep) {
+            public Review(String reviewId, Long reviewSeq, String content, Integer commentCount, LocalDateTime createDt, String images, Long keepCount, Boolean isKeep) {
                 this.reviewId = reviewId;
                 this.reviewSeq = reviewSeq;
                 this.content = content;
@@ -149,7 +150,7 @@ public class ReviewDto {
             this.placeId = place.getPlaceId();
             this.reviewImagesUrl = List.of(review.getImages().split(","));
             this.reviewCreateDt = String.valueOf(review.getCreateTime());
-            this.keepCount = review.getReviewKeepEntities().size();
+            this.keepCount = review.getReviewKeepEntities().stream().filter(r -> r.isKeepYn()).collect(Collectors.toList()).size();
             this.isKeep = review.getReviewKeepEntities().stream().anyMatch(r -> r.getMemberMid().equals(CryptUtils.getMid()));
             this.commentCount = review.getReviewCommentEntities().size();
         }

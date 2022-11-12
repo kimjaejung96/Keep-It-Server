@@ -97,7 +97,7 @@ public class ReviewEntity extends TimeEntity {
                 .findFirst();
 
         if (keepEntity.isPresent()) {
-            this.getReviewKeepEntities().remove(keepEntity.get());
+            keepEntity.get().updateKeep();
         } else {
             this.getReviewKeepEntities().add(new ReviewKeepEntity(reviewId, mid));
         }
