@@ -117,7 +117,7 @@ public class MemberEntity extends CreateDtEntity {
         // 이미 차단중이면 해제
         Optional<MemberBlockEntity> blockEntity = this.getMemberBlockEntities().stream()
                 .filter(follow -> follow.getMid().equals(mid) && follow.getTargetMid().equals(targetMid))
-                .findFirst();
+                .findAny();
 
         if (blockEntity.isPresent()) {
             this.memberBlockEntities.remove(blockEntity.get());

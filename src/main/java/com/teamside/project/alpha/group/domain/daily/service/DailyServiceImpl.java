@@ -43,7 +43,7 @@ public class DailyServiceImpl implements DailyService {
         DailyEntity dailyEntity = groupEntity.getDailyEntities()
                 .stream()
                 .filter(d -> d.getDailyId().equals(dailyDto.getDailyId()))
-                .findFirst()
+                .findAny()
                 .orElseThrow((() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST)));
         dailyEntity.checkDailyMaster(CryptUtils.getMid());
         dailyEntity.updateDaily(dailyDto);
@@ -104,7 +104,7 @@ public class DailyServiceImpl implements DailyService {
 
         DailyCommentEntity commentEntity = daily.getDailyCommentEntities().stream()
                 .filter(c -> Objects.equals(c.getCommentId(), commentId))
-                .findFirst()
+                .findAny()
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.OK));
 
         commentEntity.checkCommentMaster(mid);
@@ -125,7 +125,7 @@ public class DailyServiceImpl implements DailyService {
 
         DailyCommentEntity commentEntity = daily.getDailyCommentEntities().stream()
                 .filter(c -> Objects.equals(c.getCommentId(), commentId))
-                .findFirst()
+                .findAny()
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.OK));
 
         commentEntity.checkCommentMaster(mid);

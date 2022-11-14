@@ -88,11 +88,11 @@ public class GroupServiceImpl implements GroupService {
 
         GroupDto.GroupInfoDto result = groupRepository.selectGroup(groupId);
 
-        GroupDto.GroupInfoDto.MembersDto master = result.getMembers().stream().filter(m -> m.getMid().equals(group.getMasterMid())).findFirst().orElseThrow();
+        GroupDto.GroupInfoDto.MembersDto master = result.getMembers().stream().filter(m -> m.getMid().equals(group.getMasterMid())).findAny().orElseThrow();
         result.getMembers().remove(master);
         result.getMembers().add(0, master);
 
-        GroupDto.GroupInfoDto.MembersDto me = result.getMembers().stream().filter(m -> m.getMid().equals(CryptUtils.getMid())).findFirst().orElse(null);
+        GroupDto.GroupInfoDto.MembersDto me = result.getMembers().stream().filter(m -> m.getMid().equals(CryptUtils.getMid())).findAny().orElse(null);
         if (me != null && !master.equals(me)) {
             result.getMembers().remove(me);
             result.getMembers().add(1, me);

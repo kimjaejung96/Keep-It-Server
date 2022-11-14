@@ -91,7 +91,7 @@ public class DailyEntity extends TimeEntity {
     public void keepDaily(String dailyId, String mid) {
         Optional<DailyKeepEntity> dailyEntity = this.dailyKeepEntities.stream()
                 .filter(daily -> (daily.getMemberMid().equals(mid) && daily.getDaily().getDailyId().equals(dailyId)))
-                .findFirst();
+                .findAny();
 
         if (dailyEntity.isPresent()) {
             dailyEntity.get().updateKeep();

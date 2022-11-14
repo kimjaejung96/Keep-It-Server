@@ -100,7 +100,7 @@ public class GroupEntity extends TimeEntity {
     public void addMember(String mid) {
         Optional<GroupMemberMappingEntity> groupMemberMapping = this.getGroupMemberMappingEntity().stream()
                 .filter(g -> g.getMid().equals(CryptUtils.getMid()))
-                .findFirst();
+                .findAny();
 
         if (groupMemberMapping.isPresent()) {
             groupMemberMapping.get().updateStatus(GroupMemberStatus.JOIN);
@@ -112,7 +112,7 @@ public class GroupEntity extends TimeEntity {
         GroupMemberMappingEntity findEntity = this.groupMemberMappingEntity.stream()
                 .filter(entity -> entity.getMid().equals(mid))
                 .filter(entity -> entity.getGroupId().equals(this.groupId))
-                .findFirst()
+                .findAny()
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         this.groupMemberMappingEntity.remove(findEntity);
     }
@@ -134,7 +134,7 @@ public class GroupEntity extends TimeEntity {
 
         Optional<GroupMemberMappingEntity> groupMemberMapping = group.getGroupMemberMappingEntity().stream()
                 .filter(g -> g.getMid().equals(CryptUtils.getMid()))
-                .findFirst();
+                .findAny();
 
         if (groupMemberMapping.isPresent()) {
             GroupMemberStatus status = groupMemberMapping.get().getStatus();
@@ -210,7 +210,7 @@ public class GroupEntity extends TimeEntity {
         this.checkReviewMaster(reviewId);
         ReviewEntity review = this.getReviewEntities().stream()
                 .filter(r-> r.getReviewId().equals(reviewId))
-                .findFirst()
+                .findAny()
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
         review.deleteReview();
@@ -220,7 +220,7 @@ public class GroupEntity extends TimeEntity {
         this.checkDailyMaster(dailyId);
         DailyEntity daily = this.getDailyEntities().stream()
                 .filter(d -> d.getDailyId().equals(dailyId))
-                .findFirst()
+                .findAny()
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
 
         daily.deleteDaily();
@@ -233,7 +233,7 @@ public class GroupEntity extends TimeEntity {
                 .filter(d -> d.getMid().equals(mid)
                         && d.getTargetMid().equals(targetMid)
                 )
-                .findFirst();
+                .findAny();
 
         if (memberFollowEntity.isEmpty()) {
             this.memberFollowEntities.add(new MemberFollowEntity(groupId, mid, targetMid));
@@ -244,7 +244,7 @@ public class GroupEntity extends TimeEntity {
         }
     }
     public void exileMember(String targetMid) {
-        GroupMemberMappingEntity groupMemberMapping = this.groupMemberMappingEntity.stream().filter(d -> d.getMid().equals(targetMid)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        GroupMemberMappingEntity groupMemberMapping = this.groupMemberMappingEntity.stream().filter(d -> d.getMid().equals(targetMid)).findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         groupMemberMapping.updateStatus(GroupMemberStatus.EXILE);
     }
 
@@ -255,7 +255,7 @@ public class GroupEntity extends TimeEntity {
     public void leaveGroup() {
         GroupMemberMappingEntity groupMemberMapping = this.groupMemberMappingEntity.stream()
                 .filter(d -> d.getMid().equals(CryptUtils.getMid()))
-                .findFirst()
+                .findAny()
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
         groupMemberMapping.updateStatus(GroupMemberStatus.EXIT);
@@ -264,14 +264,14 @@ public class GroupEntity extends TimeEntity {
     public void checkDeletedReview(String reviewId) {
         this.reviewEntities.stream()
                 .filter(review -> review.getReviewId().equals(reviewId) && review.getIsDelete())
-                .findFirst().ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.DELETED_REVIEW);});
+                .findAny().ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.DELETED_REVIEW);});
     }
 
     public void updateFollowAlarm(String mid, String targetMid) {
         MemberFollowEntity memberFollowEntity = this.getMemberFollowEntities().stream()
                 .filter(d -> d.getMid().equals(mid)
                         && d.getTargetMid().equals(targetMid))
-                .findFirst()
+                .findAny()
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.FOLLOW_NOT_FOUND));
 
         memberFollowEntity.updateFollowAlarm();
@@ -280,7 +280,7 @@ public class GroupEntity extends TimeEntity {
     public void checkDeletedDaily(String dailyId) {
         this.dailyEntities.stream()
                 .filter(daily -> daily.getDailyId().equals(dailyId) && daily.getIsDelete())
-                .findFirst().ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.DELETED_DAILY);});
+                .findAny().ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.DELETED_DAILY);});
     }
 
     public void checkGroupStatus() {

@@ -76,7 +76,7 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewEntity reviewEntity = group.getReviewEntities()
                 .stream()
                 .filter(r -> r.getReviewId().equals(review.getReviewId()))
-                .findFirst()
+                .findAny()
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
         reviewEntity.checkReviewMaster(CryptUtils.getMid());
@@ -160,9 +160,9 @@ public class ReviewServiceImpl implements ReviewService {
         GroupEntity group = selectExistGroup(groupId);
         group.checkGroupStatus();
 
-        ReviewEntity review = group.getReviewEntities().stream().filter(r -> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+        ReviewEntity review = group.getReviewEntities().stream().filter(r -> r.getReviewId().equals(reviewId)).findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
-        ReviewCommentEntity reviewComment = review.getReviewCommentEntities().stream().filter(c -> c.getCommentId().equals(commentId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_EXIST));
+        ReviewCommentEntity reviewComment = review.getReviewCommentEntities().stream().filter(c -> c.getCommentId().equals(commentId)).findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_EXIST));
 
         reviewComment.updateComment(comment);
     }
@@ -172,9 +172,9 @@ public class ReviewServiceImpl implements ReviewService {
     public void deleteComment(String groupId, String reviewId, String commentId) {
         GroupEntity group = selectExistGroup(groupId);
 
-        ReviewEntity review = group.getReviewEntities().stream().filter(r -> r.getReviewId().equals(reviewId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+        ReviewEntity review = group.getReviewEntities().stream().filter(r -> r.getReviewId().equals(reviewId)).findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
-        ReviewCommentEntity reviewComment = review.getReviewCommentEntities().stream().filter(c -> c.getCommentId().equals(commentId)).findFirst().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_EXIST));
+        ReviewCommentEntity reviewComment = review.getReviewCommentEntities().stream().filter(c -> c.getCommentId().equals(commentId)).findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_EXIST));
 
         reviewComment.deleteComment();
 

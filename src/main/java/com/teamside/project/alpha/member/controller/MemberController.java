@@ -134,7 +134,7 @@ public class MemberController {
 
     private String generateCertificationNumber() {
         Random random = new Random();
-        Integer randomNumber = random.ints(100000, 1000000).findFirst().getAsInt();
+        Integer randomNumber = random.ints(100000, 1000000).findAny().getAsInt();
         return randomNumber.toString();
     }
 
