@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class HttpRequestServletWrapper extends HttpServletRequestWrapper {
     private final Charset encoding;
     private byte[] rawData; // body
-    private Map<String, String[]> params = new HashMap<>();
+    private final Map<String, String[]> params = new HashMap<>();
 
 
     public HttpRequestServletWrapper(HttpServletRequest request) {
@@ -40,6 +40,8 @@ public class HttpRequestServletWrapper extends HttpServletRequestWrapper {
             this.rawData = IOUtils.toByteArray(is); //
 
             String collect = this.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            this.rawData = clearXss(collect).getBytes(StandardCharsets.UTF_8);
+
             //body가 비었을 경우.
             if (collect.equals("")) {
                 return;
@@ -104,8 +106,6 @@ public class HttpRequestServletWrapper extends HttpServletRequestWrapper {
     @Override
     public String getHeader(String name) {
         String value = super.getHeader(name);
-        if (value == null)
-            return null;
         return value;
     }
 
@@ -176,5 +176,16 @@ public class HttpRequestServletWrapper extends HttpServletRequestWrapper {
     @Override
     public BufferedReader getReader() {
         return new BufferedReader(new InputStreamReader(this.getInputStream(), this.encoding));
+    }
+
+    private String clearXss(String value) {
+        value = value.replaceAll("<", "& lt;").replaceAll(">", "& gt;");
+        value = value.replaceAll("\\(", "& #40;").replaceAll("\\)", "& #41;");
+        value = value.replaceAll("'", "& #39;");
+        value = value.replaceAll("eval\\((.*)\\)", "");
+        value = value.replaceAll("[\\\"\\'][\\s]*javascript:(.*)[\\\"\\']", "\"\"");
+        value = value.replaceAll("script", "");
+
+        return value;
     }
 }
