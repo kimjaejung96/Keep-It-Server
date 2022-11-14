@@ -212,7 +212,7 @@ public class GroupServiceImpl implements GroupService {
 
         targetList.stream().forEach(groupMemberMappingEntity -> {
             for (GroupDto.MyGroupDto dto : request.getGroupList()) {
-                if (groupMemberMappingEntity.getGroupId() == dto.getGroupId()) {
+                if (groupMemberMappingEntity.getGroupId().equals(dto.getGroupId())) {
                     groupMemberMappingEntity.updateOrd(dto.getOrd());
                 }
             }
