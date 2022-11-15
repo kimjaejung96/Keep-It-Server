@@ -116,6 +116,13 @@ public class MemberController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @PatchMapping
+    public ResponseEntity<ResponseObject> updateMember(@RequestBody MemberDto.UpdateMember updateMember) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        memberService.updateMember(updateMember);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
 
 
 

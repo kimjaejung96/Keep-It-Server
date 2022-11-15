@@ -21,4 +21,5 @@ public interface MemberService {
     void updateAlarm(AlarmDto alarmDto);
     AlarmDto selectAlarm();
     void updateTerms(AlarmDto alarmDto);
+    void updateMember(MemberDto.UpdateMember updateMember) throws CustomException;
 }

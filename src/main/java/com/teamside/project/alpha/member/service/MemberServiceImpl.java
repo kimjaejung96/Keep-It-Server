@@ -142,4 +142,15 @@ public class MemberServiceImpl implements MemberService {
 
         member.updateTerms(alarmDto);
     }
+
+    @Override
+    @Transactional
+    public void updateMember(MemberDto.UpdateMember updateMember) throws CustomException {
+        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid())
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+
+        if (!member.getName().equals(updateMember.getName())) checkExistName(updateMember.getName());
+
+        member.updateMember(updateMember);
+    }
 }

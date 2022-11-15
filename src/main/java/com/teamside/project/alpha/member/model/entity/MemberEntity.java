@@ -162,4 +162,9 @@ public class MemberEntity extends CreateDtEntity {
     public void updateTerms(AlarmDto alarmDto) {
         this.termsEntity.updateTerms(alarmDto);
     }
+
+    public void updateMember(MemberDto.UpdateMember updateMember) {
+        this.name = updateMember.getName();
+        this.profileUrl = updateMember.getProfileUrl() != null ? updateMember.getProfileUrl() : "";
+    }
 }

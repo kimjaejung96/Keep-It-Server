@@ -55,4 +55,13 @@ public class MemberDto {
             this.mid = mid;
         }
     }
+
+    @Getter
+    public static class UpdateMember {
+        @NotNull
+        @Pattern(regexp = KeepitConstant.REGEXP_MEMBER_NAME, message = "이름이 올바르지 않습니다.")
+        private String name;
+
+        private String profileUrl;
+    }
 }
