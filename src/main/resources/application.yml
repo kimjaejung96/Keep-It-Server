@@ -39,7 +39,7 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
   rabbitmq:
-    host: b-683d595a-184f-40d7-a430-af5df7c5bedc.mq.us-west-1.amazonaws.com
+    host: b-adbf0baf-496f-4415-a7dd-25d528875f82.mq.ap-northeast-2.amazonaws.com
     port: 5671
     username: alpha
     password: alphaalpha#!12
