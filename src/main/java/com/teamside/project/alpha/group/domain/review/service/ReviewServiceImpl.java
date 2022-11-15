@@ -101,8 +101,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public String createComment(String groupId, CommentDto.CreateComment comment, String reviewId) {
+        String mid = CryptUtils.getMid();
         GroupEntity group = selectExistGroup(groupId);
-        group.checkExistMember(CryptUtils.getMid());
+        group.checkExistMember(mid);
         group.checkGroupStatus();
 
         ReviewEntity review = group.getReviewEntities().stream()
@@ -120,12 +121,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         ReviewCommentEntity createdComment = review.createComment(comment, reviewId);
 
-        Map<String, String> data = new HashMap<>();
-        data.put("groupId", groupId);
-        data.put("reviewId", reviewId);
-        data.put("commentId", createdComment.getCommentId());
+        if (!review.getMasterMid().equals(mid)) {
+            Map<String, String> data = new HashMap<>();
+            data.put("groupId", groupId);
+            data.put("reviewId", reviewId);
+            data.put("commentId", createdComment.getCommentId());
 
-        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, data);
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, data);
+        }
         return createdComment.getCommentId();
     }
 
