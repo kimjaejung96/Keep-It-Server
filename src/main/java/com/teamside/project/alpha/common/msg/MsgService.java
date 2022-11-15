@@ -21,7 +21,7 @@ public class MsgService {
             amqpTemplate.convertAndSend(exchange.getValue(), routingKey.getValue(), objectMapper.writeValueAsString(message));
             return true;
         } catch (JsonProcessingException e) {
-            System.out.println("Error sending message");
+            log.error("\n[Error sending message]routingKey : {}", routingKey);
         }
         return false;
     }

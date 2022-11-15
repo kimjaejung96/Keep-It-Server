@@ -11,6 +11,7 @@ public enum MQRoutingKey {
     NEW_REVIEW("kps.group_new_review"),
     FOLLOW_CONTENTS_REGISTER("kps.follow_contents_registered"),
     MY_REVIEW_COMMENT("kps.my_review_comment"),
+    MY_REVIEW_KEEP("kps.my_review_keep"),
 
     TEST("kps.test")
     ;

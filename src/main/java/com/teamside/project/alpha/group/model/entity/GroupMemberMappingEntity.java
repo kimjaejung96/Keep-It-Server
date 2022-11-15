@@ -59,8 +59,8 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
         this.groupId = groupId;
         this.favorite = false;
         this.status = GroupMemberStatus.JOIN;
-        this.reviewAlarm = false;
-        this.dailyAlarm = false;
+        this.reviewAlarm = true;
+        this.dailyAlarm = true;
     }
 
     public void updateOrdAndFavorite(Integer ord, Boolean isFavorite) {

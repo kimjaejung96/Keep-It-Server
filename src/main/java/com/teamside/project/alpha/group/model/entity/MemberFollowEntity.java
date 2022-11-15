@@ -45,7 +45,7 @@ public class MemberFollowEntity extends CreateDtEntity {
         this.groupId = groupId;
         this.mid = mid;
         this.targetMid = targetMid;
-        this.alarmYn = false;
+        this.alarmYn = true;
         this.followYn = true;
     }
 

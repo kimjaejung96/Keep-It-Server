@@ -121,9 +121,8 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewCommentEntity createdComment = review.createComment(comment, reviewId);
 
         Map<String, String> data = new HashMap<>();
-        data.put("receiverMid", review.getMasterMid());
         data.put("groupId", groupId);
-        data.put("parentCommentId", createdComment.getParentComment() != null?createdComment.getParentComment().getCommentId() : null);
+        data.put("reviewId", reviewId);
         data.put("commentId", createdComment.getCommentId());
 
         msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, data);
@@ -142,7 +141,16 @@ public class ReviewServiceImpl implements ReviewService {
                 .filter(r -> Objects.equals(r.getReviewId(), reviewId))
                 .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
-        review.keepReview(reviewId, mid);
+        boolean isNew = review.keepReview(reviewId, mid);
+        if (isNew) {
+            Map<String, String> data = new HashMap<>();
+            data.put("receiverMid", review.getMasterMid());
+            data.put("senderMid", mid);
+            data.put("reviewId", reviewId);
+            data.put("groupId", groupId);
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_KEEP, data);
+        }
+
     }
 
     @Override
