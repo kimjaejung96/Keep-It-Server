@@ -24,8 +24,8 @@ public class ReportEntity extends CreateDtEntity {
     @Enumerated(EnumType.STRING)
     private ReportType type;
 
-    @Column(name = "TYPE_ID", columnDefinition = "bigint")
-    private Long typeId;
+    @Column(name = "TYPE_ID", columnDefinition = "varchar(36)")
+    private String typeId;
 
     @Column(name = "REPORTER_MID", columnDefinition = "varchar(36)")
     private String reporterMid;

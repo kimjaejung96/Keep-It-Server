@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReportDto {
     private ReportType reportType;
-    private Long typeId;
+    private String typeId;
 }
