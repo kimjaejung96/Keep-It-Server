@@ -7,6 +7,10 @@ server:
       
       
 spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 50MB
   data:
     jdbc:
       repositories:
@@ -70,3 +74,17 @@ jwt:
     validTime: 30000
   secret: a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDZraW1qYWVqdW5ndGVzdHNlY3JldHNrZXkwMTA1MDY0MTQwNmtpbWphZWp1bmd0ZXN0c2VjcmV0c2tleTAxMDUwNjQxNDA2a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDY=
 #  secret: kimjaejungtestsecretskey01050641406  * 4
+
+aws:
+  accessKey: AKIATZTFTRIS2EU4PKMQ
+  secretKey: 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
+  S3:
+    region: ap-northeast-2
+    bucket: keep-it-s3
+    
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
