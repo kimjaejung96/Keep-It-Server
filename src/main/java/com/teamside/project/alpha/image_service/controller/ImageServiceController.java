@@ -31,11 +31,14 @@ public class ImageServiceController {
 
     @PostMapping("/upload")
     public ResponseEntity<ResponseObject> upload(MultipartFile image, @RequestParam(required = true) ImageType type) throws CustomException, IOException {
+        if (!image.getContentType().equalsIgnoreCase("image/jpeg")) {
+            throw new CustomException(ApiExceptionCode.IMAGE_CONTENT_TYPE_INVALID);
+        }
         ObjectMetadata objectMetaData = new ObjectMetadata();
         objectMetaData.setContentType(image.getContentType());
         objectMetaData.setContentLength(image.getSize());
 
-        StringBuilder url = new StringBuilder().append("/dev");
+        StringBuilder url = new StringBuilder().append("dev");
         switch (type) {
             case REVIEW:
                 url.append("/review/");
@@ -50,9 +53,9 @@ public class ImageServiceController {
                 url.append("/profile/");
                 break;
             default:
-                throw new CustomException(ApiExceptionCode.SYSTEM_ERROR);
+                throw new CustomException(ApiExceptionCode.IMAGE_TYPE_INVALID);
         }
-        url.append(UUID.randomUUID());
+        url.append(UUID.randomUUID()).append(".jpg");
 
 
         //업로드

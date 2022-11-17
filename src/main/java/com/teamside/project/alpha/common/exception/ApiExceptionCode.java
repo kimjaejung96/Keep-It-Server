@@ -45,6 +45,8 @@ public enum ApiExceptionCode {
     DELETED_GROUP(823, "삭제된 그룹입니다."),
 
 
+    IMAGE_CONTENT_TYPE_INVALID(996, "이미지 확장자가 올바르지 않습니다"),
+    IMAGE_TYPE_INVALID(997, "이미지 타입이 올바르지 않습니다."),
     VALIDATION_ERROR(998, "밸리데이션이 올바르지 않습니다."),
     SYSTEM_ERROR(999, "System Error"),
     ;
