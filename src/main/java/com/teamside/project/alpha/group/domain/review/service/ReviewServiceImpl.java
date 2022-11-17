@@ -48,7 +48,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         CompletableFuture.runAsync(() -> {
             Map<String, Object> newReview = new HashMap<>();
-            newReview.put("senderMid", mid);
             newReview.put("groupId", groupId);
             newReview.put("reviewId", reviewId);
             msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.NEW_REVIEW, newReview);
