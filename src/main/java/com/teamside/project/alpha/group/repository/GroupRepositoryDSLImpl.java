@@ -415,7 +415,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         List<CommentDto> result = jpaQueryFactory.select(new QCommentDto(reviewComment, member, targetMember))
                 .from(reviewComment)
                 .innerJoin(member).on(member.mid.eq(reviewComment.masterMid))
-                .leftJoin(targetMember).on(member.mid.eq(reviewComment.targetMemberMid))
+                .leftJoin(targetMember).on(targetMember.mid.eq(reviewComment.targetMemberMid))
                 .where(reviewComment.review.reviewId.eq(reviewId))
                 .orderBy(reviewComment.seq.asc())
                 .fetch();
