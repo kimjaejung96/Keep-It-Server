@@ -18,7 +18,7 @@ public class NotificationController {
     @GetMapping
     public ResponseEntity<ResponseObject> getNotifications(){
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        notificationService.getNotifications();
+        responseObject.setBody(notificationService.getNotifications());
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 }
