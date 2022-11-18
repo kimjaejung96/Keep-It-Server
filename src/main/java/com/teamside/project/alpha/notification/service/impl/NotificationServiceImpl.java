@@ -32,7 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
     public List<NotificationDto> getNotifications() {
         List<NotificationDto> result;
         List<NotificationEntity> entityList = notificationRepository.findAllByReceiverMidAndNotiDateGreaterThan(CryptUtils.getMid(), LocalDateTime.now().minusWeeks(2));
-        result = entityList.parallelStream().map(this::representNotification).collect(Collectors.toList());
+        result = entityList.stream().map(this::representNotification).collect(Collectors.toList());
         result.sort(Comparator.comparing(NotificationDto::getNotiDate));
         return result;
     }
