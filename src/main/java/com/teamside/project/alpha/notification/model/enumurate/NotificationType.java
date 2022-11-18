@@ -15,5 +15,4 @@ public enum NotificationType {
     KPS_GE,//GROUP EXPELLED
     KPS_MKT,//MARKETING
     KPS_UDT,//UPDATE
-
 }

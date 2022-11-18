@@ -33,18 +33,18 @@ public class NotificationEntity {
     @Column(name = "SENDER_MID", columnDefinition = "char(36)")
     private String senderMid;
 
-    @Column(name = "GROUP_ID", columnDefinition = "bigint")
+    @Column(name = "GROUP_ID", columnDefinition = "char(36)")
     private String groupId;
 
-    @Column(name = "REVIEW_ID", columnDefinition = "bigint")
+    @Column(name = "REVIEW_ID", columnDefinition = "char(36)")
     private String reviewId;
 
-    @Column(name = "DAILY_ID", columnDefinition = "bigint")
+    @Column(name = "DAILY_ID", columnDefinition = "char(36)")
     private String dailyId;
 
-    @Column(name = "COMMENT_ID", columnDefinition = "bigint")
+    @Column(name = "COMMENT_ID", columnDefinition = "char(36)")
     private String commentId;
-    @Column(name = "PLACE_ID", columnDefinition = "bigint")
+    @Column(name = "PLACE_ID", columnDefinition = "char(36)")
     private Long placeId;
     @Column(name = "VIEW_YN", columnDefinition = "char(1)")
     private Boolean viewYn;
