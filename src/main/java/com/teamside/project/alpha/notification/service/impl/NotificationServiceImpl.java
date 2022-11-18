@@ -16,6 +16,6 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     @Override
     public List<NotificationEntity> getNotifications() {
-        return notificationRepository.findAllByReceiverMidAndNotiDateAfter(CryptUtils.getMid(), LocalDateTime.now().minusWeeks(2));
+        return notificationRepository.findAllByReceiverMidAndNotiDateBefore(CryptUtils.getMid(), LocalDateTime.now().minusWeeks(2));
     }
 }

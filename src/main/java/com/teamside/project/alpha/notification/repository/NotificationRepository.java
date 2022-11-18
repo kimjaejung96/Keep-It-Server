@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<NotificationEntity, Long> {
-    List<NotificationEntity> findAllByReceiverMidAndNotiDateAfter(String mid, LocalDateTime localDateTime);
+    List<NotificationEntity> findAllByReceiverMidAndNotiDateBefore(String mid, LocalDateTime localDateTime);
 }
