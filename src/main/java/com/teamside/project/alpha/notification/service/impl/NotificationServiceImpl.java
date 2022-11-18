@@ -36,7 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
         result.sort(Comparator.comparing(NotificationDto::getNotiDate));
         return result;
     }
-    @Transactional(readOnly = true)
+    @Transactional
     public NotificationDto representNotification(NotificationEntity notificationEntity) {
         NotificationDto notificationDto = null;
         GroupEntity group = groupRepository.findByGroupId(notificationEntity.getGroupId()).orElseThrow();
