@@ -184,7 +184,7 @@ public class HttpRequestServletWrapper extends HttpServletRequestWrapper {
         value = value.replaceAll("'", "& #39;");
         value = value.replaceAll("eval\\((.*)\\)", "");
         value = value.replaceAll("[\\\"\\'][\\s]*javascript:(.*)[\\\"\\']", "\"\"");
-        value = value.replaceAll("script", "");
+        value = value.replaceAll("<script", "");
 
         return value;
     }
