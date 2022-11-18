@@ -14,6 +14,7 @@ import com.teamside.project.alpha.group.model.constant.GroupConstant;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
+import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
@@ -302,7 +303,7 @@ public class GroupServiceImpl implements GroupService {
         group.checkExistMember(CryptUtils.getMid());
 
         return new GroupDto.GroupHome(group.getName(),
-                group.getGroupMemberMappingEntity().stream().filter(m -> !m.getMember().getIsDelete()).count(),
+                group.getGroupMemberMappingEntity().stream().filter(m -> m.getStatus().equals(GroupMemberStatus.JOIN)).count(),
                 group.getReviewEntities().stream().filter(d-> Objects.equals(d.getMasterMid(), CryptUtils.getMid()) && !d.getIsDelete()).count()
                 );
     }
