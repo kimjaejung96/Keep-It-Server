@@ -1,0 +1,19 @@
+package com.teamside.project.alpha.notification.model.enumurate;
+
+public enum NotificationType {
+    KPS_GD,//GROUP DELETE
+    KPS_GJ,//GROUP JOIN
+    KPS_GNR,//GROUP NEW REVIEW
+    KPS_GND,//GROUP NEW DAILY
+    KPS_MRK,//MY REVIEW KEEP
+    KPS_MRC,//MY REVIEW COMMENT
+    KPS_MDC,//MY DAILY COMMNET
+    KPS_MCC,// MY COMMENT COMMENT
+    KPS_MFW,//MY FOLLOW
+    KPS_FCR,//FOLLOWER CONTENTS REGISTERED
+    KPS_GI,//GROUP INVATE
+    KPS_GE,//GROUP EXPELLED
+    KPS_MKT,//MARKETING
+    KPS_UDT,//UPDATE
+
+}
