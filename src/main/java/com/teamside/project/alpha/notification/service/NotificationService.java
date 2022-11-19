@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface NotificationService {
 
-    List<NotificationDto> getNotifications();
+    List<NotificationDto> getNotifications(Long pageSize, Long lastSeq);
 }

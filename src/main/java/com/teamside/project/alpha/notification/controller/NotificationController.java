@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -16,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationController {
     private final NotificationService notificationService;
     @GetMapping
-    public ResponseEntity<ResponseObject> getNotifications(){
+    public ResponseEntity<ResponseObject> getNotifications(@RequestParam Long pageSize, @RequestParam(required = false) Long lastSeq){
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(notificationService.getNotifications());
+        responseObject.setBody(notificationService.getNotifications(pageSize, lastSeq));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 }
