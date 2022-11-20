@@ -4,6 +4,8 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.teamside.project.alpha.notification.model.enumurate.NotificationType;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -45,6 +47,19 @@ public class NotificationDto {
         this.imageUrl = imageUrl;
         this.commentId = commentId;
         this.commentContent = commentContent;
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class MyNotifications {
+        private List<NotificationDto> notificationList;
+
+        private Long lastSeq;
+
+        public MyNotifications(List<NotificationDto> notificationList, Long lastSeq) {
+            this.notificationList = notificationList;
+            this.lastSeq = lastSeq;
+        }
     }
 
     public void createMsg() {

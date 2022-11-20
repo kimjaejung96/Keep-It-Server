@@ -1,11 +1,8 @@
 package com.teamside.project.alpha.notification.repository;
 
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.NullExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.daily.model.entity.QDailyCommentEntity;
@@ -16,7 +13,6 @@ import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.notification.model.dto.NotificationDto;
 import com.teamside.project.alpha.notification.model.dto.QNotificationDto;
-import com.teamside.project.alpha.notification.model.entity.NotificationEntity;
 import com.teamside.project.alpha.notification.model.entity.QNotificationEntity;
 import com.teamside.project.alpha.notification.model.enumurate.NotificationType;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
