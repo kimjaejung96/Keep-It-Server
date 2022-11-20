@@ -6,6 +6,8 @@ import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.MyGroups;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.MyReviews;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,4 +35,6 @@ public interface GroupRepositoryDSL {
 
     List<GroupDto.MyFollow> selectMyFollow();
     CommentDto.CommentDetail getReviewCommentDetail(String groupId, String reviewId, Integer nextOffset, int limit);
+    List<MyGroups> getMyGroups();
+    List<MyReviews.Reviews> getMyReviews(String groupId, Long lastSeq, Long pageSize);
 }

@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.group.repository;
 
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
@@ -24,6 +25,8 @@ import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.*;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.MyGroups;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.MyReviews;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
@@ -340,7 +343,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         new QReviewDto_SelectReviewsInGroup_Place(
                                 place.placeId,
                                 place.placeName,
-                                place.roadAddress
+                                place.roadAddress,
+                                place.address
                         ))
                  )
                  .from(review)
@@ -625,5 +629,58 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         Collections.reverse(comments);
 
         return new CommentDto.CommentDetail(nextOffset, limit, comments);
+    }
+
+    @Override
+    public List<MyGroups> getMyGroups() {
+        return jpaQueryFactory.select(Projections.fields(MyGroups.class
+                        , group.groupId
+                        , group.name.as("groupName")))
+                .from(group)
+                .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
+                .where(group.isDelete.eq(false),
+                        groupMemberMapping.member.mid.eq(CryptUtils.getMid())
+                        , groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
+                .fetch();
+    }
+
+    @Override
+    public List<MyReviews.Reviews> getMyReviews(String groupId, Long lastSeq, Long pageSize) {
+        return jpaQueryFactory.select(Projections.fields(MyReviews.Reviews.class,
+                        review.seq.as("seq"),
+                        place.placeName.as("placeName"),
+                        group.name.as("groupName"),
+                        review.createTime.stringValue().as("createDt"),
+                        review.reviewId.as("reviewId"),
+                        ExpressionUtils.as(JPAExpressions
+                                .select(reviewComment.commentId.count())
+                                .from(reviewComment)
+                                .where(reviewComment.review.reviewId.eq(review.reviewId)), "commentCount"),
+                        ExpressionUtils.as(JPAExpressions
+                                .select(reviewKeep.keepId.count())
+                                .from(reviewKeep)
+                                .where(reviewKeep.review.reviewId.eq(review.reviewId)), "keepCount"),
+                new CaseBuilder().when(review.images.isNotEmpty()).then(review.images)
+                        .otherwise(Expressions.nullExpression()).as("imageUrl")
+                ))
+                .from(review)
+                .innerJoin(group).on(group.groupId.eq(review.group.groupId))
+                .innerJoin(place).on(place.placeId.eq(review.place.placeId))
+                .where(review.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existLastSeq(lastSeq))
+                .limit(pageSize)
+                .orderBy(review.seq.desc())
+                .fetch();
+    }
+    private BooleanExpression existGroupId(String groupId) {
+        if (groupId == null) {
+            return null;
+        }
+        return group.groupId.eq(groupId);
+    }
+    private BooleanExpression existLastSeq(Long lastSeq) {
+        if (lastSeq == null) {
+            return null;
+        }
+        return review.seq.lt(lastSeq);
     }
 }

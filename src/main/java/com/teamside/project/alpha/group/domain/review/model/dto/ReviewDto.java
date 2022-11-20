@@ -99,11 +99,13 @@ public class ReviewDto {
             private Long placeId;
             private String placeName;
             private String roadAddress;
+            private String address;
             @QueryProjection
-            public Place(Long placeId, String placeName, String roadAddress) {
+            public Place(Long placeId, String placeName, String roadAddress, String address) {
                 this.placeId = placeId;
                 this.placeName = placeName;
                 this.roadAddress = roadAddress;
+                this.address = address;
             }
         }
     }

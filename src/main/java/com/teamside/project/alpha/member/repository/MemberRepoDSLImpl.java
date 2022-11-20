@@ -61,6 +61,7 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
         return jpaQueryFactory
                 .select(new QMyPageHome(member.mid,
                         member.name,
+                        member.profileUrl,
                         ExpressionUtils.as(
                                 JPAExpressions
                                         .select(review.count().coalesce(0L))

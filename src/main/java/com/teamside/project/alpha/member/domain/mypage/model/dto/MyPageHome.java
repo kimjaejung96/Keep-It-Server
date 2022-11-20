@@ -10,13 +10,15 @@ import lombok.NoArgsConstructor;
 public class MyPageHome {
     private String memberMid;
     private String memberName;
+    private String profileUrl;
     private Long writingCount;
     private Long keepCount;
     private Long followCount;
     @QueryProjection
-    public MyPageHome(String memberMid, String memberName, Long reviewCount, Long dailyCount, Long reviewKeepCount, Long dailyKeepCount, Long followCount) {
+    public MyPageHome(String memberMid, String memberName, String profileUrl, Long reviewCount, Long dailyCount, Long reviewKeepCount, Long dailyKeepCount, Long followCount) {
         this.memberMid = memberMid;
         this.memberName = memberName;
+        this.profileUrl = profileUrl;
         this.writingCount = reviewCount + dailyCount;
         this.keepCount = reviewKeepCount + dailyKeepCount;
         this.followCount = followCount;
