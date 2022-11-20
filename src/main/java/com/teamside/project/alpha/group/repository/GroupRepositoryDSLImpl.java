@@ -25,6 +25,7 @@ import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.*;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.MyComments;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyDaily;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyGroups;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyReviews;
@@ -713,5 +714,86 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .limit(pageSize)
                 .orderBy(daily.seq.desc())
                 .fetch();
+    }
+
+    @Override
+    public List<MyComments.comments> getMyComments(String groupId, Long offset, Long pageSize) {
+        List<MyComments.comments> comments = new ArrayList<>();
+        String mid = CryptUtils.getMid();
+        String queryString = "SELECT A.VIEW_TYPE " +
+                ", A.COMMENT " +
+                ", A.GROUP_NAME " +
+                ", A.TITLE " +
+                ", DATE_FORMAT(A.CREATE_DT, '%Y.%m.%d') AS 'CREATE_DT' " +
+                ", A.STATUS " +
+                ", A.VIEW_IS_DELETE " +
+                ", A.GROUP_ID " +
+                ", A.VIEW_ID " +
+                "FROM ( " +
+                "SELECT 'REVIEW' AS 'VIEW_TYPE' " +
+                ", RC.COMMENT " +
+                ", G.NAME AS 'GROUP_NAME' " +
+                ", P.PLACE_NAME AS 'TITLE' " +
+                ", RC.CREATE_DT " +
+                ", RC.STATUS " +
+                ", R.IS_DELETE AS 'VIEW_IS_DELETE' " +
+                ", G.GROUP_ID " +
+                ", R.REVIEW_ID AS 'VIEW_ID' " +
+                "FROM REVIEW_COMMENT RC " +
+                "INNER JOIN REVIEW R ON RC.REVIEW_ID = R.REVIEW_ID " +
+                "INNER JOIN PLACE P ON R.PLACE_ID = P.PLACE_ID " +
+                "INNER JOIN GROUP_LIST G ON R.GROUP_ID = G.GROUP_ID " +
+                "WHERE RC.MASTER_MID = ? " +
+                (groupId != null ? "AND G.GROUP_ID = ? " : "") +
+                "UNION " +
+                "SELECT 'DAILY' AS 'VIEW_TYPE' " +
+                ", DC.COMMENT " +
+                ", G.NAME AS 'GROUP_NAME' " +
+                ", D.TITLE AS 'TITLE' " +
+                ", DC.CREATE_DT " +
+                ", DC.STATUS " +
+                ", D.IS_DELETE AS 'VIEW_IS_DELETE' " +
+                ", G.GROUP_ID " +
+                ", D.DAILY_ID AS 'VIEW_ID' " +
+                "FROM DAILY_COMMENT DC " +
+                "INNER JOIN DAILY D ON DC.DAILY_ID = D.DAILY_ID " +
+                "INNER JOIN GROUP_LIST G ON D.GROUP_ID = G.GROUP_ID " +
+                "WHERE DC.MASTER_MID = ? " +
+                (groupId != null ? "AND G.GROUP_ID = ? " : "") +
+                ") A " +
+                "ORDER BY A.CREATE_DT DESC " +
+                "LIMIT ?, ?";
+
+        Query query =  entityManager.createNativeQuery(queryString);
+        if (groupId != null) {
+            query.setParameter(1, mid)
+                    .setParameter(2, groupId)
+                    .setParameter(3, mid)
+                    .setParameter(4, groupId)
+                    .setParameter(5, offset)
+                    .setParameter(6, pageSize);
+        } else {
+            query.setParameter(1, mid)
+                    .setParameter(2, mid)
+                    .setParameter(3, offset)
+                    .setParameter(4, pageSize);
+        }
+
+        List<Object[]> resultSets = query.getResultList();
+
+        resultSets.forEach(rs -> comments.add(MyComments.comments.builder()
+                .viewType(rs[0].toString())
+                .comment(rs[1].toString())
+                .groupName(rs[2].toString())
+                .title(rs[3].toString())
+                .creatDt(rs[4].toString())
+                .status(rs[5].toString())
+                .viewIsDelete(rs[6].toString().equals("1"))
+                .groupId(rs[7].toString())
+                .viewId(rs[8].toString())
+                .build()
+        ));
+
+        return comments;
     }
 }

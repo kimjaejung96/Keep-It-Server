@@ -1,10 +1,7 @@
 package com.teamside.project.alpha.member.domain.mypage.service.impl;
 
 import com.teamside.project.alpha.group.repository.GroupRepository;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyDaily;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyGroups;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyPageHome;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyReviews;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 import com.teamside.project.alpha.member.domain.mypage.service.MyPageService;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import lombok.AllArgsConstructor;
@@ -40,5 +37,12 @@ public class MyPageServiceImpl implements MyPageService {
         List<MyDaily.Daily> myDaily = groupRepository.getMyDaily(groupId, lastSeq, pageSize);
 
         return new MyDaily(myDaily, pageSize);
+    }
+
+    @Override
+    public MyComments getMyComments(String groupId, Long offset, Long pageSize) {
+        List<MyComments.comments> myComments = groupRepository.getMyComments(groupId, offset, pageSize);
+
+        return new MyComments(myComments);
     }
 }

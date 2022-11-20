@@ -50,4 +50,14 @@ public class MyPageController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/comments")
+    public ResponseEntity<ResponseObject> getMyComments(@RequestParam(required = false) String groupId,
+                                                     @RequestParam Long offset,
+                                                     @RequestParam Long pageSize) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(myPageService.getMyComments(groupId, offset, pageSize));
+
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
 }
