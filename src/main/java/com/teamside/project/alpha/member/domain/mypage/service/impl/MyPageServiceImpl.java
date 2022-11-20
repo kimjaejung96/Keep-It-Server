@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.member.domain.mypage.service.impl;
 
 import com.teamside.project.alpha.group.repository.GroupRepository;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.MyDaily;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyGroups;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyPageHome;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyReviews;
@@ -32,5 +33,12 @@ public class MyPageServiceImpl implements MyPageService {
         myReviews.stream().filter(d -> d.getImageUrl() != null).forEach(d -> d.splitImages(d.getImageUrl()));
 
         return new MyReviews(myReviews, pageSize);
+    }
+
+    @Override
+    public MyDaily getMyDaily(String groupId, Long lastSeq, Long pageSize) {
+        List<MyDaily.Daily> myDaily = groupRepository.getMyDaily(groupId, lastSeq, pageSize);
+
+        return new MyDaily(myDaily, pageSize);
     }
 }

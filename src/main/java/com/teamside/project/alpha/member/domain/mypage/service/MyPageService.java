@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.member.domain.mypage.service;
 
+import com.teamside.project.alpha.member.domain.mypage.model.dto.MyDaily;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyGroups;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyPageHome;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyReviews;
@@ -12,4 +13,6 @@ public interface MyPageService {
     List<MyGroups> getMyGroups();
 
     MyReviews getMyReviews(String groupId, Long lastSeq, Long pageSize);
+
+    MyDaily getMyDaily(String groupId, Long lastSeq, Long pageSize);
 }

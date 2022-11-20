@@ -40,4 +40,14 @@ public class MyPageController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/daily")
+    public ResponseEntity<ResponseObject> getMyDaily(@RequestParam(required = false) String groupId,
+                                                       @RequestParam(required = false) Long lastSeq,
+                                                       @RequestParam Long pageSize) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(myPageService.getMyDaily(groupId, lastSeq, pageSize));
+
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
 }

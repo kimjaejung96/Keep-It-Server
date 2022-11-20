@@ -25,6 +25,7 @@ import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.*;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.MyDaily;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyGroups;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyReviews;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
@@ -666,7 +667,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(review)
                 .innerJoin(group).on(group.groupId.eq(review.group.groupId))
                 .innerJoin(place).on(place.placeId.eq(review.place.placeId))
-                .where(review.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existLastSeq(lastSeq))
+                .where(review.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existReviewLastSeq(lastSeq))
                 .limit(pageSize)
                 .orderBy(review.seq.desc())
                 .fetch();
@@ -677,10 +678,40 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         }
         return group.groupId.eq(groupId);
     }
-    private BooleanExpression existLastSeq(Long lastSeq) {
+    private BooleanExpression existReviewLastSeq(Long lastSeq) {
         if (lastSeq == null) {
             return null;
         }
         return review.seq.lt(lastSeq);
+    }
+
+    private BooleanExpression existDailyLastSeq(Long lastSeq) {
+        if (lastSeq == null) {
+            return null;
+        }
+        return daily.seq.lt(lastSeq);
+    }
+
+    @Override
+    public List<MyDaily.Daily> getMyDaily(String groupId, Long lastSeq, Long pageSize) {
+        return jpaQueryFactory.select(Projections.fields(MyDaily.Daily.class,
+                        daily.seq.as("seq"),
+                        daily.title.as("title"),
+                        group.name.as("groupName"),
+                        daily.createTime.stringValue().as("createDt"),
+                        daily.dailyId.as("dailyId"),
+                        ExpressionUtils.as(JPAExpressions
+                                .select(dailyComment.commentId.count())
+                                .from(dailyComment)
+                                .where(dailyComment.daily.dailyId.eq(daily.dailyId)), "commentCount"),
+                        new CaseBuilder().when(daily.image.isNotEmpty()).then(daily.image)
+                                .otherwise(Expressions.nullExpression()).as("imageUrl")
+                ))
+                .from(daily)
+                .innerJoin(group).on(group.groupId.eq(daily.group.groupId))
+                .where(daily.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existDailyLastSeq(lastSeq))
+                .limit(pageSize)
+                .orderBy(daily.seq.desc())
+                .fetch();
     }
 }
