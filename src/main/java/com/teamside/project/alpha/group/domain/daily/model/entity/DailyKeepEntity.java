@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.group.domain.daily.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
+import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @DynamicUpdate
 @Table(name = "DAILY_KEEP")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DailyKeepEntity extends CreateDtEntity {
+public class DailyKeepEntity extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "KEEP_ID", columnDefinition = "bigint")
