@@ -41,12 +41,12 @@ public class NotificationDto {
         this.groupId = groupId;
         this.groupName = groupName;
         this.reviewId = reviewId;
-        this.reviewTitle = reviewTitle;
+        this.reviewTitle = (reviewTitle != null && reviewTitle.length() > 20) ? reviewTitle.substring(0, 20) + "..." : reviewTitle;
         this.dailyId = dailyId;
         this.dailyTitle = dailyTitle;
         this.imageUrl = imageUrl;
         this.commentId = commentId;
-        this.commentContent = commentContent;
+        this.commentContent = (commentContent != null && commentContent.length() > 20) ? commentContent.substring(0, 20) + "..." : commentContent;
     }
 
     @Getter
