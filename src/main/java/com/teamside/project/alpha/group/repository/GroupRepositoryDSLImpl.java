@@ -447,7 +447,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         daily.content,
                         daily.image,
                         new CaseBuilder()
-                                .when(dailyKeep.keepId.isNull())
+                                .when(dailyKeep.seq.isNull())
                                 .then(Boolean.FALSE)
                                 .otherwise(Boolean.TRUE)
                         )
@@ -656,7 +656,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                                 .from(reviewComment)
                                 .where(reviewComment.review.reviewId.eq(review.reviewId)), "commentCount"),
                         ExpressionUtils.as(JPAExpressions
-                                .select(reviewKeep.keepId.count())
+                                .select(reviewKeep.seq.count())
                                 .from(reviewKeep)
                                 .where(reviewKeep.review.reviewId.eq(review.reviewId)), "keepCount"),
                 new CaseBuilder().when(review.images.isNotEmpty()).then(review.images)
@@ -716,7 +716,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     @Override
     public List<KeepMyReviews.KeepMyReview> getKeepMyReviews(Long lastSeq, Long pageSize) {
         return jpaQueryFactory.select(Projections.fields(KeepMyReviews.KeepMyReview.class,
-                        reviewKeep.keepId.as("seq"),
+                        reviewKeep.seq.as("seq"),
                         review.place.placeName.as("placeName"),
                         review.reviewId.as("reviewId"),
                         group.name.as("groupName"),
@@ -732,14 +732,14 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(member).on(review.masterMid.eq(member.mid))
                 .where(reviewKeep.memberMid.eq(CryptUtils.getMid()), existKeepReviewLastSeq(lastSeq), reviewKeep.keepYn.eq(true))
                 .limit(pageSize)
-                .orderBy(reviewKeep.keepId.desc())
+                .orderBy(reviewKeep.seq.desc())
                 .fetch();
     }
     private BooleanExpression existKeepReviewLastSeq(Long lastSeq) {
         if (lastSeq == null) {
             return null;
         }
-        return reviewKeep.keepId.lt(lastSeq);
+        return reviewKeep.seq.lt(lastSeq);
     }
 
 
