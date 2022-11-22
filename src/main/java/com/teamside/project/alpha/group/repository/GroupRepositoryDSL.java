@@ -6,10 +6,7 @@ import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyComments;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyDaily;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyGroups;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyReviews;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +37,7 @@ public interface GroupRepositoryDSL {
     List<MyGroups> getMyGroups();
     List<MyReviews.Reviews> getMyReviews(String groupId, Long lastSeq, Long pageSize);
     List<MyDaily.Daily> getMyDaily(String groupId, Long lastSeq, Long pageSize);
+    List<KeepMyReviews.KeepMyReview> getKeepMyReviews(Long lastSeq, Long pageSize);
 
     List<MyComments.comments> getMyComments(String groupId, Long offset, Long pageSize);
 }

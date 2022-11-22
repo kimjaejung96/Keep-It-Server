@@ -13,5 +13,7 @@ public interface MyPageService {
 
     MyDaily getMyDaily(String groupId, Long lastSeq, Long pageSize);
 
+    KeepMyReviews getKeepMyReviews(Long lastSeq, Long pageSize);
+
     MyComments getMyComments(String groupId, Long offset, Long pageSize);
 }

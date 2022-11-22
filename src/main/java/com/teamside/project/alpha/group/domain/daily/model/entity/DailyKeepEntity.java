@@ -1,6 +1,5 @@
 package com.teamside.project.alpha.group.domain.daily.model.entity;
 
-import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,8 +16,8 @@ import javax.persistence.*;
 public class DailyKeepEntity extends TimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "KEEP_ID", columnDefinition = "bigint")
-    private Long keepId;
+    @Column(name = "SEQ", columnDefinition = "bigint")
+    private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DAILY_ID",  referencedColumnName = "DAILY_ID")

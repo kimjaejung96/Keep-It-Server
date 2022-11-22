@@ -60,4 +60,12 @@ public class MyPageController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/keep/reviews")
+    public ResponseEntity<ResponseObject> getKeepMyReivews(@RequestParam(required = false) Long lastSeq,
+                                                       @RequestParam Long pageSize) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(myPageService.getKeepMyReviews(lastSeq, pageSize));
+
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
 }

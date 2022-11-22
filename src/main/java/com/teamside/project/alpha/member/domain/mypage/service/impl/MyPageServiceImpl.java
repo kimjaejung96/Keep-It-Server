@@ -40,6 +40,14 @@ public class MyPageServiceImpl implements MyPageService {
     }
 
     @Override
+    public KeepMyReviews getKeepMyReviews(Long lastSeq, Long pageSize) {
+        List<KeepMyReviews.KeepMyReview> reviews = groupRepository.getKeepMyReviews(lastSeq, pageSize);
+        reviews.stream().filter(d -> d.getImageUrl() != null).forEach(d -> d.splitImages(d.getImageUrl()));
+
+        return new KeepMyReviews(reviews, pageSize);
+    }
+
+    @Override
     public MyComments getMyComments(String groupId, Long offset, Long pageSize) {
         List<MyComments.comments> myComments = groupRepository.getMyComments(groupId, offset, pageSize);
 

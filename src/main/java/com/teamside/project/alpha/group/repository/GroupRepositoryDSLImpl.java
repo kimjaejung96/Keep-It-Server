@@ -25,10 +25,7 @@ import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.*;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyComments;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyDaily;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyGroups;
-import com.teamside.project.alpha.member.domain.mypage.model.dto.MyReviews;
+import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
@@ -715,6 +712,36 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .orderBy(daily.seq.desc())
                 .fetch();
     }
+
+    @Override
+    public List<KeepMyReviews.KeepMyReview> getKeepMyReviews(Long lastSeq, Long pageSize) {
+        return jpaQueryFactory.select(Projections.fields(KeepMyReviews.KeepMyReview.class,
+                        reviewKeep.keepId.as("seq"),
+                        review.place.placeName.as("placeName"),
+                        review.reviewId.as("reviewId"),
+                        group.name.as("groupName"),
+                        member.name.as("memberName"),
+                        review.createTime.stringValue().as("createDt"),
+                        new CaseBuilder().when(review.images.isNotEmpty()).then(review.images)
+                                .otherwise(Expressions.nullExpression()).as("imageUrl"),
+                        review.isDelete.as("isDelete")
+                ))
+                .from(reviewKeep)
+                .innerJoin(review).on(reviewKeep.review.reviewId.eq(review.reviewId)).fetchJoin()
+                .innerJoin(group).on(review.group.groupId.eq(group.groupId))
+                .innerJoin(member).on(review.masterMid.eq(member.mid))
+                .where(reviewKeep.memberMid.eq(CryptUtils.getMid()), existKeepReviewLastSeq(lastSeq), reviewKeep.keepYn.eq(true))
+                .limit(pageSize)
+                .orderBy(reviewKeep.keepId.desc())
+                .fetch();
+    }
+    private BooleanExpression existKeepReviewLastSeq(Long lastSeq) {
+        if (lastSeq == null) {
+            return null;
+        }
+        return reviewKeep.keepId.lt(lastSeq);
+    }
+
 
     @Override
     public List<MyComments.comments> getMyComments(String groupId, Long offset, Long pageSize) {
