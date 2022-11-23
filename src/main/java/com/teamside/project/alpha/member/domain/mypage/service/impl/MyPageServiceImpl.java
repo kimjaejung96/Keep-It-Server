@@ -60,4 +60,9 @@ public class MyPageServiceImpl implements MyPageService {
 
         return new MyComments(myComments);
     }
+
+    @Override
+    public MyFollowingDto getMyFollowingList(Long nextOffset, Long pageSize) {
+        return groupRepository.getMyFollowingDto(nextOffset, pageSize);
+    }
 }

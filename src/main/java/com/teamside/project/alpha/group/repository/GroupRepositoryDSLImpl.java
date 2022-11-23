@@ -850,4 +850,25 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
         return comments;
     }
+
+    @Override
+    public MyFollowingDto getMyFollowingDto(Long nextOffset, Long pageSize) {
+        List<MyFollowingDto.MyFollowing> myFollowings = jpaQueryFactory.select(Projections.fields(MyFollowingDto.MyFollowing.class,
+                        member.name.as("memberName"),
+                        group.name.as("groupName"),
+                        memberFollow.mid.as("memberMid"),
+                        member.isDelete.as("isWithdrawal"),
+                        new CaseBuilder().when(member.profileUrl.isNotEmpty()).then(member.profileUrl)
+                                .otherwise(Expressions.nullExpression()).as("profileUrl")
+                ))
+                .from(memberFollow)
+                .innerJoin(member).on(memberFollow.targetMid.eq(member.mid))
+                .innerJoin(group).on(memberFollow.groupId.eq(group.groupId))
+                .where(memberFollow.mid.eq(CryptUtils.getMid()), memberFollow.followYn.eq(true))
+                .offset(nextOffset == null ? 0 : nextOffset)
+                .limit(pageSize)
+                .orderBy(memberFollow.updateTime.desc())
+                .fetch();
+        return new MyFollowingDto(myFollowings, nextOffset, pageSize);
+    }
 }

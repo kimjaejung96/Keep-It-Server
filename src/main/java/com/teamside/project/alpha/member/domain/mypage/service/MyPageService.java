@@ -18,4 +18,6 @@ public interface MyPageService {
     MyComments getMyComments(String groupId, Long offset, Long pageSize);
 
     MyKeep getKeepMyDaily(Long offset, Long pageSize);
+
+    MyFollowingDto getMyFollowingList(Long nextOffset, Long pageSize);
 }

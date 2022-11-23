@@ -77,4 +77,11 @@ public class MyPageController {
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
+    @GetMapping("/following")
+    public ResponseEntity<ResponseObject> getMyFollowingList(@RequestParam(required = false) Long nextOffset, @RequestParam Long pageSize) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(myPageService.getMyFollowingList(nextOffset, pageSize));
+
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
 }

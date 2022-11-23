@@ -41,4 +41,5 @@ public interface GroupRepositoryDSL {
     List<MyKeep.KeepDaily> getKeepMyDaily(Long offset, Long pageSize);
 
     List<MyComments.comments> getMyComments(String groupId, Long offset, Long pageSize);
+    MyFollowingDto getMyFollowingDto(Long nextOffSet, Long pageSize);
 }
