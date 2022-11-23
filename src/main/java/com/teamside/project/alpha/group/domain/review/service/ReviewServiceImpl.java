@@ -129,6 +129,16 @@ public class ReviewServiceImpl implements ReviewService {
 
             msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, data);
         }
+        if (comment.getParentCommentId() != null) {
+            Map<String, String> data = new HashMap<>();
+            data.put("groupId", groupId);
+            data.put("notiType", "R");
+            data.put("contentsId", reviewId);
+            data.put("targetCommentId", createdComment.getCommentId());
+
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);
+
+        }
         return createdComment.getCommentId();
     }
 

@@ -13,6 +13,7 @@ public enum MQRoutingKey {
     MY_REVIEW_COMMENT("kps.my_review_comment"),
     MY_REVIEW_KEEP("kps.my_review_keep"),
     MY_DAILY_COMMENT("kps.my_daily_comment"),
+    MY_COMMENT_COMMENT("kps.my_comment_comment"),
 
     TEST("kps.test")
     ;
