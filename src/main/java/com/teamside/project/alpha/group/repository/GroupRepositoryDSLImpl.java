@@ -714,34 +714,61 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<KeepMyReviews.KeepMyReview> getKeepMyReviews(Long lastSeq, Long pageSize) {
-        return jpaQueryFactory.select(Projections.fields(KeepMyReviews.KeepMyReview.class,
+    public List<MyKeep.KeepReview> getKeepMyReviews(Long offset, Long pageSize) {
+        return jpaQueryFactory.select(Projections.fields(MyKeep.KeepReview.class,
                         reviewKeep.seq.as("seq"),
                         review.place.placeName.as("placeName"),
                         review.reviewId.as("reviewId"),
+                        group.groupId,
                         group.name.as("groupName"),
                         member.name.as("memberName"),
-                        review.createTime.stringValue().as("createDt"),
-                        new CaseBuilder().when(review.images.isNotEmpty()).then(review.images)
-                                .otherwise(Expressions.nullExpression()).as("imageUrl"),
+                        reviewKeep.updateTime.stringValue().as("createDt"),
+                        new CaseBuilder()
+                                .when(review.images.isNotEmpty())
+                                .then(review.images)
+                                .otherwise(Expressions.nullExpression())
+                                .as("imageUrl"),
                         review.isDelete.as("isDelete")
                 ))
                 .from(reviewKeep)
                 .innerJoin(review).on(reviewKeep.review.reviewId.eq(review.reviewId)).fetchJoin()
                 .innerJoin(group).on(review.group.groupId.eq(group.groupId))
                 .innerJoin(member).on(review.masterMid.eq(member.mid))
-                .where(reviewKeep.memberMid.eq(CryptUtils.getMid()), existKeepReviewLastSeq(lastSeq), reviewKeep.keepYn.eq(true))
+                .where(reviewKeep.memberMid.eq(CryptUtils.getMid()), reviewKeep.keepYn.eq(true))
                 .limit(pageSize)
-                .orderBy(reviewKeep.seq.desc())
+                .offset(offset)
+                .orderBy(reviewKeep.updateTime.desc())
                 .fetch();
     }
-    private BooleanExpression existKeepReviewLastSeq(Long lastSeq) {
-        if (lastSeq == null) {
-            return null;
-        }
-        return reviewKeep.seq.lt(lastSeq);
-    }
 
+    @Override
+    public List<MyKeep.KeepDaily> getKeepMyDaily(Long offset, Long pageSize) {
+        return jpaQueryFactory.select(Projections.fields(MyKeep.KeepDaily.class,
+                        dailyKeep.seq,
+                        daily.dailyId,
+                        daily.title,
+                        daily.image.as("imageUrl"),
+                        dailyKeep.updateTime.stringValue().as("createDt"),
+                        daily.isDelete,
+                        group.groupId,
+                        group.name.as("groupName"),
+                        member.name.as("memberName"),
+                        ExpressionUtils.as(JPAExpressions
+                                .select(dailyComment.count())
+                                .from(dailyComment)
+                                .where(dailyComment.daily.dailyId.eq(daily.dailyId))
+                                , "commentCount")
+                        ))
+                .from(dailyKeep)
+                .innerJoin(dailyKeep.daily, daily)
+                .innerJoin(daily.group, group)
+                .innerJoin(member).on(dailyKeep.memberMid.eq(member.mid))
+                .where(dailyKeep.memberMid.eq(CryptUtils.getMid()), dailyKeep.keepYn.eq(true))
+                .limit(pageSize)
+                .offset(offset)
+                .orderBy(dailyKeep.updateTime.desc())
+                .fetch();
+    }
 
     @Override
     public List<MyComments.comments> getMyComments(String groupId, Long offset, Long pageSize) {

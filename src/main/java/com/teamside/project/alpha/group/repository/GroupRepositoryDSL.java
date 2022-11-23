@@ -37,7 +37,8 @@ public interface GroupRepositoryDSL {
     List<MyGroups> getMyGroups();
     List<MyReviews.Reviews> getMyReviews(String groupId, Long lastSeq, Long pageSize);
     List<MyDaily.Daily> getMyDaily(String groupId, Long lastSeq, Long pageSize);
-    List<KeepMyReviews.KeepMyReview> getKeepMyReviews(Long lastSeq, Long pageSize);
+    List<MyKeep.KeepReview> getKeepMyReviews(Long offset, Long pageSize);
+    List<MyKeep.KeepDaily> getKeepMyDaily(Long offset, Long pageSize);
 
     List<MyComments.comments> getMyComments(String groupId, Long offset, Long pageSize);
 }
