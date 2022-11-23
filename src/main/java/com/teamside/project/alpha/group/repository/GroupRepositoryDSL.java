@@ -41,4 +41,8 @@ public interface GroupRepositoryDSL {
     List<MyKeep.KeepDaily> getKeepMyDaily(Long offset, Long pageSize);
 
     List<MyComments.comments> getMyComments(String groupId, Long offset, Long pageSize);
+
+    void editReviewKeep(MyKeep.editKeep editKeep);
+
+    void editDailyKeep(MyKeep.editKeep editKeep);
 }

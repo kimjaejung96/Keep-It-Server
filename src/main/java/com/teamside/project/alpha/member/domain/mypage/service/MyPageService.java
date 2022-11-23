@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.member.domain.mypage.service;
 
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 
 import java.util.List;
@@ -18,4 +19,5 @@ public interface MyPageService {
     MyComments getMyComments(String groupId, Long offset, Long pageSize);
 
     MyKeep getKeepMyDaily(Long offset, Long pageSize);
+    void editKeep(MyKeep.editKeep editKeep) throws CustomException;
 }

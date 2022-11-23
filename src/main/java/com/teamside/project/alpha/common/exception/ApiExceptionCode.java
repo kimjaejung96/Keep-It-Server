@@ -43,6 +43,7 @@ public enum ApiExceptionCode {
     FOLLOW_NOT_FOUND(821, "팔로우를 찾을 수 없습니다."),
     DELETED_DAILY(822, "삭제된 일상입니다."),
     DELETED_GROUP(823, "삭제된 그룹입니다."),
+    INVALID_VIEW_TYPE(824, "유효하지 않는 타입입니다."),
 
 
     IMAGE_CONTENT_TYPE_INVALID(996, "이미지 확장자가 올바르지 않습니다"),
