@@ -34,6 +34,7 @@ import org.apache.logging.log4j.util.Strings;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
@@ -870,5 +871,33 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .orderBy(memberFollow.updateTime.desc())
                 .fetch();
         return new MyFollowingDto(myFollowings, nextOffset, pageSize);
+    }
+
+    @Override
+    public void editReviewKeep(MyKeep.editKeep editKeep) {
+        jpaQueryFactory
+                .update(reviewKeep)
+                .set(reviewKeep.keepYn, false)
+                .set(reviewKeep.updateTime, LocalDateTime.now())
+                .where(reviewKeep.memberMid.eq(CryptUtils.getMid()), editBooleanExpression(editKeep))
+                .execute();
+    }
+
+    @Override
+    public void editDailyKeep(MyKeep.editKeep editKeep) {
+        jpaQueryFactory
+                .update(dailyKeep)
+                .set(dailyKeep.keepYn, false)
+                .set(dailyKeep.updateTime, LocalDateTime.now())
+                .where(dailyKeep.memberMid.eq(CryptUtils.getMid()), editBooleanExpression(editKeep))
+                .execute();
+    }
+
+    private BooleanExpression editBooleanExpression(MyKeep.editKeep editKeep) {
+        if (editKeep.getIsAll()) {
+            return null;
+        }
+
+        return editKeep.getType().equals("REVIEW") ? reviewKeep.seq.in(editKeep.getKeepSeqList()) : dailyKeep.seq.in(editKeep.getKeepSeqList());
     }
 }

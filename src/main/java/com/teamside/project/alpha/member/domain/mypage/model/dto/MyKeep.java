@@ -47,6 +47,14 @@ public class MyKeep {
         private Long commentCount;
     }
 
+    @Getter
+    @NoArgsConstructor
+    public static class editKeep {
+        private List<Long> keepSeqList;
+        private String type;
+        private final Boolean isAll = false;
+    }
+
     public MyKeep(List<KeepReview> keepReviews, List<KeepDaily> keepDaily) {
         this.keepReviews = keepReviews;
         this.keepDaily = keepDaily;

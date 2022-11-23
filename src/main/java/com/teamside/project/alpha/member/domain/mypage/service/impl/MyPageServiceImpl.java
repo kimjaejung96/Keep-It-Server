@@ -1,11 +1,14 @@
 package com.teamside.project.alpha.member.domain.mypage.service.impl;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 import com.teamside.project.alpha.member.domain.mypage.service.MyPageService;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -64,5 +67,19 @@ public class MyPageServiceImpl implements MyPageService {
     @Override
     public MyFollowingDto getMyFollowingList(Long nextOffset, Long pageSize) {
         return groupRepository.getMyFollowingDto(nextOffset, pageSize);
+    }
+
+    @Override
+    @Transactional
+    public void editKeep(MyKeep.editKeep editKeep) throws CustomException {
+        String type = editKeep.getType() == null ? "" : editKeep.getType();
+
+        if (type.equals("REVIEW")) {
+            groupRepository.editReviewKeep(editKeep);
+        } else if (type.equals("DAILY")) {
+            groupRepository.editDailyKeep(editKeep);
+        } else {
+            throw new CustomException(ApiExceptionCode.INVALID_VIEW_TYPE);
+        }
     }
 }
