@@ -80,6 +80,11 @@ public class GroupServiceImpl implements GroupService {
         group.checkGroupMaster();
 
         group.deleteGroup();
+
+        Map<String, String> data = new HashMap<>();
+        data.put("groupId", groupId);
+        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_DELETE, data);
+
     }
 
     @Override
