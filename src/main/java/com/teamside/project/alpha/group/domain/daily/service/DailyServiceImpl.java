@@ -37,7 +37,13 @@ public class DailyServiceImpl implements DailyService {
         groupEntity.checkExistMember(CryptUtils.getMid());
         groupEntity.checkGroupStatus();
 
-        groupEntity.createDaily(new DailyEntity(groupId, dailyDto));
+        String createdDailyId = groupEntity.createDaily(new DailyEntity(groupId, dailyDto));
+
+        Map<String, String> data = new HashMap<>();
+        data.put("senderMid", CryptUtils.getMid());
+        data.put("groupId", groupId);
+        data.put("dailyId", createdDailyId);
+        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_NEW_DAILY, data);
     }
 
     @Override

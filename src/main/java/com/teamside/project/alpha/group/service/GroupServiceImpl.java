@@ -330,6 +330,11 @@ public class GroupServiceImpl implements GroupService {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkGroupMaster();
         group.exileMember(memberId);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("receiverMid", group.getMasterMid());
+        data.put("groupId", groupId);
+        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_JOIN, data);
     }
 
     @Override

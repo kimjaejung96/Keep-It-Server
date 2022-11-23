@@ -14,6 +14,8 @@ public enum MQRoutingKey {
     MY_REVIEW_KEEP("kps.my_review_keep"),
     MY_DAILY_COMMENT("kps.my_daily_comment"),
     MY_COMMENT_COMMENT("kps.my_comment_comment"),
+    GROUP_NEW_DAILY("kps.group_new_daily"),
+    GROUP_EXPELLED("kps.group_expelled"),
 
     TEST("kps.test")
     ;

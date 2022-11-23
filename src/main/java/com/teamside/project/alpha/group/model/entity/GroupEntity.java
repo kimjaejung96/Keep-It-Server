@@ -160,8 +160,9 @@ public class GroupEntity extends TimeEntity {
         return review.getReviewId();
     }
 
-    public void createDaily(DailyEntity dailyEntity) {
+    public String createDaily(DailyEntity dailyEntity) {
         this.dailyEntities.add(dailyEntity);
+        return dailyEntity.getDailyId();
     }
 
     public void checkExistReview(long placeId) {
