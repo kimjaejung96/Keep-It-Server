@@ -1,6 +1,6 @@
 package com.teamside.project.alpha.group.model.entity;
 
-import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
+import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.group.model.entity.compositeKeys.MemberFollowKeys;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import javax.persistence.*;
 @IdClass(MemberFollowKeys.class)
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberFollowEntity extends CreateDtEntity {
+public class MemberFollowEntity extends TimeEntity {
     @Id
     @Column(name = "GROUP_ID")
     private String groupId;
