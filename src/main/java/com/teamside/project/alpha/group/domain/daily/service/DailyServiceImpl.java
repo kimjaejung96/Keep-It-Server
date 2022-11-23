@@ -104,12 +104,17 @@ public class DailyServiceImpl implements DailyService {
                     newComment.put("groupId", groupId);
                     newComment.put("commentId", commentId);
                     msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_DAILY_COMMENT, newComment);
-
                 }
             });
         }
-
-
+        if (comment.getParentCommentId() != null) {
+            Map<String, String> data = new HashMap<>();
+            data.put("groupId", groupId);
+            data.put("notiType", "R");
+            data.put("contentsId", dailyId);
+            data.put("targetCommentId", comment.getParentCommentId());
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);
+        }
 
         return commentId;
     }
