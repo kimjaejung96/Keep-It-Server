@@ -53,6 +53,7 @@ public class SpringSecurity {
                         .antMatchers(HttpMethod.POST, "/members/inquiry").permitAll()
                         .antMatchers(HttpMethod.POST,"/auth/sms/**").permitAll()
                         .antMatchers(HttpMethod.POST,"/auth/refresh/access-token").permitAll()
+                        .antMatchers(HttpMethod.POST,"/image/profile/upload").permitAll()
 
 
 

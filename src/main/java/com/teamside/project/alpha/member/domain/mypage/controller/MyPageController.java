@@ -4,6 +4,7 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyKeep;
+import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
 import com.teamside.project.alpha.member.domain.mypage.service.MyPageService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,13 @@ public class MyPageController {
     }
     @GetMapping("/groups")
     public ResponseEntity<ResponseObject> getMyGroups() {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(myPageService.getMyGroups());
+
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+    @GetMapping("/groups/management")
+    public ResponseEntity<ResponseObject> getMyGroupsManagements(@RequestParam MyGroupManagementType type) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(myPageService.getMyGroups());
 

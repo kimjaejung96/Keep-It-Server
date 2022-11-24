@@ -49,9 +49,6 @@ public class ImageServiceController {
             case GROUP:
                 url.append("/group/");
                 break;
-            case PROFILE:
-                url.append("/profile/");
-                break;
             default:
                 throw new CustomException(ApiExceptionCode.IMAGE_TYPE_INVALID);
         }
@@ -67,6 +64,29 @@ public class ImageServiceController {
 
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(url.toString());
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+    @PostMapping("/profile/upload")
+    public ResponseEntity<ResponseObject> profileUpload(MultipartFile image) throws CustomException, IOException {
+        if (!image.getContentType().equalsIgnoreCase("image/jpeg")) {
+            throw new CustomException(ApiExceptionCode.IMAGE_CONTENT_TYPE_INVALID);
+        }
+        ObjectMetadata objectMetaData = new ObjectMetadata();
+        objectMetaData.setContentType(image.getContentType());
+        objectMetaData.setContentLength(image.getSize());
+
+        String url = "dev/profile/"+UUID.randomUUID()+".jpg";
+
+
+        //업로드
+        amazonS3Client.putObject(
+                new PutObjectRequest(s3Bucket, url, image.getInputStream(), objectMetaData)
+                        .withCannedAcl(CannedAccessControlList.PublicRead)
+        );
+
+
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(url);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 }
