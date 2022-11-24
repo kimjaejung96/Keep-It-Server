@@ -15,6 +15,7 @@ public class MyDaily {
     public static class Daily {
         private Long seq;
         private String title;
+        private String groupId;
         private String groupName;
         private String createDt;
         private String dailyId;

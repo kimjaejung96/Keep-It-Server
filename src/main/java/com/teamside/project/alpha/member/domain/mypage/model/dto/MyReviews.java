@@ -16,6 +16,7 @@ public class MyReviews {
         private Long seq;
         private String placeName;
         private String groupName;
+        private String groupId;
         private String createDt;
         private String reviewId;
         private Long commentCount;
