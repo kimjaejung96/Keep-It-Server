@@ -841,7 +841,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .comment(rs[1].toString())
                 .groupName(rs[2].toString())
                 .title(rs[3].toString())
-                .creatDt(rs[4].toString())
+                .createDt(rs[4].toString())
                 .status(rs[5].toString())
                 .viewIsDelete(rs[6].toString().equals("1"))
                 .groupId(rs[7].toString())

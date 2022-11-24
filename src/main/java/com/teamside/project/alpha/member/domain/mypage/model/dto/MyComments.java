@@ -33,7 +33,7 @@ public class MyComments {
 
         private String title;
 
-        private String creatDt;
+        private String createDt;
 
         private String status;
 
