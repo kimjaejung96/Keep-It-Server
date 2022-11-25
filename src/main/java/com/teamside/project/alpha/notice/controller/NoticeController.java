@@ -1,14 +1,12 @@
 package com.teamside.project.alpha.notice.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.notice.service.NoticeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/notices")
@@ -24,6 +22,13 @@ public class NoticeController {
                                                   @RequestParam(required = false) Long lastNoticeId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(noticeService.getNotices(pageSize, lastNoticeId));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/{noticeId}")
+    public ResponseEntity<ResponseObject> notice(@PathVariable Long noticeId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(noticeService.getNotice(noticeId));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

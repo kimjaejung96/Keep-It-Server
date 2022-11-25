@@ -45,6 +45,8 @@ public enum ApiExceptionCode {
     DELETED_GROUP(823, "삭제된 그룹입니다."),
     INVALID_VIEW_TYPE(824, "유효하지 않는 타입입니다."),
 
+    NOTICE_NOT_FOUND(825, "공지사항을 찾을 수 없습니다."),
+
 
     IMAGE_CONTENT_TYPE_INVALID(996, "이미지 확장자가 올바르지 않습니다"),
     IMAGE_TYPE_INVALID(997, "이미지 타입이 올바르지 않습니다."),

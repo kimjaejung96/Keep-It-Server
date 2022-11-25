@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.notice.model.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+import com.teamside.project.alpha.notice.model.entity.NoticeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,5 +48,11 @@ public class NoticeDto {
         private String content;
 
         private String createDt;
+
+        public NoticeDetail(NoticeEntity noticeEntity) {
+            this.title = noticeEntity.getTitle();
+            this.content = noticeEntity.getContent();
+            this.createDt = noticeEntity.getCreateTime().toString();
+        }
     }
 }
