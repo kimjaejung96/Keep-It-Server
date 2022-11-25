@@ -72,6 +72,9 @@ public class MyPageServiceImpl implements MyPageService {
     @Override
     @Transactional
     public void editKeep(MyKeep.editKeep editKeep) throws CustomException {
+        if (!editKeep.getIsAll() && editKeep.getKeepSeqList() == null) {
+            throw new CustomException(ApiExceptionCode.BAD_REQUEST);
+        }
         String type = editKeep.getType() == null ? "" : editKeep.getType();
 
         if (type.equals("REVIEW")) {

@@ -725,7 +725,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         group.groupId,
                         group.name.as("groupName"),
                         member.name.as("memberName"),
-                        reviewKeep.updateTime.stringValue().as("createDt"),
+                        review.createTime.stringValue().as("createDt"),
                         new CaseBuilder()
                                 .when(review.images.isNotEmpty())
                                 .then(review.images)
@@ -751,7 +751,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         daily.dailyId,
                         daily.title,
                         daily.image.as("imageUrl"),
-                        dailyKeep.updateTime.stringValue().as("createDt"),
+                        daily.createTime.stringValue().as("createDt"),
                         daily.isDelete,
                         group.groupId,
                         group.name.as("groupName"),
@@ -765,7 +765,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(dailyKeep)
                 .innerJoin(dailyKeep.daily, daily)
                 .innerJoin(daily.group, group)
-                .innerJoin(member).on(dailyKeep.memberMid.eq(member.mid))
+                .innerJoin(member).on(daily.masterMid.eq(member.mid))
                 .where(dailyKeep.memberMid.eq(CryptUtils.getMid()), dailyKeep.keepYn.eq(true))
                 .limit(pageSize)
                 .offset(offset)
