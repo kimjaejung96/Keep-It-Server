@@ -82,7 +82,8 @@ public class MemberServiceImpl implements MemberService {
                 inquiryDto.getName(),
                 inquiryDto.getPlace(),
                 inquiryDto.getWorld(),
-                inquiryDto.getEtc()
+                inquiryDto.getEtc(),
+                null
         );
 
         inquiryRepo.save(inquiry);

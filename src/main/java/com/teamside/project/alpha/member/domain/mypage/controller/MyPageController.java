@@ -6,10 +6,13 @@ import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyKeep;
 import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
 import com.teamside.project.alpha.member.domain.mypage.service.MyPageService;
+import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @AllArgsConstructor
 @RestController
@@ -99,4 +102,13 @@ public class MyPageController {
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
+
+    @PostMapping("/inquiry")
+    public ResponseEntity<ResponseObject> myInquiry(@RequestBody @Valid InquiryDto.MyInquiry myInquiry) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        myPageService.myInquiry(myInquiry);
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
+
 }

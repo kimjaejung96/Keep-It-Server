@@ -29,12 +29,17 @@ public class InquiryEntity extends TimeEntity {
 
     @Column(name = "ETC", columnDefinition = "varchar(200)")
     private String etc;
-    public InquiryEntity(String email, String name, String place, String world, String etc) {
+
+    @Column(name = "DETAIL", columnDefinition = "varchar(1000)")
+    private String detail;
+
+    public InquiryEntity(String email, String name, String place, String world, String etc, String detail) {
         this.email = email;
         this.name = name;
         this.place = place;
         this.world = world;
         this.etc = etc;
+        this.detail = detail;
     }
 
     public InquiryEntity() {

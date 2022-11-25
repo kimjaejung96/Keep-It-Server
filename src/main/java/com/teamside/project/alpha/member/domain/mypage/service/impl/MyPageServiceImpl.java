@@ -5,6 +5,8 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 import com.teamside.project.alpha.member.domain.mypage.service.MyPageService;
+import com.teamside.project.alpha.member.model.dto.InquiryDto;
+import com.teamside.project.alpha.member.repository.InquiryRepo;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.List;
 public class MyPageServiceImpl implements MyPageService {
     private final MemberRepo memberRepo;
     private final GroupRepository groupRepository;
+    private final InquiryRepo inquiryRepo;
     @Override
     public MyPageHome getMyPageHome() {
         return memberRepo.getMyPageHome();
@@ -84,5 +87,10 @@ public class MyPageServiceImpl implements MyPageService {
         } else {
             throw new CustomException(ApiExceptionCode.INVALID_VIEW_TYPE);
         }
+    }
+
+    @Override
+    public void myInquiry(InquiryDto.MyInquiry myInquiry) {
+        inquiryRepo.save(myInquiry.toEntity());
     }
 }

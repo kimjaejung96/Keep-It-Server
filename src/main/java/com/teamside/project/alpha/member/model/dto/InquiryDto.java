@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.member.model.dto;
 
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
+import com.teamside.project.alpha.member.model.entity.InquiryEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,4 +35,27 @@ public class InquiryDto {
     @Size(max = 200, message = "최대 200자 입력가능합니다.")
     private String etc;
 
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class MyInquiry {
+        @NotNull
+        @Pattern(regexp = KeepitConstant.REGEXP_EMAIL,
+                message = "올바른 이메일 주소를 입력해주세요.")
+        private String email;
+
+        @NotNull
+        @Size(min = 2, max = 1000, message = "최소 2자에서 최대 1000자 입력가능합니다.")
+        private String detail;
+
+        public InquiryEntity toEntity() {
+            return new InquiryEntity(
+                    this.getEmail(),
+                    null,
+                    null,
+                    null,
+                    null,
+                    this.detail
+            );
+        }
+    }
 }
