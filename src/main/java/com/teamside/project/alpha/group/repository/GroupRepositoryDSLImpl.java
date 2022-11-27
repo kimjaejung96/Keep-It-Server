@@ -27,6 +27,7 @@ import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
+import com.teamside.project.alpha.member.model.entity.QMemberBlockEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 import org.apache.logging.log4j.util.Strings;
@@ -56,6 +57,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     QMemberEntity member = QMemberEntity.memberEntity;
     QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
     QMemberFollowEntity memberFollow = QMemberFollowEntity.memberFollowEntity;
+    QMemberBlockEntity block = QMemberBlockEntity.memberBlockEntity;
 
     QStatReferralGroupEntity statReferralGroup = QStatReferralGroupEntity.statReferralGroupEntity;
 
@@ -667,7 +669,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(review)
                 .innerJoin(group).on(group.groupId.eq(review.group.groupId))
                 .innerJoin(place).on(place.placeId.eq(review.place.placeId))
-                .where(review.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existReviewLastSeq(lastSeq))
+                .where(review.isDelete.eq(false), review.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existReviewLastSeq(lastSeq))
                 .limit(pageSize)
                 .orderBy(review.seq.desc())
                 .fetch();
@@ -710,7 +712,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ))
                 .from(daily)
                 .innerJoin(group).on(group.groupId.eq(daily.group.groupId))
-                .where(daily.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existDailyLastSeq(lastSeq))
+                .where(daily.isDelete.eq(false), daily.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existDailyLastSeq(lastSeq))
                 .limit(pageSize)
                 .orderBy(daily.seq.desc())
                 .fetch();
@@ -873,6 +875,24 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .orderBy(memberFollow.updateTime.desc())
                 .fetch();
         return new MyFollowingDto(myFollowings, nextOffset, pageSize);
+    }
+
+    @Override
+    public List<MyBlock.Block> getMyBlocks(Long nextOffset, Long pageSize) {
+        return jpaQueryFactory
+                .select(new QMyBlock_Block(
+                        block.targetMid,
+                        member.name,
+                        member.profileUrl,
+                        member.isDelete
+                ))
+                .from(block)
+                .innerJoin(block.targetMember, member)
+                .where(block.mid.eq(CryptUtils.getMid()))
+                .orderBy(block.createTime.asc())
+                .limit(pageSize)
+                .offset(nextOffset == null ? 0 : nextOffset)
+                .fetch();
     }
 
     @Override

@@ -24,4 +24,6 @@ public interface MyPageService {
     MyFollowingDto getMyFollowingList(Long nextOffset, Long pageSize);
     void editKeep(MyKeep.editKeep editKeep) throws CustomException;
     void myInquiry(InquiryDto.MyInquiry myInquiry);
+
+    MyBlock getMyBlocks(Long nextOffset, Long pageSize);
 }

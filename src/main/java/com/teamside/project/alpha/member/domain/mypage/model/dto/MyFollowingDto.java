@@ -24,7 +24,7 @@ public class MyFollowingDto {
         this.myFollowing = myFollowing;
         if (myFollowing.size() == pageSize) {
             if (nextOffset == null) {
-                this.nextOffset = pageSize+1;
+                this.nextOffset = pageSize;
             } else this.nextOffset = nextOffset + pageSize;
         } else {
             this.nextOffset = null;

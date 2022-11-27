@@ -46,4 +46,6 @@ public interface GroupRepositoryDSL {
     void editReviewKeep(MyKeep.editKeep editKeep);
 
     void editDailyKeep(MyKeep.editKeep editKeep);
+
+    List<MyBlock.Block> getMyBlocks(Long nextOffset, Long pageSize);
 }

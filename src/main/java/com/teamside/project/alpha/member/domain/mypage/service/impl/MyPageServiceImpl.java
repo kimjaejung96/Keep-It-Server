@@ -73,6 +73,12 @@ public class MyPageServiceImpl implements MyPageService {
     }
 
     @Override
+    public MyBlock getMyBlocks(Long nextOffset, Long pageSize) {
+        List<MyBlock.Block> blocks = groupRepository.getMyBlocks(nextOffset, pageSize);
+        return new MyBlock(blocks, nextOffset, pageSize);
+    }
+
+    @Override
     @Transactional
     public void editKeep(MyKeep.editKeep editKeep) throws CustomException {
         if (!editKeep.getIsAll() && editKeep.getKeepSeqList() == null) {

@@ -103,6 +103,14 @@ public class MyPageController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/blocks")
+    public ResponseEntity<ResponseObject> getMyBlocks(@RequestParam(required = false) Long nextOffset, @RequestParam Long pageSize) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(myPageService.getMyBlocks(nextOffset, pageSize));
+
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
     @PostMapping("/inquiry")
     public ResponseEntity<ResponseObject> myInquiry(@RequestBody @Valid InquiryDto.MyInquiry myInquiry) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
