@@ -32,7 +32,7 @@ public class PlaceEntity extends TimeEntity {
     @Column(name = "ROAD_ADDRESS", columnDefinition = "varchar(1000)")
     private String roadAddress;
 
-    @Column(name = "PHONE", columnDefinition = "varchar(13)")
+    @Column(name = "PHONE", columnDefinition = "varchar(15)")
     private String phone;
 
     @Column(name = "X", nullable = false, columnDefinition = "DECIMAL(16,13)")
