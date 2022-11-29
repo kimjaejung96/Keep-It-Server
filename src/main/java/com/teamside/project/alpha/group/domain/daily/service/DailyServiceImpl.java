@@ -118,7 +118,7 @@ public class DailyServiceImpl implements DailyService {
             data.put("groupId", groupId);
             data.put("notiType", "R");
             data.put("contentsId", dailyId);
-            data.put("targetCommentId", comment.getParentCommentId());
+            data.put("targetCommentId", comment.getTargetCommentId());
             data.put("senderMid", mid);
             data.put("newCommentId", commentId);
             msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);

@@ -85,6 +85,7 @@ public class CommentDto {
         private String image;
         private String parentCommentId;
         private String targetMid;
+        private String targetCommentId;
     }
 
     @Getter
