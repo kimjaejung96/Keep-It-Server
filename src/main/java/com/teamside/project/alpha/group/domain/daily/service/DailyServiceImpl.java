@@ -116,7 +116,7 @@ public class DailyServiceImpl implements DailyService {
         if (comment.getParentCommentId() != null) {
             Map<String, String> data = new HashMap<>();
             data.put("groupId", groupId);
-            data.put("notiType", "R");
+            data.put("notiType", "D");
             data.put("contentsId", dailyId);
             data.put("targetCommentId", comment.getTargetCommentId());
             data.put("senderMid", mid);
