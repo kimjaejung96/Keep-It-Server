@@ -884,10 +884,12 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         block.targetMid,
                         member.name,
                         member.profileUrl,
+                        group.name,
                         member.isDelete
                 ))
                 .from(block)
                 .innerJoin(block.targetMember, member)
+                .innerJoin(group).on(block.groupId.eq(group.groupId))
                 .where(block.mid.eq(CryptUtils.getMid()))
                 .orderBy(block.createTime.asc())
                 .limit(pageSize)

@@ -19,13 +19,15 @@ public class MyBlock {
         private String memberMid;
         private String memberName;
         private String profileUrl;
+        private String groupName;
         private Boolean isWithdrawal;
 
         @QueryProjection
-        public Block(String memberMid, String memberName, String profileUrl, Boolean isWithdrawal) {
+        public Block(String memberMid, String memberName, String profileUrl, String groupName, Boolean isWithdrawal) {
             this.memberMid = memberMid;
             this.memberName = memberName;
             this.profileUrl = profileUrl;
+            this.groupName = groupName;
             this.isWithdrawal = isWithdrawal;
         }
     }
