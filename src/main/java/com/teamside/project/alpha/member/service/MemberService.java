@@ -15,7 +15,7 @@ public interface MemberService {
     void checkExistsName(String name) throws CustomException;
     void inquiry(InquiryDto inquiryDto);
     List<MemberDto.InviteMemberList> search(String name, String groupId);
-    void block(String targetMid) throws CustomException;
+    void block(String targetMid, String groupId) throws CustomException;
 
     void updateFcm(String fcmToken);
     void updateAlarm(AlarmDto alarmDto);

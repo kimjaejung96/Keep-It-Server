@@ -22,6 +22,9 @@ public class MemberBlockEntity extends CreateDtEntity {
     @Column(name = "TARGET_MID", columnDefinition = "char(36)")
     private String targetMid;
 
+    @Column(name = "GROUP_ID", columnDefinition = "char(36)")
+    private String groupId;
+
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MID", referencedColumnName = "MID")
@@ -32,8 +35,9 @@ public class MemberBlockEntity extends CreateDtEntity {
     @JoinColumn(name = "MID", referencedColumnName = "MID")
     private MemberEntity targetMember;
 
-    public MemberBlockEntity(String mid, String targetMid) {
+    public MemberBlockEntity(String mid, String targetMid, String groupId) {
         this.mid = mid;
         this.targetMid = targetMid;
+        this.groupId = groupId;
     }
 }

@@ -83,9 +83,9 @@ public class MemberController {
 
 
     @PostMapping("/{targetMid}/block")
-    public ResponseEntity<ResponseObject> block(@PathVariable String targetMid) throws CustomException {
+    public ResponseEntity<ResponseObject> block(@PathVariable String targetMid, @RequestParam(required = false) String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        memberService.block(targetMid);
+        memberService.block(targetMid, groupId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
     @PutMapping("/fcm")
