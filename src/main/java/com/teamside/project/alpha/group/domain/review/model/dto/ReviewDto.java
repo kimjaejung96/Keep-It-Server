@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.review.model.entity.ReviewEntity;
+import com.teamside.project.alpha.group.domain.review.model.entity.ReviewKeepEntity;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.place.model.entity.PlaceEntity;
 import lombok.AccessLevel;
@@ -14,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -152,8 +152,8 @@ public class ReviewDto {
             this.placeId = place.getPlaceId();
             this.reviewImagesUrl = List.of(review.getImages().split(","));
             this.reviewCreateDt = String.valueOf(review.getCreateTime());
-            this.keepCount = review.getReviewKeepEntities().stream().filter(r -> r.isKeepYn()).collect(Collectors.toList()).size();
-            this.isKeep = review.getReviewKeepEntities().stream().anyMatch(r -> r.getMemberMid().equals(CryptUtils.getMid()));
+            this.keepCount = (int) review.getReviewKeepEntities().stream().filter(ReviewKeepEntity::isKeepYn).count();
+            this.isKeep = review.getReviewKeepEntities().stream().anyMatch(r -> r.getMemberMid().equals(CryptUtils.getMid()) && r.isKeepYn());
             this.commentCount = review.getReviewCommentEntities().size();
         }
     }
