@@ -155,7 +155,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
         boolean isNew = review.keepReview(reviewId, mid);
-        if (isNew) {
+        if (review.getMasterMid().equals(CryptUtils.getMid()) && isNew) {
             Map<String, String> data = new HashMap<>();
             data.put("receiverMid", review.getMasterMid());
             data.put("senderMid", mid);
