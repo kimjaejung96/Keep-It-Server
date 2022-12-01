@@ -864,7 +864,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         member.name.as("memberName"),
                         group.groupId,
                         group.name.as("groupName"),
-                        memberFollow.mid.as("memberMid"),
+                        member.mid.as("memberMid"),
                         member.isDelete.as("isWithdrawal"),
                         new CaseBuilder()
                                 .when(member.profileUrl.isNotEmpty())
