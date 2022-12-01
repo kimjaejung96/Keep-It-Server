@@ -88,17 +88,17 @@ public class DailyDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class DailyDetail {
         private String title;
-
         private String mid;
         private String memberName;
         private String memberProfileUrl;
         private String createDt;
         private String content;
         private String imageUrl;
+        private String groupName;
         private Boolean isKeep;
 
         @QueryProjection
-        public DailyDetail(String title, String mid, String memberName, String memberProfileUrl, String createDt, String content, String imageUrl, Boolean isKeep) {
+        public DailyDetail(String title, String mid, String memberName, String memberProfileUrl, String createDt, String content, String imageUrl, String groupName, Boolean isKeep) {
             this.title = title;
             this.mid = mid;
             this.memberName = memberName;
@@ -106,6 +106,7 @@ public class DailyDto {
             this.createDt = createDt;
             this.content = content;
             this.imageUrl = imageUrl;
+            this.groupName = groupName;
             this.isKeep = isKeep;
         }
     }

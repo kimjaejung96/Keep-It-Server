@@ -449,6 +449,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         daily.createTime.stringValue(),
                         daily.content,
                         daily.image,
+                        group.name,
                         new CaseBuilder()
                                 .when(dailyKeep.seq.isNull())
                                 .then(Boolean.FALSE)
@@ -456,6 +457,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         )
                 )
                 .from(daily)
+                .innerJoin(daily.group, group)
                 .innerJoin(member).on(member.mid.eq(daily.masterMid))
                 .leftJoin(daily.dailyKeepEntities, dailyKeep).on(dailyKeep.memberMid.eq(mid), dailyKeep.keepYn.eq(true))
                 .where(daily.dailyId.eq(dailyId), daily.group.groupId.eq(groupId))
