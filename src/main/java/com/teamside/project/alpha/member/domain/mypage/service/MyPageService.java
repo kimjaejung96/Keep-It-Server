@@ -15,11 +15,11 @@ public interface MyPageService {
 
     MyDaily getMyDaily(String groupId, Long lastSeq, Long pageSize);
 
-    MyKeep getKeepMyReviews(Long offset, Long pageSize);
+    MyKeep getKeepMyReviews(Long nextOffset, Long pageSize);
 
     MyComments getMyComments(String groupId, Long offset, Long pageSize);
 
-    MyKeep getKeepMyDaily(Long offset, Long pageSize);
+    MyKeep getKeepMyDaily(Long nextOffset, Long pageSize);
 
     MyFollowingDto getMyFollowingList(Long nextOffset, Long pageSize);
     void editKeep(MyKeep.editKeep editKeep) throws CustomException;

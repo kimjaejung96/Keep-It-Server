@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class MyKeep {
+    private Long nextOffset;
     private List<KeepReview> keepReviews;
 
     private List<KeepDaily> keepDaily;
@@ -55,8 +56,19 @@ public class MyKeep {
         private final Boolean isAll = false;
     }
 
-    public MyKeep(List<KeepReview> keepReviews, List<KeepDaily> keepDaily) {
+    public MyKeep(List<KeepReview> keepReviews, List<KeepDaily> keepDaily, Long nextOffset, Long pageSize) {
         this.keepReviews = keepReviews;
         this.keepDaily = keepDaily;
+
+        int keepSize = keepReviews != null ? keepReviews.size() : keepDaily.size();
+        if (keepSize == pageSize) {
+            if (nextOffset == null) {
+                this.nextOffset = pageSize;
+            } else {
+                this.nextOffset = nextOffset + pageSize;
+            }
+        } else {
+            this.nextOffset = null;
+        }
     }
 }

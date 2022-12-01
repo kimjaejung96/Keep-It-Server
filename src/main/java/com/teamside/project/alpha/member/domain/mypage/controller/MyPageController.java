@@ -71,19 +71,19 @@ public class MyPageController {
     }
 
     @GetMapping("/keep/reviews")
-    public ResponseEntity<ResponseObject> getKeepMyReivews(@RequestParam Long offset,
+    public ResponseEntity<ResponseObject> getKeepMyReviews(@RequestParam(required = false) Long nextOffset,
                                                        @RequestParam Long pageSize) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(myPageService.getKeepMyReviews(offset, pageSize));
+        responseObject.setBody(myPageService.getKeepMyReviews(nextOffset, pageSize));
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
     @GetMapping("/keep/daily")
-    public ResponseEntity<ResponseObject> getKeepMyDaily(@RequestParam Long offset,
+    public ResponseEntity<ResponseObject> getKeepMyDaily(@RequestParam(required = false) Long nextOffset,
                                                            @RequestParam Long pageSize) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(myPageService.getKeepMyDaily(offset, pageSize));
+        responseObject.setBody(myPageService.getKeepMyDaily(nextOffset, pageSize));
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }

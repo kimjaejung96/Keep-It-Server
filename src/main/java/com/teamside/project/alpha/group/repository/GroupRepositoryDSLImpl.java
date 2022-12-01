@@ -719,7 +719,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<MyKeep.KeepReview> getKeepMyReviews(Long offset, Long pageSize) {
+    public List<MyKeep.KeepReview> getKeepMyReviews(Long nextOffset, Long pageSize) {
         return jpaQueryFactory.select(Projections.fields(MyKeep.KeepReview.class,
                         reviewKeep.seq.as("seq"),
                         review.place.placeName.as("placeName"),
@@ -741,13 +741,13 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(member).on(review.masterMid.eq(member.mid))
                 .where(reviewKeep.memberMid.eq(CryptUtils.getMid()), reviewKeep.keepYn.eq(true))
                 .limit(pageSize)
-                .offset(offset)
+                .offset(nextOffset == null ? 0 : nextOffset)
                 .orderBy(reviewKeep.updateTime.desc())
                 .fetch();
     }
 
     @Override
-    public List<MyKeep.KeepDaily> getKeepMyDaily(Long offset, Long pageSize) {
+    public List<MyKeep.KeepDaily> getKeepMyDaily(Long nextOffset, Long pageSize) {
         return jpaQueryFactory.select(Projections.fields(MyKeep.KeepDaily.class,
                         dailyKeep.seq,
                         daily.dailyId,
@@ -770,7 +770,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(member).on(daily.masterMid.eq(member.mid))
                 .where(dailyKeep.memberMid.eq(CryptUtils.getMid()), dailyKeep.keepYn.eq(true))
                 .limit(pageSize)
-                .offset(offset)
+                .offset(nextOffset == null ? 0 : nextOffset)
                 .orderBy(dailyKeep.updateTime.desc())
                 .fetch();
     }
@@ -860,11 +860,15 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     public MyFollowingDto getMyFollowingDto(Long nextOffset, Long pageSize) {
         List<MyFollowingDto.MyFollowing> myFollowings = jpaQueryFactory.select(Projections.fields(MyFollowingDto.MyFollowing.class,
                         member.name.as("memberName"),
+                        group.groupId,
                         group.name.as("groupName"),
                         memberFollow.mid.as("memberMid"),
                         member.isDelete.as("isWithdrawal"),
-                        new CaseBuilder().when(member.profileUrl.isNotEmpty()).then(member.profileUrl)
-                                .otherwise(Expressions.nullExpression()).as("profileUrl")
+                        new CaseBuilder()
+                                .when(member.profileUrl.isNotEmpty())
+                                .then(member.profileUrl)
+                                .otherwise(Expressions.nullExpression())
+                                .as("profileUrl")
                 ))
                 .from(memberFollow)
                 .innerJoin(member).on(memberFollow.targetMid.eq(member.mid))
