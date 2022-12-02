@@ -140,6 +140,7 @@ public class ReviewDto {
         private int keepCount;
         private Boolean isKeep;
         private int commentCount;
+        private String groupName;
 
         @QueryProjection
         public ReviewDetail(ReviewEntity review, MemberEntity member, PlaceEntity place) {
@@ -155,6 +156,7 @@ public class ReviewDto {
             this.keepCount = (int) review.getReviewKeepEntities().stream().filter(ReviewKeepEntity::isKeepYn).count();
             this.isKeep = review.getReviewKeepEntities().stream().anyMatch(r -> r.getMemberMid().equals(CryptUtils.getMid()) && r.isKeepYn());
             this.commentCount = review.getReviewCommentEntities().size();
+            this.groupName = review.getGroup().getName();
         }
     }
 

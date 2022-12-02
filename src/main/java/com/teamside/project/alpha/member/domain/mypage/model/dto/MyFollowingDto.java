@@ -15,6 +15,7 @@ public class MyFollowingDto {
     public static class MyFollowing {
         private String memberName;
         private String profileUrl;
+        private String groupId;
         private String groupName;
         private String memberMid;
         private Boolean isWithdrawal;
