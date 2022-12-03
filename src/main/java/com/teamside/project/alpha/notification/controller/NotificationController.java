@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class NotificationController {
     private final NotificationService notificationService;
     @GetMapping
-    public ResponseEntity<ResponseObject> getNotifications(@RequestParam Long pageSize, @RequestParam(required = false) Long lastSeq){
+    public ResponseEntity<ResponseObject> getNotifications(@RequestParam Long pageSize,
+                                                           @RequestParam(required = false) Long lastOffset){
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(notificationService.getNotifications(pageSize, lastSeq));
+        responseObject.setBody(notificationService.getNotifications(pageSize, lastOffset));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 }

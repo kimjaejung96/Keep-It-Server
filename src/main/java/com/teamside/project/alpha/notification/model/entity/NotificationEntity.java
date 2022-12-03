@@ -48,6 +48,8 @@ public class NotificationEntity {
     private Long placeId;
     @Column(name = "VIEW_YN", columnDefinition = "char(1)")
     private Boolean viewYn;
+    @Column(name = "DELETE_YN", columnDefinition = "char(1)")
+    private Boolean deleteYn;
 
     @Column(name = "UPDATE_DT",nullable = false, columnDefinition = "DATETIME")
     private LocalDateTime updateTime;

@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface NoticeRepositoryDSL {
 
-    List<NoticeDto.Notice> getNotices(Long pageSize, Long lastNoticeId);
+    List<NoticeDto.Notice> getNotices(Long pageSize, Long lastOffset);
 
 }

@@ -4,5 +4,5 @@ import com.teamside.project.alpha.notification.model.dto.NotificationDto;
 
 public interface NotificationService {
 
-    NotificationDto.MyNotifications getNotifications(Long pageSize, Long lastSeq);
+    NotificationDto.MyNotifications getNotifications(Long pageSize, Long lastOffset);
 }
