@@ -6,5 +6,5 @@ import com.teamside.project.alpha.notification.model.entity.NotificationEntity;
 import java.util.List;
 
 public interface NotificationRepositoryDSL {
-    List<NotificationDto> getNotifications(Long pageSize, Long lastOffset);
+    List<NotificationDto> getNotifications(Long pageSize, Long nextOffset);
 }

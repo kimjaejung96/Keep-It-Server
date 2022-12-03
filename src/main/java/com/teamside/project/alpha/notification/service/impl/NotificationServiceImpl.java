@@ -13,11 +13,11 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     @Override
-    public NotificationDto.MyNotifications getNotifications(Long pageSize, Long lastOffset) {
-        List<NotificationDto> entityList = notificationRepository.getNotifications(pageSize, lastOffset);
+    public NotificationDto.MyNotifications getNotifications(Long pageSize, Long nextOffset) {
+        List<NotificationDto> entityList = notificationRepository.getNotifications(pageSize, nextOffset);
         entityList.forEach(data -> data.createMsg());
 
-        return new NotificationDto.MyNotifications(entityList, lastOffset, pageSize);
+        return new NotificationDto.MyNotifications(entityList, nextOffset, pageSize);
     }
 
 }

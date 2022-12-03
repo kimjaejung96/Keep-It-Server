@@ -103,6 +103,12 @@ public class MyPageController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/groups")
+    public ResponseEntity<ResponseObject> getGroups(@RequestParam String type) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
     @GetMapping("/blocks")
     public ResponseEntity<ResponseObject> getMyBlocks(@RequestParam(required = false) Long nextOffset, @RequestParam Long pageSize) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

@@ -18,9 +18,9 @@ public class NotificationController {
     private final NotificationService notificationService;
     @GetMapping
     public ResponseEntity<ResponseObject> getNotifications(@RequestParam Long pageSize,
-                                                           @RequestParam(required = false) Long lastOffset){
+                                                           @RequestParam(required = false) Long nextOffset){
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(notificationService.getNotifications(pageSize, lastOffset));
+        responseObject.setBody(notificationService.getNotifications(pageSize, nextOffset));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 }

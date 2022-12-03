@@ -21,10 +21,10 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
     private EntityManager entityManager;
 
     @Override
-    public List<NotificationDto> getNotifications(Long pageSize, Long lastOffset) {
+    public List<NotificationDto> getNotifications(Long pageSize, Long nextOffset) {
         List<NotificationDto> data = new ArrayList<>();
         String mid = CryptUtils.getMid();
-        Long offset = (lastOffset == null ? 0 : lastOffset);
+        Long offset = (nextOffset == null ? 0 : nextOffset);
 
         String queryString = "SELECT\n" +
                 "NOTI.*\n" +
