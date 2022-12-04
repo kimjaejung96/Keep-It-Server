@@ -23,9 +23,11 @@ import com.teamside.project.alpha.group.domain.review.model.entity.QReviewEntity
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewKeepEntity;
 import com.teamside.project.alpha.group.model.dto.*;
 import com.teamside.project.alpha.group.model.entity.*;
+import com.teamside.project.alpha.group.model.enumurate.Category;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
+import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberBlockEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
@@ -927,5 +929,112 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         }
 
         return editKeep.getType().equals("REVIEW") ? reviewKeep.seq.in(editKeep.getKeepSeqList()) : dailyKeep.seq.in(editKeep.getKeepSeqList());
+    }
+
+    @Override
+    public List<MyGroupManagement.Group> getMyGroupsManagements(MyGroupManagementType type) {
+        String mid = CryptUtils.getMid();
+        List<MyGroupManagement.Group> response;
+
+        if (type.equals(MyGroupManagementType.WITHDRAWAL)) {
+            response = this.getManagementWithdrawalGroups(mid);
+        } else {
+            response = this.getManagementGroups(type, mid);
+        }
+
+        return response;
+    }
+
+    public List<MyGroupManagement.Group> getManagementGroups(MyGroupManagementType type, String mid) {
+        return jpaQueryFactory
+                .select(Projections.fields(MyGroupManagement.Group.class,
+                        group.groupId,
+                        group.name.as("groupName"),
+                        group.category
+                        ))
+                .from(groupMemberMapping)
+                .innerJoin(groupMemberMapping.group, group)
+                .where(groupMemberMapping.mid.eq(mid),
+                        groupMemberMapping.status.eq(GroupMemberStatus.JOIN),
+                        isMaster(type, mid))
+                .orderBy(group.name.asc())
+                .fetch();
+    }
+
+    public BooleanExpression isMaster(MyGroupManagementType type, String mid) {
+        if (type.equals(MyGroupManagementType.ALL)) {
+            return group.masterMid.ne(mid);
+        } else {
+            return group.masterMid.eq(mid);
+        }
+    }
+
+    public List<MyGroupManagement.Group> getManagementWithdrawalGroups(String mid) {
+        List<MyGroupManagement.Group> data = new ArrayList<>();
+
+        String queryString = "SELECT A.GROUP_ID\n" +
+                ", B.NAME AS GROUP_NAME\n" +
+                ", B.CATEGORY\n" +
+                ", CAST(A.EXIT_DT AS CHAR) AS EXIT_DT\n" +
+                ", !ISNULL(C.GROUP_ID) AS EXIST_REVIEW\n" +
+                ", !ISNULL(D.GROUP_ID) AS EXIST_DAILY\n" +
+                ", !ISNULL(E.GROUP_ID) AS EXIST_REVIEW_COMMENT\n" +
+                ", !ISNULL(F.GROUP_ID) AS EXIST_DAILY_COMMENT\n" +
+                "FROM GROUP_MEMBER_MAPPING A\n" +
+                "INNER JOIN GROUP_LIST B ON A.GROUP_ID = B.GROUP_ID\n" +
+                "LEFT JOIN (\n" +
+                "SELECT DISTINCT R.GROUP_ID\n" +
+                "FROM REVIEW R\n" +
+                "WHERE R.MASTER = ?\n" +
+                "AND R.IS_DELETE = 0\n" +
+                ") C ON C.GROUP_ID = B.GROUP_ID\n" +
+                "LEFT JOIN (\n" +
+                "SELECT DISTINCT D.GROUP_ID\n" +
+                "FROM DAILY D\n" +
+                "WHERE D.MASTER = ?\n" +
+                "AND D.IS_DELETE = 0\n" +
+                ") D ON D.GROUP_ID = B.GROUP_ID\n" +
+                "LEFT JOIN (\n" +
+                "SELECT DISTINCT R.GROUP_ID\n" +
+                "FROM REVIEW_COMMENT RC\n" +
+                "INNER JOIN REVIEW R ON RC.REVIEW_ID = R.REVIEW_ID\n" +
+                "WHERE RC.MASTER_MID = ?\n" +
+                "AND RC.STATUS = 'CREATED'\n" +
+                ") E ON E.GROUP_ID = B.GROUP_ID \n" +
+                "LEFT JOIN (\n" +
+                "SELECT DISTINCT D.GROUP_ID\n" +
+                "FROM DAILY_COMMENT DC\n" +
+                "INNER JOIN DAILY D ON DC.DAILY_ID = D.DAILY_ID\n" +
+                "WHERE DC.MASTER_MID = ?\n" +
+                "AND DC.STATUS = 'CREATED'\n" +
+                ") F ON F.GROUP_ID = B.GROUP_ID\n" +
+                "WHERE A.MID = ?\n" +
+                "AND A.STATUS != 'JOIN'\n" +
+                "AND B.IS_DELETE = 0\n" +
+                "ORDER BY B.NAME ASC";
+
+        Query query =  entityManager.createNativeQuery(queryString);
+
+        List<Object[]> resultSets = query
+                .setParameter(1, mid)
+                .setParameter(2, mid)
+                .setParameter(3, mid)
+                .setParameter(4, mid)
+                .setParameter(5, mid)
+                .getResultList();
+
+        resultSets.forEach(item -> data.add(MyGroupManagement.Group.builder()
+                        .groupId(item[0].toString())
+                        .groupName(item[1].toString())
+                        .category(Category.valueOf(item[2].toString()))
+                        .exitDt(item[3].toString())
+                        .existReview(item[4].toString().equals("1"))
+                        .existDaily(item[5].toString().equals("1"))
+                        .existReviewComment(item[6].toString().equals("1"))
+                        .existDailyComment(item[7].toString().equals("1"))
+                        .build()
+        ));
+
+        return data;
     }
 }

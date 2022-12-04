@@ -7,6 +7,7 @@ import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
+import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,4 +49,6 @@ public interface GroupRepositoryDSL {
     void editDailyKeep(MyKeep.editKeep editKeep);
 
     List<MyBlock.Block> getMyBlocks(Long nextOffset, Long pageSize);
+
+    List<MyGroupManagement.Group> getMyGroupsManagements(MyGroupManagementType type);
 }

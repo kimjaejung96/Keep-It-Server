@@ -4,6 +4,7 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
+import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
 import com.teamside.project.alpha.member.domain.mypage.service.MyPageService;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.repository.InquiryRepo;
@@ -98,5 +99,12 @@ public class MyPageServiceImpl implements MyPageService {
     @Override
     public void myInquiry(InquiryDto.MyInquiry myInquiry) {
         inquiryRepo.save(myInquiry.toEntity());
+    }
+
+    @Override
+    public MyGroupManagement getMyGroupsManagements(MyGroupManagementType type) {
+        List<MyGroupManagement.Group> data = groupRepository.getMyGroupsManagements(type);
+
+        return new MyGroupManagement(data);
     }
 }

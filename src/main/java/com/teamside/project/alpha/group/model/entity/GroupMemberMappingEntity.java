@@ -5,11 +5,13 @@ import com.teamside.project.alpha.group.model.entity.compositeKeys.GroupMemberKe
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -50,6 +52,9 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
     @Enumerated(EnumType.STRING)
     private GroupMemberStatus status;
 
+    @Column(name = "EXIT_DT", columnDefinition = "DATETIME")
+    private LocalDateTime exitDt;
+
     public GroupMemberMappingEntity(MemberEntity member) {
         this.member = member;
     }
@@ -78,6 +83,7 @@ public class GroupMemberMappingEntity extends CreateDtEntity {
             this.ord = null;
             this.reviewAlarm = false;
             this.dailyAlarm = false;
+            this.exitDt = LocalDateTime.now();
         }
     }
 

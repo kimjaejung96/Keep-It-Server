@@ -31,6 +31,7 @@ public class NotificationDto {
     private String commentId;
     private String commentContent;
     private Boolean existsImage;
+    private Integer keepCnt;
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -67,7 +68,11 @@ public class NotificationDto {
                 this.notiContent = "일상 [" + this.dailyTitle + "] 글이 업데이트 됐어요.";
                 break;
             case KPS_MRK:
-                this.notiContent = "'" + this.senderName + "'님이 [" + this.reviewTitle + "] 글을 킵했어요.";
+                if (keepCnt > 1) {
+                    this.notiContent = "'" + this.senderName + "'님 외 " + this.keepCnt + "명이 [" + this.reviewTitle + "] 글을 킵했어요.";
+                } else {
+                    this.notiContent = "'" + this.senderName + "'님이 [" + this.reviewTitle + "] 글을 킵했어요.";
+                }
                 break;
             case KPS_MRC:
                 this.notiContent = "리뷰 [" + this.reviewTitle + "]에 '" + this.senderName + "'님이 댓글을 달았어요.";

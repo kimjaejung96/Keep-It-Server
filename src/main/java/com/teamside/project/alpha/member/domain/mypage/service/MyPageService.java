@@ -2,6 +2,7 @@ package com.teamside.project.alpha.member.domain.mypage.service;
 
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
+import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface MyPageService {
     void myInquiry(InquiryDto.MyInquiry myInquiry);
 
     MyBlock getMyBlocks(Long nextOffset, Long pageSize);
+
+    MyGroupManagement getMyGroupsManagements(MyGroupManagementType type);
 }

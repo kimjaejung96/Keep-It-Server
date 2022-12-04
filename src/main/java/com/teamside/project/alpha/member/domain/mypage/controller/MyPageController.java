@@ -36,7 +36,7 @@ public class MyPageController {
     @GetMapping("/groups/management")
     public ResponseEntity<ResponseObject> getMyGroupsManagements(@RequestParam MyGroupManagementType type) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(myPageService.getMyGroups());
+        responseObject.setBody(myPageService.getMyGroupsManagements(type));
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
@@ -102,12 +102,6 @@ public class MyPageController {
 
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
-
-//    @GetMapping("/groups")
-//    public ResponseEntity<ResponseObject> getGroups(@RequestParam String type) {
-//        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-//        return new ResponseEntity(responseObject, HttpStatus.OK);
-//    }
 
     @GetMapping("/blocks")
     public ResponseEntity<ResponseObject> getMyBlocks(@RequestParam(required = false) Long nextOffset, @RequestParam Long pageSize) {

@@ -68,7 +68,11 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "WHEN NL.REVIEW_ID IS NOT NULL THEN !ISNULL(R.IMAGES)\n" +
                 "WHEN NL.DAILY_ID IS NOT NULL THEN !ISNULL(D.IMAGE)\n" +
                 "ELSE 0\n" +
-                "END AS EXISTS_IMAGE\n" +
+                "END AS EXISTS_IMAGE,\n" +
+                "CASE\n" +
+                "WHEN NL.NOTI_TYPE = 'KPS_MRK' THEN 1\n" +
+                "ELSE 0\n" +
+                "END AS KEEP_CNT\n" +
                 "FROM\n" +
                 "NOTI_LIST NL\n" +
                 "INNER JOIN MEMBER RECEIVER ON\n" +
@@ -117,7 +121,8 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "IFNULL(SENDER.PROFILE_URL, '') AS IMAGE_URL,\n" +
                 "'' AS COMMENT_ID,\n" +
                 "'' AS COMMENT_CONTENT,\n" +
-                "!ISNULL(R.IMAGES) AS EXISTS_IMAGE\n" +
+                "!ISNULL(R.IMAGES) AS EXISTS_IMAGE,\n" +
+                "KNL.KEEP_CNT AS KEEP_CNT\n" +
                 "FROM\n" +
                 "REVIEW_KEEP_NOTI_LIST KNL\n" +
                 "INNER JOIN MEMBER RECEIVER ON\n" +
@@ -135,8 +140,9 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "(R.PLACE_ID = P.PLACE_ID)\n" +
                 "WHERE\n" +
                 "KNL.RECEIVER_MID = ?\n" +
-                "and KNL.NOTI_DATE between DATE_ADD(NOW(), INTERVAL -14 DAY) and now()\n" +
-                "order by KNL.NOTI_DATE desc\n" +
+                "AND KNL.NOTI_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -14 DAY) AND NOW()\n" +
+                "AND KNL.KEEP_CNT != 1\n" +
+                "ORDER BY KNL.NOTI_DATE DESC\n" +
                 "limit ?\n" +
                 ")\n" +
                 ") NOTI\n" +
@@ -177,6 +183,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                     .commentId(!item[16].toString().isBlank() ? item[16].toString() : null)
                     .commentContent(!item[17].toString().isBlank() ? item[17].toString() : null)
                     .existsImage(item[18].toString().equals("1"))
+                    .keepCnt(Integer.valueOf(item[19].toString()))
                 .build())
         );
 
