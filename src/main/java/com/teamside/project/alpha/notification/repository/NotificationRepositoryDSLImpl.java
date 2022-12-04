@@ -63,7 +63,12 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "WHEN NL.REVIEW_ID IS NOT NULL THEN RC.COMMENT\n" +
                 "WHEN NL.DAILY_ID IS NOT NULL THEN DC.COMMENT\n" +
                 "ELSE ''\n" +
-                "END, '') AS COMMENT_CONTENT\n" +
+                "END, '') AS COMMENT_CONTENT,\n" +
+                "CASE\n" +
+                "WHEN NL.REVIEW_ID IS NOT NULL THEN !ISNULL(R.IMAGES)\n" +
+                "WHEN NL.DAILY_ID IS NOT NULL THEN !ISNULL(D.IMAGE)\n" +
+                "ELSE 0\n" +
+                "END AS EXISTS_IMAGE\n" +
                 "FROM\n" +
                 "NOTI_LIST NL\n" +
                 "INNER JOIN MEMBER RECEIVER ON\n" +
@@ -87,7 +92,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "(NL.COMMENT_ID = DC.COMMENT_ID)\n" +
                 "WHERE\n" +
                 "NL.RECEIVER_MID = ?\n" +
-                "AND NL.DELETE_YN = 0\n" +
+                "AND NL.DELETE_YN != 1\n" +
                 "and NL.NOTI_DATE between DATE_ADD(NOW(), INTERVAL -14 DAY) and now()\n" +
                 "order by NL.NOTI_DATE desc \n" +
                 "limit ?\n" +
@@ -111,7 +116,8 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "'' AS TITLE,\n" +
                 "IFNULL(SENDER.PROFILE_URL, '') AS IMAGE_URL,\n" +
                 "'' AS COMMENT_ID,\n" +
-                "'' AS COMMENT_CONTENT\n" +
+                "'' AS COMMENT_CONTENT,\n" +
+                "!ISNULL(R.IMAGES) AS EXISTS_IMAGE\n" +
                 "FROM\n" +
                 "REVIEW_KEEP_NOTI_LIST KNL\n" +
                 "INNER JOIN MEMBER RECEIVER ON\n" +
@@ -170,6 +176,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                     .imageUrl(!item[15].toString().isBlank() ? item[15].toString() : null)
                     .commentId(!item[16].toString().isBlank() ? item[16].toString() : null)
                     .commentContent(!item[17].toString().isBlank() ? item[17].toString() : null)
+                    .existsImage(item[18].toString().equals("1"))
                 .build())
         );
 

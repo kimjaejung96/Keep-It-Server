@@ -30,6 +30,7 @@ public class NotificationDto {
     private String imageUrl;
     private String commentId;
     private String commentContent;
+    private Boolean existsImage;
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
