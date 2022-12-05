@@ -73,7 +73,7 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                                         .select(daily.count().coalesce(0L))
                                         .from(daily)
                                         .where(daily.isDelete.eq(false), daily.masterMid.eq(member.mid))
-                                , "reviewCount"),
+                                , "dailyCount"),
                         ExpressionUtils.as(
                                 JPAExpressions
                                         .select(reviewKeep.count().coalesce(0L))
@@ -90,7 +90,7 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                                 JPAExpressions
                                         .select(follow.count().coalesce(0L))
                                         .from(follow)
-                                        .where(follow.targetMid.eq(member.mid), follow.followYn.eq(true))
+                                        .where(follow.mid.eq(member.mid), follow.followYn.eq(true))
                                 , "followCount")
                         ))
                 .from(member)

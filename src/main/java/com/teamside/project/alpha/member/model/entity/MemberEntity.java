@@ -125,6 +125,7 @@ public class MemberEntity extends CreateDtEntity {
             if (groupId == null) {
                 throw new CustomRuntimeException(ApiExceptionCode.BAD_REQUEST);
             } else {
+                // 팔로우 존재 시 > 그룹별 팔로우 전부 끊기
                 this.memberBlockEntities.add(new MemberBlockEntity(mid, targetMid, groupId));
             }
         }
