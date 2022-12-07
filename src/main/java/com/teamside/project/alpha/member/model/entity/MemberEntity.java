@@ -113,7 +113,7 @@ public class MemberEntity extends CreateDtEntity {
     }
 
 
-    public void block(String mid, String targetMid, String groupId) {
+    public Boolean block(String mid, String targetMid, String groupId) {
         // 이미 차단중이면 해제
         Optional<MemberBlockEntity> blockEntity = this.getMemberBlockEntities().stream()
                 .filter(follow -> follow.getMid().equals(mid) && follow.getTargetMid().equals(targetMid))
@@ -121,12 +121,14 @@ public class MemberEntity extends CreateDtEntity {
 
         if (blockEntity.isPresent()) {
             this.memberBlockEntities.remove(blockEntity.get());
+            return false;
         } else {
             if (groupId == null) {
                 throw new CustomRuntimeException(ApiExceptionCode.BAD_REQUEST);
             } else {
                 // 팔로우 존재 시 > 그룹별 팔로우 전부 끊기
                 this.memberBlockEntities.add(new MemberBlockEntity(mid, targetMid, groupId));
+                return true;
             }
         }
     }

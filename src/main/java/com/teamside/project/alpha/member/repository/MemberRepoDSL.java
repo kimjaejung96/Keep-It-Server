@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface MemberRepoDSL {
     Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, String groupId);
     MyPageHome getMyPageHome();
+
+    void unfollow(String mid, String targetMid);
 }

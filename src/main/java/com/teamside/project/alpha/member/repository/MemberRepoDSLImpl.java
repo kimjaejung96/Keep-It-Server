@@ -16,6 +16,7 @@ import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.dto.QMemberDto_InviteMemberList;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,5 +97,17 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                 .from(member)
                 .where(member.mid.eq(CryptUtils.getMid()))
                 .fetchOne();
+    }
+
+    @Override
+    public void unfollow(String mid, String targetMid) {
+        jpaQueryFactory
+                .update(follow)
+                .set(follow.followYn, false)
+                .set(follow.updateTime, LocalDateTime.now())
+                .where(follow.mid.eq(mid),
+                        follow.targetMid.eq(targetMid),
+                        follow.followYn.eq(true))
+                .execute();
     }
 }
