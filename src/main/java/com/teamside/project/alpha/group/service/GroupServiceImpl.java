@@ -104,6 +104,10 @@ public class GroupServiceImpl implements GroupService {
             result.getMembers().add(1, me);
         }
 
+        // block
+        List<String> blocks = getBlockTarget();
+        result.filterBlocks(blocks);
+
         return result;
     }
 
@@ -275,12 +279,15 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(String groupId, String targetMid, Long pageSize, Long seq) {
-        List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, seq);
+        List<String> blocks = getBlockTarget();
+
+        List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, seq, blocks);
         Long responseLastGroupId = reviewsInGroup.size() == pageSize ? reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewSeq() : null;
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
         Long reviewCount = groupEntity.getReviewEntities().stream()
                 .filter(d -> !d.getIsDelete())
+                .filter((blocks != null && blocks.size() > 0) ? d -> !blocks.contains(d.getMasterMid()) : d -> true)
                 .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
                 .count();
         return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId, reviewCount);
@@ -289,12 +296,15 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public DailyDto.ResponseDailyInGroup selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailySeq) {
-        List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailySeq);
+        List<String> blocks = getBlockTarget();
+
+        List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailySeq, blocks);
         Long responseLastDailySeq = dailyInGroup.size() == pageSize ? dailyInGroup.get(dailyInGroup.size() - 1).getDailySeq() : null;
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
         Long dailyCount = groupEntity.getDailyEntities().stream()
                 .filter(d -> !d.getIsDelete())
+                .filter((blocks != null && blocks.size() > 0) ? d -> !blocks.contains(d.getMasterMid()) : d -> true)
                 .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
                 .count();
 
@@ -378,5 +388,11 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
         group.updateFollowAlarm(CryptUtils.getMid(), myFollow.getMid());
+    }
+
+    public List<String> getBlockTarget() {
+        return memberRepository.findByMid(CryptUtils.getMid())
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND))
+                .getBlockTarget();
     }
 }

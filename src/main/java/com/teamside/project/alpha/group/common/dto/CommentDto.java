@@ -33,6 +33,12 @@ public class CommentDto {
         this.childComments.add(commentDto);
     }
 
+    public void filterBlockComment(List<String> blocks) {
+        if (blocks.contains(this.getMemberId())) {
+            this.comment = "차단한 사용자의 댓글입니다.";
+        }
+    }
+
     @QueryProjection
     public CommentDto(ReviewCommentEntity reviewComment, MemberEntity member, MemberEntity targetMember) {
         this.childComments = new ArrayList<>();

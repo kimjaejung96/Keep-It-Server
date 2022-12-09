@@ -319,7 +319,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     }
 
     @Override
-    public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(String groupId, String targetId, Long pageSize, Long lastReviewSeq) {
+    public List<ReviewDto.SelectReviewsInGroup> selectReviewsInGroup(String groupId, String targetId, Long pageSize, Long lastReviewSeq, List<String> blocks) {
          return jpaQueryFactory.select(new QReviewDto_SelectReviewsInGroup(
                 new QReviewDto_SelectReviewsInGroup_Review(
                         review.reviewId,
@@ -355,14 +355,18 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                  .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId),
                          reviewKeep.memberMid.eq(CryptUtils.getMid()),
                          reviewKeep.keepYn.eq(true))
-                 .where(review.group.groupId.eq(groupId), review.isDelete.eq(false), eqReviewMaster(targetId), ltReviewId(lastReviewSeq))
+                 .where(review.group.groupId.eq(groupId),
+                         review.isDelete.eq(false),
+                         eqReviewMaster(targetId),
+                         ltReviewId(lastReviewSeq),
+                         notInBlocks(blocks, "REVIEW"))
                  .orderBy(review.seq.desc())
                  .limit(pageSize)
                  .fetch();
     }
 
     @Override
-    public List<DailyDto.DailyInGroup> selectDailyInGroup(String groupId, String targetId, Long pageSize, Long lastDailySeq) {
+    public List<DailyDto.DailyInGroup> selectDailyInGroup(String groupId, String targetId, Long pageSize, Long lastDailySeq, List<String> blocks) {
         return jpaQueryFactory
                 .select(new QDailyDto_DailyInGroup(
                         daily.dailyId,
@@ -375,7 +379,11 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ))
                 .from(daily)
                 .innerJoin(member).on(member.mid.eq(daily.masterMid))
-                .where(daily.group.groupId.eq(groupId), daily.isDelete.eq(false), eqDailyMaster(targetId), ltDailyId(lastDailySeq))
+                .where(daily.group.groupId.eq(groupId),
+                        daily.isDelete.eq(false),
+                        eqDailyMaster(targetId),
+                        ltDailyId(lastDailySeq),
+                        notInBlocks(blocks, "DAILY"))
                 .orderBy(daily.seq.desc())
                 .limit(pageSize)
                 .fetch();
@@ -397,6 +405,18 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     private BooleanExpression eqDailyMaster(String targetId) {
         return targetId != null ? daily.masterMid.eq(targetId) : null;
+    }
+
+    public BooleanExpression notInBlocks(List<String> blocks, String type) {
+        if (blocks != null && blocks.size() > 0) {
+            if (type.equals("REVIEW")) {
+                return review.masterMid.notIn(blocks);
+            } else {
+                return daily.masterMid.notIn(blocks);
+            }
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -425,6 +445,10 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .where(reviewComment.review.reviewId.eq(reviewId))
                 .orderBy(reviewComment.seq.asc())
                 .fetch();
+
+        // block
+        List<String> blocks = getBlocks();
+        result.forEach(comment -> comment.filterBlockComment(blocks));
 
         result.stream()
                 .filter(commentDto -> commentDto.getParentCommentId() != null)
@@ -481,6 +505,10 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .orderBy(dailyComment.seq.asc())
                 .fetch();
 
+        // block
+        List<String> blocks = getBlocks();
+        result.forEach(comment -> comment.filterBlockComment(blocks));
+
         result.stream()
                 .filter(commentDto ->  commentDto.getParentCommentId() != null)
                 .forEach(comment -> result.stream()
@@ -490,6 +518,14 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         result.removeIf(d -> d.getParentCommentId() != null);
 
         return result;
+    }
+
+    public List<String> getBlocks() {
+        return jpaQueryFactory
+                .select(block.targetMid)
+                .from(block)
+                .where(block.mid.eq(CryptUtils.getMid()))
+                .fetch();
     }
 
     @Override

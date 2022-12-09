@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -173,5 +174,11 @@ public class MemberEntity extends CreateDtEntity {
     public void updateMember(MemberDto.UpdateMember updateMember) {
         this.name = updateMember.getName();
         this.profileUrl = updateMember.getProfileUrl() != null ? updateMember.getProfileUrl() : "";
+    }
+
+    public List<String> getBlockTarget() {
+        return this.getMemberBlockEntities().stream()
+                .map(MemberBlockEntity::getTargetMid)
+                .collect(Collectors.toList());
     }
 }

@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -89,6 +90,14 @@ public class GroupDto {
         }
         public void addGroupInfoMembers(List<MembersDto> members) {
             this.members = members;
+        }
+
+        public void filterBlocks(List<String> blocks) {
+            if (blocks != null && blocks.size() > 0) {
+                this.members = this.members.stream()
+                        .filter(member -> !blocks.contains(member.getMid()))
+                        .collect(Collectors.toList());
+            }
         }
     }
     @Getter
