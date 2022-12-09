@@ -930,7 +930,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         member.isDelete
                 ))
                 .from(block)
-                .innerJoin(block.targetMember, member)
+                .innerJoin(member).on(block.targetMid.eq(member.mid))
                 .innerJoin(group).on(block.groupId.eq(group.groupId))
                 .where(block.mid.eq(CryptUtils.getMid()))
                 .orderBy(block.createTime.asc())
