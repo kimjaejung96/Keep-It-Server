@@ -124,6 +124,7 @@ public class MyPageServiceImpl implements MyPageService {
                 .filter(d -> !d.getIsDelete())
                 .forEach(d -> {
                     d.getReviewCommentEntities().stream()
+                            .filter(c -> c.getMasterMid().equals(mid))
                             .filter(comment -> comment.getStatus().equals(CommentStatus.CREATED))
                             .forEach(ReviewCommentEntity::deleteComment);
                     if (d.getMasterMid().equals(mid)) {
@@ -135,6 +136,7 @@ public class MyPageServiceImpl implements MyPageService {
                 .filter(d -> !d.getIsDelete())
                 .forEach(d -> {
                     d.getDailyCommentEntities().stream()
+                            .filter(c -> c.getMasterMid().equals(mid))
                             .filter(comment -> comment.getStatus().equals(CommentStatus.CREATED))
                             .forEach(DailyCommentEntity::deleteComment);
                     if (d.getMasterMid().equals(mid)) {
