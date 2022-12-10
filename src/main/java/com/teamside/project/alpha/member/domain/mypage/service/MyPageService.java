@@ -29,4 +29,6 @@ public interface MyPageService {
     MyBlock getMyBlocks(Long nextOffset, Long pageSize);
 
     MyGroupManagement getMyGroupsManagements(MyGroupManagementType type);
+
+    void deleteMyWritings(String groupId);
 }

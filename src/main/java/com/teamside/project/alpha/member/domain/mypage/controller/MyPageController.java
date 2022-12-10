@@ -118,5 +118,12 @@ public class MyPageController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
+    @DeleteMapping("/groups/{groupId}/writings")
+    public ResponseEntity<ResponseObject> deleteMyWritings(@PathVariable String groupId) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        myPageService.deleteMyWritings(groupId);
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
+
 
 }

@@ -2,6 +2,12 @@ package com.teamside.project.alpha.member.domain.mypage.service.impl;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
+import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.common.enumurate.CommentStatus;
+import com.teamside.project.alpha.group.domain.daily.model.entity.DailyCommentEntity;
+import com.teamside.project.alpha.group.domain.review.model.entity.ReviewCommentEntity;
+import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
@@ -106,5 +112,34 @@ public class MyPageServiceImpl implements MyPageService {
         List<MyGroupManagement.Group> data = groupRepository.getMyGroupsManagements(type);
 
         return new MyGroupManagement(data);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMyWritings(String groupId) {
+        String mid = CryptUtils.getMid();
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.getReviewEntities().stream()
+                .filter(r -> r.getMasterMid().equals(mid))
+                .filter(d -> !d.getIsDelete())
+                .forEach(d -> {
+                    d.getReviewCommentEntities().stream()
+                            .filter(comment -> comment.getStatus().equals(CommentStatus.CREATED))
+                            .forEach(ReviewCommentEntity::deleteComment);
+                    if (d.getMasterMid().equals(mid)) {
+                        d.deleteReview();
+                    }
+                });
+        group.getDailyEntities().stream()
+                .filter(r -> r.getMasterMid().equals(mid))
+                .filter(d -> !d.getIsDelete())
+                .forEach(d -> {
+                    d.getDailyCommentEntities().stream()
+                            .filter(comment -> comment.getStatus().equals(CommentStatus.CREATED))
+                            .forEach(DailyCommentEntity::deleteComment);
+                    if (d.getMasterMid().equals(mid)) {
+                        d.deleteDaily();
+                    }
+                });
     }
 }
