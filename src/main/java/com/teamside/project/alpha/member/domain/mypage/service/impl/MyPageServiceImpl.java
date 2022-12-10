@@ -120,7 +120,6 @@ public class MyPageServiceImpl implements MyPageService {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.getReviewEntities().stream()
-                .filter(r -> r.getMasterMid().equals(mid))
                 .filter(d -> !d.getIsDelete())
                 .forEach(d -> {
                     d.getReviewCommentEntities().stream()
@@ -132,7 +131,6 @@ public class MyPageServiceImpl implements MyPageService {
                     }
                 });
         group.getDailyEntities().stream()
-                .filter(r -> r.getMasterMid().equals(mid))
                 .filter(d -> !d.getIsDelete())
                 .forEach(d -> {
                     d.getDailyCommentEntities().stream()
