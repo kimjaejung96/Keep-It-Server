@@ -758,6 +758,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     @Override
     public List<MyKeep.KeepReview> getKeepMyReviews(Long nextOffset, Long pageSize) {
+        List<String> blocks = getBlocks();
+
         return jpaQueryFactory.select(Projections.fields(MyKeep.KeepReview.class,
                         reviewKeep.seq.as("seq"),
                         review.place.placeName.as("placeName"),
@@ -777,7 +779,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(review).on(reviewKeep.review.reviewId.eq(review.reviewId)).fetchJoin()
                 .innerJoin(group).on(review.group.groupId.eq(group.groupId))
                 .innerJoin(member).on(review.masterMid.eq(member.mid))
-                .where(reviewKeep.memberMid.eq(CryptUtils.getMid()), reviewKeep.keepYn.eq(true))
+                .where(reviewKeep.memberMid.eq(CryptUtils.getMid()),
+                        reviewKeep.keepYn.eq(true),
+                        notInBlocks(blocks, "REVIEW"))
                 .limit(pageSize)
                 .offset(nextOffset == null ? 0 : nextOffset)
                 .orderBy(reviewKeep.updateTime.desc())
@@ -786,6 +790,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     @Override
     public List<MyKeep.KeepDaily> getKeepMyDaily(Long nextOffset, Long pageSize) {
+        List<String> blocks = getBlocks();
+
         return jpaQueryFactory.select(Projections.fields(MyKeep.KeepDaily.class,
                         dailyKeep.seq,
                         daily.dailyId,
@@ -806,7 +812,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(dailyKeep.daily, daily)
                 .innerJoin(daily.group, group)
                 .innerJoin(member).on(daily.masterMid.eq(member.mid))
-                .where(dailyKeep.memberMid.eq(CryptUtils.getMid()), dailyKeep.keepYn.eq(true))
+                .where(dailyKeep.memberMid.eq(CryptUtils.getMid()),
+                        dailyKeep.keepYn.eq(true),
+                        notInBlocks(blocks, "DAILY"))
                 .limit(pageSize)
                 .offset(nextOffset == null ? 0 : nextOffset)
                 .orderBy(dailyKeep.updateTime.desc())
