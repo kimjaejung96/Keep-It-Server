@@ -10,6 +10,6 @@ public interface GroupRepository  extends JpaRepository<GroupEntity, Long>, Grou
     boolean existsByName(String name);
     Optional<GroupEntity> findByGroupId(String groupId);
     Long countByGroupMemberMappingEntity(GroupMemberMappingEntity groupMemberMappingEntity);
-    Long countByNameContaining(String search);
+    Long countByNameContainingAndIsDelete(String search, boolean isDelete);
     Long countByMasterMidAndIsDelete(String memberMid, boolean isDelete);
 }

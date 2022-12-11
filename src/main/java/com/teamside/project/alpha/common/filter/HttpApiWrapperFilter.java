@@ -26,13 +26,13 @@ public class HttpApiWrapperFilter implements Filter {
         chain.doFilter(httpRequestServletWrapper, httpResponseServletWrapper);
 
         // 0.5s ~ 1s delay
-        try {
-            int delay = 500 + new Random().nextInt(500);
-            System.out.println("delay time : " + delay);
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            int delay = 500 + new Random().nextInt(500);
+//            System.out.println("delay time : " + delay);
+//            Thread.sleep(delay);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         //Response 처리
         String responseMessage = httpResponseServletWrapper.getDataStreamToString();
