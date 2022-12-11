@@ -195,6 +195,8 @@ public class AuthServiceImpl implements AuthService {
             member.ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.MEMBER_ALREADY_EXIST);});
         } else if (authType.equals(AuthType.SIGN_IN)) {
             member.orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        } else if (authType.equals(AuthType.CHANGE_PHONE)) {
+            member.ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.DUPLICATE_PHONE);});
         } else {
             throw new CustomException(ApiExceptionCode.INVALID_AUTH_TYPE);
         }

@@ -3,6 +3,7 @@ package com.teamside.project.alpha.member.domain.mypage.controller;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
+import com.teamside.project.alpha.member.domain.auth.model.dto.SmsAuthDto;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyKeep;
 import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
 import com.teamside.project.alpha.member.domain.mypage.service.MyPageService;
@@ -10,12 +11,14 @@ import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @AllArgsConstructor
 @RestController
+@Validated
 @RequestMapping("/mypage")
 public class MyPageController {
     private final MyPageService myPageService;
@@ -125,5 +128,11 @@ public class MyPageController {
         return new ResponseEntity(responseObject, HttpStatus.OK);
     }
 
+    @PatchMapping("/change_phone")
+    public ResponseEntity<ResponseObject> changePhone(@RequestBody @Valid SmsAuthDto smsAuthDto) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        myPageService.changePhone(smsAuthDto);
+        return new ResponseEntity(responseObject, HttpStatus.OK);
+    }
 
 }

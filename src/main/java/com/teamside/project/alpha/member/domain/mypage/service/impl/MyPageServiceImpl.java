@@ -9,16 +9,21 @@ import com.teamside.project.alpha.group.domain.daily.model.entity.DailyCommentEn
 import com.teamside.project.alpha.group.domain.review.model.entity.ReviewCommentEntity;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
+import com.teamside.project.alpha.member.domain.auth.model.dto.SmsAuthDto;
+import com.teamside.project.alpha.member.domain.auth.model.entity.SmsLogEntity;
+import com.teamside.project.alpha.member.domain.auth.repository.SmsLogRepo;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
 import com.teamside.project.alpha.member.domain.mypage.service.MyPageService;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
+import com.teamside.project.alpha.member.model.entity.MemberEntity;
 import com.teamside.project.alpha.member.repository.InquiryRepo;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,6 +32,7 @@ public class MyPageServiceImpl implements MyPageService {
     private final MemberRepo memberRepo;
     private final GroupRepository groupRepository;
     private final InquiryRepo inquiryRepo;
+    private final SmsLogRepo smsLogRepo;
     @Override
     public MyPageHome getMyPageHome() {
         return memberRepo.getMyPageHome();
@@ -141,5 +147,23 @@ public class MyPageServiceImpl implements MyPageService {
                         d.deleteDaily();
                     }
                 });
+    }
+
+    @Override
+    @Transactional
+    public void changePhone(SmsAuthDto smsAuthDto) throws CustomException {
+        // authNum 5m valid
+        SmsLogEntity smsLogEntity = smsLogRepo.findTop1ByPhoneAndCreateTimeBetweenOrderByCreateTimeDesc(
+                        CryptUtils.encrypt(smsAuthDto.getPhone()),
+                        LocalDateTime.now().minusMinutes(5),
+                        LocalDateTime.now())
+                .orElseThrow(() -> new CustomException(ApiExceptionCode.AUTH_FAIL));
+
+        // check authNum
+        if (!smsLogEntity.getAuthNum().equals(smsAuthDto.getAuthNum())) {
+            throw new CustomException(ApiExceptionCode.AUTH_FAIL);
+        }
+        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+        member.changePhoneNumber(smsAuthDto.getPhone());
     }
 }

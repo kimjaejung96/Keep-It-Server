@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.member.domain.mypage.service;
 
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.member.domain.auth.model.dto.SmsAuthDto;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.*;
 import com.teamside.project.alpha.member.domain.mypage.model.enumurate.MyGroupManagementType;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
@@ -31,4 +32,6 @@ public interface MyPageService {
     MyGroupManagement getMyGroupsManagements(MyGroupManagementType type);
 
     void deleteMyWritings(String groupId);
+
+    void changePhone(SmsAuthDto smsAuthDto) throws CustomException;
 }

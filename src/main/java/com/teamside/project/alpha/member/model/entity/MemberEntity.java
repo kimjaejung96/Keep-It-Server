@@ -181,4 +181,7 @@ public class MemberEntity extends CreateDtEntity {
                 .map(MemberBlockEntity::getTargetMid)
                 .collect(Collectors.toList());
     }
+    public void changePhoneNumber(String phoneNumber) throws CustomException {
+        this.phone = CryptUtils.encrypt(phoneNumber);
+    }
 }

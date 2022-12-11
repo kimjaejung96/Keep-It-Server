@@ -5,7 +5,8 @@ public enum AuthType {
 
     NULL("null"),
     SIGN_UP("sign-up"),
-    SIGN_IN("sign-in");
+    SIGN_IN("sign-in"),
+    CHANGE_PHONE("change-phone");
 
     private final String type;
 
