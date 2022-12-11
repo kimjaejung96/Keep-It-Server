@@ -116,15 +116,22 @@ public class DailyServiceImpl implements DailyService {
 
         if (!masterMid.get().equals(mid)) {
             memberRepo.findByMid(masterMid.get()).ifPresent( m -> {
-                if (m.getAlarmSetting().isAllSetting() && m.getAlarmSetting().isComment()) {
-                    Map<String, Object> newComment = new HashMap<>();
-                    newComment.put("dailyId", dailyId);
-                    newComment.put("groupId", groupId);
-                    newComment.put("commentId", commentId.get());
-                    msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_DAILY_COMMENT, newComment);
+                try {
+                    transactionUtils.runTransaction(() -> {
+                        if (m.getAlarmSetting().isAllSetting() && m.getAlarmSetting().isComment()) {
+                            Map<String, Object> newComment = new HashMap<>();
+                            newComment.put("dailyId", dailyId);
+                            newComment.put("groupId", groupId);
+                            newComment.put("commentId", commentId.get());
+                            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_DAILY_COMMENT, newComment);
+                        }
+                    });
+                } catch (CustomException e) {
+                    throw new CustomRuntimeException(ApiExceptionCode.SYSTEM_ERROR);
                 }
             });
         }
+
         if (comment.getParentCommentId() != null) {
             Map<String, String> data = new HashMap<>();
             data.put("groupId", groupId);
