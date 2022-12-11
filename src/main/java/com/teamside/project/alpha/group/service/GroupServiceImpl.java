@@ -8,6 +8,7 @@ import com.teamside.project.alpha.common.msg.MsgService;
 import com.teamside.project.alpha.common.msg.enumurate.MQExchange;
 import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.common.util.TransactionUtils;
 import com.teamside.project.alpha.group.domain.daily.model.dto.DailyDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.constant.GroupConstant;
@@ -24,7 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +36,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final MsgService msgService;
     private final MemberRepo memberRepository;
+    private final TransactionUtils transactionUtils;
 
 
 
@@ -74,12 +77,13 @@ public class GroupServiceImpl implements GroupService {
         }
     }
     @Override
-    @Transactional
     public void deleteGroup(String groupId) throws CustomException {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkGroupMaster();
+        transactionUtils.runTransaction(() -> {
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+            group.checkGroupMaster();
 
-        group.deleteGroup();
+            group.deleteGroup();
+        });
 
         Map<String, String> data = new HashMap<>();
         data.put("groupId", groupId);
@@ -134,20 +138,22 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @Transactional
     public void joinGroup(String groupId, String password) throws CustomException {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkGroupStatus();
-        group.checkJoinPossible(group, password);
-
         String mid = CryptUtils.getMid();
-        // 내가 참여한 그룹 갯수 (status - join)
-        long joinGroupCount = groupRepository.countJoinGroup(mid);
+        transactionUtils.runTransaction(() -> {
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+            group.checkGroupStatus();
+            group.checkJoinPossible(group, password);
 
-        if (joinGroupCount >= GroupConstant.MEMBER_JOIN_POSSIBLE_COUNT) {
-            throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
-        }
-        group.addMember(mid);
+            long joinGroupCount = groupRepository.countJoinGroup(mid);
+
+            if (joinGroupCount >= GroupConstant.MEMBER_JOIN_POSSIBLE_COUNT) {
+                throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
+            }
+            // 내가 참여한 그룹 갯수 (status - join)
+            group.addMember(mid);
+        });
+
         Map<String, String> data = new HashMap<>();
         data.put("senderMid", mid);
         data.put("groupId", groupId);
@@ -324,30 +330,35 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @Transactional
-    public void follow(String groupId, String targetMid)  {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        boolean alarmYn = group.follow(groupId, targetMid);
+    public void follow(String groupId, String targetMid) throws CustomException {
+        AtomicBoolean alarmYn = new AtomicBoolean(false);
+        transactionUtils.runTransaction(() -> {
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+            alarmYn.set(group.follow(groupId, targetMid));
+        });
 
-        if (alarmYn) {
+        if (alarmYn.get()) {
             Map<String, Object> data = new HashMap<>();
             data.put("receiverMid", targetMid);
             data.put("senderMid", CryptUtils.getMid());
             data.put("groupId", groupId);
 
-            CompletableFuture.supplyAsync(() -> msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data));
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_FOLLOW, data);
         }
     }
 
     @Override
-    @Transactional
-    public void exileMember(String groupId, String memberId) {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkGroupMaster();
-        group.exileMember(memberId);
+    public void exileMember(String groupId, String memberId) throws CustomException {
+        AtomicReference<String> masterMid = new AtomicReference<>("");
+        transactionUtils.runTransaction(() -> {
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+            group.checkGroupMaster();
+            group.exileMember(memberId);
+            masterMid.set(group.getMasterMid());
+        });
 
         Map<String, String> data = new HashMap<>();
-        data.put("receiverMid", group.getMasterMid());
+        data.put("receiverMid", masterMid.get());
         data.put("groupId", groupId);
         msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_JOIN, data);
     }

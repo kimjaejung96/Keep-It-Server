@@ -5,14 +5,14 @@ import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 
 public interface ReviewService {
-    void createReview(String groupId, ReviewDto review);
+    void createReview(String groupId, ReviewDto review) throws CustomException;
     void updateReview(String groupId, ReviewDto.UpdateReviewDto review);
 
     ReviewDto.ResponseReviewDetail selectReviewDetail(String groupId, String reviewId);
 
-    String createComment(String groupId, CommentDto.CreateComment comment, String reviewId);
+    String createComment(String groupId, CommentDto.CreateComment comment, String reviewId) throws CustomException;
 
-    void keepReview(String groupId, String reviewId);
+    void keepReview(String groupId, String reviewId) throws CustomException;
 
     void deleteReview(String groupId, String reviewId) throws CustomException;
 

@@ -38,7 +38,7 @@ public class ReviewController {
      * @return
      */
     @PostMapping("")
-    public ResponseEntity<ResponseObject> createReview(@PathVariable String groupId, @Valid @RequestBody ReviewDto review) {
+    public ResponseEntity<ResponseObject> createReview(@PathVariable String groupId, @Valid @RequestBody ReviewDto review) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         reviewService.createReview(groupId, review);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
@@ -93,7 +93,7 @@ public class ReviewController {
      * @return
      */
     @PostMapping("/{reviewId}/comment")
-    public ResponseEntity<ResponseObject> createComment(@PathVariable String groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable String reviewId) {
+    public ResponseEntity<ResponseObject> createComment(@PathVariable String groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable String reviewId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         responseObject.setBody(reviewService.createComment(groupId, comment, reviewId));
 
@@ -143,7 +143,7 @@ public class ReviewController {
      * @return
      */
     @PostMapping("/{reviewId}/keep")
-    public ResponseEntity<ResponseObject> keepReview(@PathVariable String groupId, @PathVariable String reviewId) {
+    public ResponseEntity<ResponseObject> keepReview(@PathVariable String groupId, @PathVariable String reviewId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         reviewService.keepReview(groupId, reviewId);
 

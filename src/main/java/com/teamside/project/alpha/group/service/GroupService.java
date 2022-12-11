@@ -31,7 +31,7 @@ public interface GroupService {
     GroupDto.GroupHome selectGroupHome(String groupId);
     void follow(String groupId, String targetMid) throws CustomException;
 
-    void exileMember(String groupId, String memberId);
+    void exileMember(String groupId, String memberId) throws CustomException;
 
     List<GroupDto.GroupAlarmSetting> selectGroupReviewAlarm(String alarmType) throws CustomException;
 
