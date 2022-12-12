@@ -350,14 +350,14 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         ))
                  )
                  .from(review)
-                 .innerJoin(member).on(review.masterMid.eq(member.mid))
+                 .innerJoin(member).on(review.masterMid.eq(targetId))
                  .innerJoin(place).on(review.place.placeId.eq(place.placeId))
                  .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId),
                          reviewKeep.memberMid.eq(CryptUtils.getMid()),
                          reviewKeep.keepYn.eq(true))
                  .where(review.group.groupId.eq(groupId),
                          review.isDelete.eq(false),
-                         eqReviewMaster(targetId),
+//                         eqReviewMaster(targetId),
                          ltReviewId(lastReviewSeq),
                          notInBlocks(blocks, "REVIEW"))
                  .orderBy(review.seq.desc())
