@@ -294,7 +294,7 @@ public class GroupServiceImpl implements GroupService {
         Long reviewCount = groupEntity.getReviewEntities().stream()
                 .filter(d -> !d.getIsDelete())
                 .filter((blocks != null && blocks.size() > 0) ? d -> !blocks.contains(d.getMasterMid()) : d -> true)
-//                .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
+                .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
                 .count();
         return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId, reviewCount);
     }
