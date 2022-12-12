@@ -151,7 +151,11 @@ public class MemberEntity extends CreateDtEntity {
         updateFcmTokenLife();
     }
     public void updateFcmTokenLife() {
-        this.fcmTokenLife = LocalDateTime.now();
+        if (this.fcmToken.isBlank()) {
+            this.fcmTokenLife = null;
+        } else {
+            this.fcmTokenLife = LocalDateTime.now();
+        }
     }
 
     public void changeRefreshToken(String refreshToken) {
