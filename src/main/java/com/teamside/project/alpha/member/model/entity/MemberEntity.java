@@ -140,7 +140,9 @@ public class MemberEntity extends CreateDtEntity {
         this.fcmTokenLife = null;
         this.refreshTokenEntity = null;
         this.memberBlockEntities.clear();
-        this.groupMemberMappingEntities.forEach(d -> d.updateStatus(GroupMemberStatus.WITHDRAWAL));
+        this.groupMemberMappingEntities.stream()
+                .filter(d -> !d.getGroup().getMasterMid().equals(CryptUtils.getMid()))
+                .forEach(d -> d.updateStatus(GroupMemberStatus.WITHDRAWAL));
         this.isDelete = true;
     }
 
