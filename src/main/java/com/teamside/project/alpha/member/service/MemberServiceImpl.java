@@ -5,6 +5,8 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.msg.MsgService;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.group.model.entity.GroupEntity;
+import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.domain.auth.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.domain.auth.service.AuthService;
 import com.teamside.project.alpha.member.model.dto.AlarmDto;
@@ -29,6 +31,7 @@ public class MemberServiceImpl implements MemberService {
     private final AuthService authService;
     private final InquiryRepo inquiryRepo;
     private final MsgService msgService;
+    private final GroupRepository groupRepo;
 
     @Override
     public JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException {
@@ -61,6 +64,9 @@ public class MemberServiceImpl implements MemberService {
     public void withdrawal()  {
         MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         member.withdrawalMember();
+
+        List<GroupEntity> groups = groupRepo.findAllByMasterMidAndIsDelete(CryptUtils.getMid(), false);
+        groups.forEach(GroupEntity::deleteGroup);
     }
 
     private void checkExistName(String name) throws CustomException {

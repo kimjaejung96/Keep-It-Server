@@ -4,6 +4,7 @@ import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface GroupRepository  extends JpaRepository<GroupEntity, Long>, GroupRepositoryDSL{
@@ -12,4 +13,5 @@ public interface GroupRepository  extends JpaRepository<GroupEntity, Long>, Grou
     Long countByGroupMemberMappingEntity(GroupMemberMappingEntity groupMemberMappingEntity);
     Long countByNameContainingAndIsDelete(String search, boolean isDelete);
     Long countByMasterMidAndIsDelete(String memberMid, boolean isDelete);
+    List<GroupEntity> findAllByMasterMidAndIsDelete(String memberMid, boolean isDelete);
 }
