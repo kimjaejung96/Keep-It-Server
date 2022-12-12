@@ -34,9 +34,12 @@ public class MemberServiceImpl implements MemberService {
     private final GroupRepository groupRepo;
 
     @Override
+    @Transactional
     public JwtTokens sigunUp(MemberDto.SignUpDto signUpDto) throws CustomException {
         checkExistName(signUpDto.getMember().getName());
         checkExistPhone(signUpDto.getMember().getPhone());
+
+        memberRepo.findByFcmToken(signUpDto.getMember().getFcmToken()).ifPresent(d -> d.updateFcmToken(""));
 
         MemberEntity member = new MemberEntity(signUpDto);
 
