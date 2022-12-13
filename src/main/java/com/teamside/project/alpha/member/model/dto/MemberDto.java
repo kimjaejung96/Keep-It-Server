@@ -3,6 +3,7 @@ package com.teamside.project.alpha.member.model.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import javax.validation.constraints.Pattern;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberDto {
+    private String mid;
     @NotNull
     @Pattern(regexp = KeepitConstant.REGEXP_MEMBER_NAME, message = "이름이 올바르지 않습니다.")
     private String name;
@@ -21,6 +23,14 @@ public class MemberDto {
     private String phone;
     private String profileUrl;
     private String fcmToken;
+
+    @Builder(builderMethodName = "MyPageHome_MemberDto")
+    public MemberDto(String mid, String name, String phone, String profileUrl) {
+        this.mid = mid;
+        this.name = name;
+        this.phone = phone;
+        this.profileUrl = profileUrl;
+    }
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -154,7 +154,7 @@ public class MyPageServiceImpl implements MyPageService {
     public void changePhone(SmsAuthDto smsAuthDto) throws CustomException {
         // authNum 5m valid
         SmsLogEntity smsLogEntity = smsLogRepo.findTop1ByPhoneAndCreateTimeBetweenOrderByCreateTimeDesc(
-                        CryptUtils.encrypt(smsAuthDto.getPhone()),
+                        CryptUtils.encode(smsAuthDto.getPhone()),
                         LocalDateTime.now().minusMinutes(5),
                         LocalDateTime.now())
                 .orElseThrow(() -> new CustomException(ApiExceptionCode.AUTH_FAIL));

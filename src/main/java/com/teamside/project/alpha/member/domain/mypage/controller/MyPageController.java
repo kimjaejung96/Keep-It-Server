@@ -22,6 +22,11 @@ import javax.validation.Valid;
 @RequestMapping("/mypage")
 public class MyPageController {
     private final MyPageService myPageService;
+
+    /**
+     * 마이페이지 홈 API
+     * @return
+     */
     @GetMapping("/home")
     public ResponseEntity<ResponseObject> getMyPageHome() {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

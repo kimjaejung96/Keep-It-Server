@@ -32,7 +32,12 @@ public class MemberController {
     private final MemberService memberService;
 
 
-
+    /**
+     * 회원가입 API
+     * @param signUpDto
+     * @return
+     * @throws CustomException
+     */
     @PostMapping("/sign-up")
     public ResponseEntity<ResponseObject> signUp(@RequestBody @Valid MemberDto.SignUpDto signUpDto) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);

@@ -77,7 +77,7 @@ public class MemberEntity extends CreateDtEntity {
     public MemberEntity(MemberDto.SignUpDto signUpDto) throws CustomException {
         this.mid = UUID.randomUUID().toString();
         this.name = signUpDto.getMember().getName();
-        this.phone = CryptUtils.encrypt(signUpDto.getMember().getPhone());
+        this.phone = CryptUtils.encode(signUpDto.getMember().getPhone());
         this.profileUrl = Objects.requireNonNullElse(signUpDto.getMember().getProfileUrl(), "");
         this.fcmToken = Objects.requireNonNullElse(signUpDto.getMember().getFcmToken(), "");
         this.fcmTokenLife = LocalDateTime.now();
@@ -188,6 +188,6 @@ public class MemberEntity extends CreateDtEntity {
                 .collect(Collectors.toList());
     }
     public void changePhoneNumber(String phoneNumber) throws CustomException {
-        this.phone = CryptUtils.encrypt(phoneNumber);
+        this.phone = CryptUtils.encode(phoneNumber);
     }
 }
