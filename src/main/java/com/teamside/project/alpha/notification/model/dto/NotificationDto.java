@@ -62,10 +62,10 @@ public class NotificationDto {
                 this.notiContent = "'" + this.senderName + "'님이 그룹에 참여했어요.";
                 break;
             case KPS_GNR:
-                this.notiContent = "리뷰 [" + this.reviewTitle + "] 글이 업데이트 됐어요.";
+                this.notiContent = "리뷰 [" + (this.reviewTitle != null && this.reviewTitle.length() > 20 ? this.reviewTitle.substring(0, 20) + "..." : this.reviewTitle) + "] 글이 업데이트 됐어요.";
                 break;
             case KPS_GND:
-                this.notiContent = "일상 [" + this.dailyTitle + "] 글이 업데이트 됐어요.";
+                this.notiContent = "일상 [" + (this.dailyTitle != null && this.dailyTitle.length() > 20 ? this.dailyTitle.substring(0, 20) + "..." : this.dailyTitle) + "] 글이 업데이트 됐어요.";
                 break;
             case KPS_MRK:
                 if (keepCnt > 1) {
@@ -81,7 +81,22 @@ public class NotificationDto {
                 this.notiContent = "일상 [" + this.dailyTitle + "]에 '" + this.senderName + "'님이 댓글을 달았어요.";
                 break;
             case KPS_MCC:
-                this.notiContent = "'" + this.commentContent + "'댓글에 '" + this.senderName + "'님이 댓글을 달았어요.";
+                String cmt = this.commentContent;
+
+                // 첫글자 개행 확인
+                if (cmt.startsWith("\n")) {
+                    cmt = cmt.replaceFirst("\n", "");
+                }
+
+                // 댓글 20자 확인
+                cmt = cmt.length() > 20 ? cmt.substring(0, 20) + "..." : cmt;
+
+                // 중간 개행 확인
+                if (cmt.contains("\n")) {
+                    cmt = cmt.substring(0, cmt.indexOf("\n")) + "...";
+                }
+
+                this.notiContent = "'" + cmt + "'댓글에 '" + this.senderName + "'님이 댓글을 달았어요.";
                 break;
             case KPS_MFW:
                 this.notiContent = "'" + this.senderName + "’님이 '" + this.receiverName + "’님을 팔로우했어요.";

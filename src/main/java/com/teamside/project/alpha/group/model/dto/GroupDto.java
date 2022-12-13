@@ -202,11 +202,14 @@ public class GroupDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class GroupHome {
         private String groupName;
+
+        private Boolean isDelete;
         private long memberCount;
         private long myReviewCount;
 
-        public GroupHome(String groupName, long memberCount, long myReviewCount) {
+        public GroupHome(String groupName, Boolean isDelete, long memberCount, long myReviewCount) {
             this.groupName = groupName;
+            this.isDelete = isDelete;
             this.memberCount = memberCount;
             this.myReviewCount = myReviewCount;
         }

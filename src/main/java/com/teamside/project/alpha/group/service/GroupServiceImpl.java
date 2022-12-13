@@ -324,6 +324,7 @@ public class GroupServiceImpl implements GroupService {
         group.checkExistMember(CryptUtils.getMid());
 
         return new GroupDto.GroupHome(group.getName(),
+                group.getIsDelete(),
                 group.getGroupMemberMappingEntity().stream().filter(m -> m.getStatus().equals(GroupMemberStatus.JOIN)).count(),
                 group.getReviewEntities().stream().filter(d-> Objects.equals(d.getMasterMid(), CryptUtils.getMid()) && !d.getIsDelete()).count()
                 );
