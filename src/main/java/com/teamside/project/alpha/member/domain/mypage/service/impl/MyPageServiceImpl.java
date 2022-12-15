@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -33,9 +34,15 @@ public class MyPageServiceImpl implements MyPageService {
     private final GroupRepository groupRepository;
     private final InquiryRepo inquiryRepo;
     private final SmsLogRepo smsLogRepo;
+
     @Override
+    @Transactional
     public MyPageHome getMyPageHome() {
-        return memberRepo.getMyPageHome();
+        List<String> blocks = memberRepo.findByMid(CryptUtils.getMid())
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND))
+                .getBlockTarget();
+
+        return memberRepo.getMyPageHome(blocks);
     }
 
     @Override
@@ -116,6 +123,10 @@ public class MyPageServiceImpl implements MyPageService {
     @Override
     public MyGroupManagement getMyGroupsManagements(MyGroupManagementType type) {
         List<MyGroupManagement.Group> data = groupRepository.getMyGroupsManagements(type);
+
+        data = data.stream()
+                .filter(item -> (item.getExistReview() || item.getExistDaily() || item.getExistReviewComment() || item.getExistDailyComment()))
+                .collect(Collectors.toList());
 
         return new MyGroupManagement(data);
     }

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface MemberRepoDSL {
     Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, String groupId);
-    MyPageHome getMyPageHome();
+    MyPageHome getMyPageHome(List<String> blocks);
 
     void unfollow(String mid, String targetMid);
 }

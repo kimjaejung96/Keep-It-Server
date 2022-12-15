@@ -58,7 +58,7 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
     }
 
     @Override
-    public MyPageHome getMyPageHome() {
+    public MyPageHome getMyPageHome(List<String> blocks) {
         return jpaQueryFactory
                 .select(new QMyPageHome(member.mid,
                         member.name,
@@ -80,13 +80,19 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                                 JPAExpressions
                                         .select(reviewKeep.count().coalesce(0L))
                                         .from(reviewKeep)
-                                        .where(reviewKeep.keepYn.eq(true), reviewKeep.memberMid.eq(member.mid))
+                                        .innerJoin(reviewKeep.review, review)
+                                        .where(reviewKeep.keepYn.eq(true),
+                                                reviewKeep.memberMid.eq(member.mid),
+                                                review.masterMid.notIn(blocks))
                                 , "reviewKeepCount"),
                         ExpressionUtils.as(
                                 JPAExpressions
                                         .select(dailyKeep.count().coalesce(0L))
                                         .from(dailyKeep)
-                                        .where(dailyKeep.keepYn.eq(true), dailyKeep.memberMid.eq(member.mid))
+                                        .innerJoin(dailyKeep.daily, daily)
+                                        .where(dailyKeep.keepYn.eq(true),
+                                                dailyKeep.memberMid.eq(member.mid),
+                                                daily.masterMid.notIn(blocks))
                                 , "dailyKeepCount"),
                         ExpressionUtils.as(
                                 JPAExpressions
