@@ -120,6 +120,7 @@ public class GroupEntity extends TimeEntity {
     public void updateGroup(GroupDto group) {
         this.name = group.getName();
         this.description = group.getDescription();
+        this.usePrivate = group.getUsePrivate();
         this.password = group.getUsePrivate() ? group.getPassword() : "";
         this.memberQuantity = group.getMemberQuantity();
         this.profileUrl = group.getProfileUrl();
