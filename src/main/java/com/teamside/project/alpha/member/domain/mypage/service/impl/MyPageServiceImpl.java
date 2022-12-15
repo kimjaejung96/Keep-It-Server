@@ -124,10 +124,6 @@ public class MyPageServiceImpl implements MyPageService {
     public MyGroupManagement getMyGroupsManagements(MyGroupManagementType type) {
         List<MyGroupManagement.Group> data = groupRepository.getMyGroupsManagements(type);
 
-        data = data.stream()
-                .filter(item -> (item.getExistReview() || item.getExistDaily() || item.getExistReviewComment() || item.getExistDailyComment()))
-                .collect(Collectors.toList());
-
         return new MyGroupManagement(data);
     }
 

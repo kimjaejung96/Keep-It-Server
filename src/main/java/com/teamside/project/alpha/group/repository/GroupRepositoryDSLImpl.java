@@ -39,6 +39,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
     @PersistenceContext
@@ -982,6 +983,10 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
         if (type.equals(MyGroupManagementType.WITHDRAWAL)) {
             response = this.getManagementWithdrawalGroups(mid);
+
+            response = response.stream()
+                    .filter(item -> (item.getExistReview() || item.getExistDaily() || item.getExistReviewComment() || item.getExistDailyComment()))
+                    .collect(Collectors.toList());
         } else {
             response = this.getManagementGroups(type, mid);
         }
