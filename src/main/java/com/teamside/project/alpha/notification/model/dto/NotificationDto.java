@@ -69,7 +69,7 @@ public class NotificationDto {
                 break;
             case KPS_MRK:
                 if (keepCnt > 1) {
-                    this.notiContent = "'" + this.senderName + "'님 외 " + this.keepCnt + "명이 [" + this.reviewTitle + "] 글을 킵했어요.";
+                    this.notiContent = "'" + this.senderName + "'님 외 " + (this.keepCnt - 1) + "명이 [" + this.reviewTitle + "] 글을 킵했어요.";
                 } else {
                     this.notiContent = "'" + this.senderName + "'님이 [" + this.reviewTitle + "] 글을 킵했어요.";
                 }
@@ -81,12 +81,7 @@ public class NotificationDto {
                 this.notiContent = "일상 [" + this.dailyTitle + "]에 '" + this.senderName + "'님이 댓글을 달았어요.";
                 break;
             case KPS_MCC:
-                String cmt = this.commentContent;
-
-                // 첫글자 개행 확인
-                if (cmt.startsWith("\n")) {
-                    cmt = cmt.replaceFirst("\n", "");
-                }
+                String cmt = this.commentContent.trim();
 
                 // 댓글 20자 확인
                 cmt = cmt.length() > 20 ? cmt.substring(0, 20) + "..." : cmt;

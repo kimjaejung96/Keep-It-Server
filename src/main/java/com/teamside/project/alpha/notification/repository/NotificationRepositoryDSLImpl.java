@@ -122,7 +122,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "'' AS COMMENT_ID,\n" +
                 "'' AS COMMENT_CONTENT,\n" +
                 "!ISNULL(R.IMAGES) AS EXISTS_IMAGE,\n" +
-                "(IFNULL(KNL.KEEP_CNT, 2) - 1) AS KEEP_CNT\n" +
+                "KNL.KEEP_CNT AS KEEP_CNT\n" +
                 "FROM\n" +
                 "REVIEW_KEEP_NOTI_LIST KNL\n" +
                 "INNER JOIN MEMBER RECEIVER ON\n" +
