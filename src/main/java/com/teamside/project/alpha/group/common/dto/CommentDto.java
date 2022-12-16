@@ -86,7 +86,7 @@ public class CommentDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class CreateComment {
-        @Size(min = 1, max = 1500, message = "댓글 내용은 1자~1500자 사이입니다.")
+        @Size(min = 0, max = 1500, message = "댓글 내용은 1500자 이하만 작성 가능합니다.")
         private String comment;
         private String image;
         private String parentCommentId;
