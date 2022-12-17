@@ -827,7 +827,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
         List<MyComments.comments> comments = new ArrayList<>();
         String mid = CryptUtils.getMid();
         String queryString = "SELECT A.VIEW_TYPE " +
-                ", REPLACE(A.COMMENT, CHAR(10),' ') AS 'COMMENT' " +
+                ", TRIM(REPLACE(A.COMMENT, CHAR(10),' ')) AS 'COMMENT' " +
                 ", A.GROUP_NAME " +
                 ", A.TITLE " +
                 ", DATE_FORMAT(A.CREATE_DT, '%Y.%m.%d') AS 'CREATE_DT' " +
@@ -853,7 +853,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 (groupId != null ? "AND G.GROUP_ID = ? " : "") +
                 "UNION " +
                 "SELECT 'DAILY' AS 'VIEW_TYPE' " +
-                ", REPLACE(DC.COMMENT, CHAR(10),' ') AS 'COMMENT' " +
+                ", TRIM(REPLACE(DC.COMMENT, CHAR(10),' ')) AS 'COMMENT' " +
                 ", G.NAME AS 'GROUP_NAME' " +
                 ", D.TITLE AS 'TITLE' " +
                 ", DC.CREATE_DT " +

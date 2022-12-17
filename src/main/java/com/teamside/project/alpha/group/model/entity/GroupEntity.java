@@ -18,6 +18,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,6 +64,9 @@ public class GroupEntity extends TimeEntity {
 
     @Column(name = "IS_DELETE", columnDefinition = "boolean")
     private Boolean isDelete;
+
+    @Column(name = "DELETE_DT", columnDefinition = "DATETIME")
+    private LocalDateTime deleteDt;
 
     @OneToMany(mappedBy = "group",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GroupMemberMappingEntity> groupMemberMappingEntity;
@@ -252,6 +256,7 @@ public class GroupEntity extends TimeEntity {
 
     public void deleteGroup() {
         this.isDelete = true;
+        this.deleteDt = LocalDateTime.now();
     }
 
     public void leaveGroup() {
