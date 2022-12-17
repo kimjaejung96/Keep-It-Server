@@ -474,6 +474,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         daily.createTime.stringValue(),
                         daily.content,
                         daily.image,
+                        daily.dailyCommentEntities.size(),
                         group.name,
                         new CaseBuilder()
                                 .when(dailyKeep.seq.isNull())
