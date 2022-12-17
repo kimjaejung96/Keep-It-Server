@@ -53,7 +53,10 @@ public class DailyController {
     @PostMapping("/{dailyId}/comment")
     public ResponseEntity<ResponseObject> createComment(@PathVariable String groupId,
                                                         @PathVariable String dailyId,
-                                                        @RequestBody @Valid CommentDto.CreateComment comment) throws CustomException {
+                                                        @RequestBody CommentDto.CreateComment comment) throws CustomException {
+        if (comment.getComment() == null && comment.getImage() == null) {
+            throw new CustomException(ApiExceptionCode.VALIDATION_ERROR);
+        }
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         responseObject.setBody(dailyService.createComment(groupId, dailyId, comment));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);

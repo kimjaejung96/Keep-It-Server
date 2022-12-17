@@ -9,6 +9,7 @@ import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.member.domain.auth.model.entity.RefreshTokenEntity;
+import com.teamside.project.alpha.member.domain.noti_check.model.entity.NotificationCheck;
 import com.teamside.project.alpha.member.model.dto.AlarmDto;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.enumurate.SignUpType;
@@ -66,6 +67,8 @@ public class MemberEntity extends CreateDtEntity {
     private RefreshTokenEntity refreshTokenEntity;
     @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
     private AlarmSetting alarmSetting;
+    @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
+    private NotificationCheck notiCheck;
     @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<MemberBlockEntity> memberBlockEntities;
     @OneToMany(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
