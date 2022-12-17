@@ -12,7 +12,7 @@ spring:
       maximum-pool-size: 1
       connection-test-query: SELECT 1
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update # When you launch the application for the first time - switch "none" at "create"
       database: mysql
@@ -20,6 +20,5 @@ spring:
       generate-ddl: true
       format_sql: true
       generate_statistics: true
-      show_sql: false
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
