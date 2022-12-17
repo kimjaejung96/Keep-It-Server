@@ -107,5 +107,6 @@ public class ReviewEntity extends TimeEntity {
 
     public void deleteReview() {
         this.isDelete = true;
+        this.reviewCommentEntities.forEach(ReviewCommentEntity::deleteComment);
     }
 }

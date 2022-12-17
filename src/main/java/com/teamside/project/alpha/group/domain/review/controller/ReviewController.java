@@ -93,7 +93,10 @@ public class ReviewController {
      * @return
      */
     @PostMapping("/{reviewId}/comment")
-    public ResponseEntity<ResponseObject> createComment(@PathVariable String groupId, @Valid @RequestBody CommentDto.CreateComment comment, @PathVariable String reviewId) throws CustomException {
+    public ResponseEntity<ResponseObject> createComment(@PathVariable String groupId, @RequestBody CommentDto.CreateComment comment, @PathVariable String reviewId) throws CustomException {
+        if (comment.getComment() == null && comment.getImage() == null) {
+            throw new CustomException(ApiExceptionCode.VALIDATION_ERROR);
+        }
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         responseObject.setBody(reviewService.createComment(groupId, comment, reviewId));
 

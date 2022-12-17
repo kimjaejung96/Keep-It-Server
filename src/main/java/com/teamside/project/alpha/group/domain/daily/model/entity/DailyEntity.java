@@ -102,5 +102,6 @@ public class DailyEntity extends TimeEntity {
 
     public void deleteDaily() {
         this.isDelete = true;
+        this.dailyCommentEntities.forEach(DailyCommentEntity::deleteComment);
     }
 }
