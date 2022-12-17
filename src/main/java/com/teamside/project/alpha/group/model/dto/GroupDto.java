@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -204,12 +206,17 @@ public class GroupDto {
         private String groupName;
 
         private Boolean isDelete;
+        private String deleteDt;
+
         private long memberCount;
         private long myReviewCount;
 
-        public GroupHome(String groupName, Boolean isDelete, long memberCount, long myReviewCount) {
+        public GroupHome(String groupName, Boolean isDelete, LocalDateTime deleteDt, long memberCount, long myReviewCount) {
             this.groupName = groupName;
             this.isDelete = isDelete;
+            if (isDelete) {
+                this.deleteDt = deleteDt.plusMonths(1).format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+            }
             this.memberCount = memberCount;
             this.myReviewCount = myReviewCount;
         }
