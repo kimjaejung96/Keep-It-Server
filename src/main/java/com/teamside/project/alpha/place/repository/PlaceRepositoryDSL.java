@@ -1,11 +1,9 @@
-package com.teamside.project.alpha.place.service;
+package com.teamside.project.alpha.place.repository;
 
 import com.teamside.project.alpha.place.model.dto.PlaceDto;
 
 import java.util.List;
 
-public interface PlaceService {
-    void createPlace(PlaceDto place);
-
+public interface PlaceRepositoryDSL {
     List<PlaceDto.PlacePinDto> getPlacePins(String groupId);
 }

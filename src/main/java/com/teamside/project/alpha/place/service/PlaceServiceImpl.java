@@ -5,6 +5,8 @@ import com.teamside.project.alpha.place.model.entity.PlaceEntity;
 import com.teamside.project.alpha.place.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PlaceServiceImpl implements PlaceService {
     private final PlaceRepository placeRepository;
@@ -18,9 +20,12 @@ public class PlaceServiceImpl implements PlaceService {
         if (placeRepository.findByPlaceId(place.getPlaceId()).isPresent()) {
             return;
         }
-
         PlaceEntity newPlace = new PlaceEntity(place);
         placeRepository.save(newPlace);
+    }
 
+    @Override
+    public List<PlaceDto.PlacePinDto> getPlacePins(String groupId) {
+        return placeRepository.getPlacePins(groupId);
     }
 }

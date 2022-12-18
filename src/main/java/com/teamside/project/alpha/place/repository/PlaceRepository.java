@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface PlaceRepository extends JpaRepository<PlaceEntity, Long> {
+public interface PlaceRepository extends JpaRepository<PlaceEntity, Long>, PlaceRepositoryDSL {
     Optional<PlaceEntity> findByPlaceId(Long id);
     boolean existsByPlaceId(Long id);
 }

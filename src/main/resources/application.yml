@@ -16,29 +16,6 @@ spring:
       repositories:
         enabled: false
   
-  # Set the master node of the PCI-AD Database as the primary database for ATP Project to handle the "CUD" for it.
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://person.jjhserverworld.pe.kr:3316/alpha?characterEncoding=utf8&serverTimezone=Asia/Seoul
-    username: alpha
-    password: alpha#!12
-    hikari:
-      maximum-pool-size: 15
-      connection-test-query: SELECT 1
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: none # When you launch the application for the first time - switch "none" at "create"
-      database: mysql
-      database-platform: org.hibernate.dialect.MySQL8InnoDBDialect
-      generate-ddl: true
-      format_sql: true
-      generate_statistics: true
-      naming:
-        physical-strategy: com.teamside.project.alpha.common.configuration.JpaNaming
-    properties:
-      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
-    open-in-view: off
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -63,8 +40,6 @@ alpha:
       country_code: "82"
       message: "[Keep it 회원가입]\n인증번호 [%s] 를 입력해주세요."
       expireTime: 180000
-      
-
       
 jwt:
   accessToken:
