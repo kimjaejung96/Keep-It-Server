@@ -1,5 +1,8 @@
 package com.teamside.project.alpha.place.repository;
 
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.daily.model.entity.QDailyCommentEntity;
@@ -14,7 +17,7 @@ import com.teamside.project.alpha.group.model.entity.QMemberFollowEntity;
 import com.teamside.project.alpha.group.model.entity.QStatReferralGroupEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberBlockEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
-import com.teamside.project.alpha.place.model.dto.PlaceDto;
+import com.teamside.project.alpha.place.model.dto.*;
 import com.teamside.project.alpha.place.model.entity.QPlaceEntity;
 
 import javax.persistence.EntityManager;
@@ -54,25 +57,9 @@ public class PlaceRepositoryDSLImpl implements PlaceRepositoryDSL {
 
     @Override
     public List<PlaceDto.PlacePinDto> getPlacePins(String groupId) {
-//        jpaQueryFactory.select(Projections.fields(PlaceDto.PlacePinDto.class,
-//                        place.placeId.as("placeId"),
-//                        place.placeName.as("placeName"),
-//                        place.address.as("address"),
-//                        place.roadAddress.as("roadAddress"),
-//                        place.phone.as("phone"),
-//                        place.x.as("x"),
-//                        place.y.as("y"),
-//                        review.count().as("reviewCount"),
-//                        Expressions.stringTemplate("GROUP_CONCAT({} SEPARATOR {1})", review.images, ":").as("imageUrl")
-//                ))
-//                .from(place)
-//                .innerJoin(review).on(review.place.placeId.eq(place.placeId))
-//                .where(review.group.groupId.eq(groupId),
-//                        review.isDelete.eq(false))
-//                .groupBy(place.placeId)
-//                .fetch();
         List<PlaceDto.PlacePinDto> result = new ArrayList<>();
         List<String> blocks = getBlocks();
+
         String queryString = "SELECT P.PLACE_ID "
                 + ", P.PLACE_NAME "
                 + ", P.ADDRESS "
@@ -91,7 +78,8 @@ public class PlaceRepositoryDSLImpl implements PlaceRepositoryDSL {
                 + "WHERE R.GROUP_ID = ? "
                 + "AND R.IS_DELETE = 0 "
                 + "AND R.MASTER NOT IN (?) "
-                + "GROUP BY P.PLACE_ID;";
+                + "GROUP BY P.PLACE_ID";
+
         Query query =  entityManager.createNativeQuery(queryString);
         List<Object[]> resultSets = query
                 .setParameter(1, groupId)
@@ -113,6 +101,68 @@ public class PlaceRepositoryDSLImpl implements PlaceRepositoryDSL {
 
         return result;
     }
+
+    @Override
+    public List<PlaceDto.ReviewInfo> getPlaceReviews(Long placeId, String groupId, Long pageSize, Long lastReviewSeq) {
+        return jpaQueryFactory.select(new QPlaceDto_ReviewInfo(
+                new QPlaceDto_ReviewInfo_Review(
+                        review.reviewId,
+                        review.seq,
+                        review.content,
+                        review.reviewCommentEntities.size(),
+                        review.createTime,
+                        review.images,
+                        ExpressionUtils.as(
+                                JPAExpressions
+                                        .select(reviewKeep.count())
+                                        .from(reviewKeep)
+                                        .where(reviewKeep.review.reviewId.eq(review.reviewId),
+                                                reviewKeep.keepYn.eq(true)),
+                                "keepCount"
+                        ),
+                        reviewKeep.isNotNull()
+                ),
+                new QPlaceDto_ReviewInfo_Member(
+                        member.mid,
+                        member.name,
+                        member.profileUrl
+                ),
+                new QPlaceDto_ReviewInfo_Place(
+                        place.placeId,
+                        place.placeName,
+                        place.roadAddress,
+                        place.address
+                )))
+                .from(review)
+                .innerJoin(member).on(review.masterMid.eq(member.mid))
+                .innerJoin(place).on(review.place.placeId.eq(place.placeId))
+                .leftJoin(reviewKeep).on(review.reviewId.eq(reviewKeep.review.reviewId),
+                        reviewKeep.memberMid.eq(CryptUtils.getMid()),
+                        reviewKeep.keepYn.eq(true))
+                .where(review.group.groupId.eq(groupId),
+                        place.placeId.eq(placeId),
+                        ltReviewId(lastReviewSeq),
+                        notInBlocks()
+                )
+                .orderBy(review.seq.desc())
+                .limit(pageSize)
+                .fetch();
+    }
+
+    private BooleanExpression ltReviewId(Long seq) {
+        return seq != null ? review.seq.lt(seq) : null;
+    }
+
+    private BooleanExpression notInBlocks() {
+        List<String> blocks = getBlocks();
+
+        if (blocks != null && blocks.size() > 0) {
+            return review.masterMid.notIn(blocks);
+        } else {
+            return null;
+        }
+    }
+
     public List<String> getBlocks() {
         return jpaQueryFactory
                 .select(block.targetMid)

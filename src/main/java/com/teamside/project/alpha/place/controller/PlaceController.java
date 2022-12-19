@@ -30,4 +30,14 @@ public class PlaceController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @GetMapping("/{placeId}/groups/{groupId}/reviews")
+    public ResponseEntity<ResponseObject> getPlaceReviews(@PathVariable Long placeId,
+                                                          @PathVariable String groupId,
+                                                          @RequestParam Long pageSize,
+                                                          @RequestParam(required = false) Long lastReviewSeq) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(placeService.getPlaceReviews(placeId, groupId, pageSize, lastReviewSeq));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
 }

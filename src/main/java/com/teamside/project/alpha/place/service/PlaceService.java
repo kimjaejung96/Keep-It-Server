@@ -8,4 +8,6 @@ public interface PlaceService {
     void createPlace(PlaceDto place);
 
     List<PlaceDto.PlacePinDto> getPlacePins(String groupId);
+
+    PlaceDto.ReviewsInPlace getPlaceReviews(Long placeId, String groupId, Long pageSize, Long lastReviewSeq);
 }

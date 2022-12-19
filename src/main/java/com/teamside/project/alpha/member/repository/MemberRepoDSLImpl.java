@@ -8,6 +8,7 @@ import com.teamside.project.alpha.group.domain.daily.model.entity.QDailyEntity;
 import com.teamside.project.alpha.group.domain.daily.model.entity.QDailyKeepEntity;
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewEntity;
 import com.teamside.project.alpha.group.domain.review.model.entity.QReviewKeepEntity;
+import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.model.entity.QGroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.entity.QMemberFollowEntity;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyPageHome;
@@ -33,6 +34,7 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
     QDailyEntity daily = QDailyEntity.dailyEntity;
     QMemberFollowEntity follow = QMemberFollowEntity.memberFollowEntity;
     QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
+    QGroupEntity group = QGroupEntity.groupEntity;
 
     @Override
     public Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, String groupId) {
@@ -98,7 +100,10 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                                 JPAExpressions
                                         .select(follow.count().coalesce(0L))
                                         .from(follow)
-                                        .where(follow.mid.eq(member.mid), follow.followYn.eq(true))
+                                        .innerJoin(follow.group, group)
+                                        .where(follow.mid.eq(member.mid),
+                                                follow.followYn.eq(true),
+                                                group.isDelete.eq(false))
                                 , "followCount")
                         ))
                 .from(member)
