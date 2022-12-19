@@ -123,6 +123,7 @@ public class MyPageServiceImpl implements MyPageService {
     @Override
     public MyGroupManagement getMyGroupsManagements(MyGroupManagementType type) {
         List<MyGroupManagement.Group> data = groupRepository.getMyGroupsManagements(type);
+        data.forEach(MyGroupManagement.Group::changeDeleteDt);
 
         return new MyGroupManagement(data);
     }
