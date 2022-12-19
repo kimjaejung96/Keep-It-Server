@@ -1003,7 +1003,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .select(Projections.fields(MyGroupManagement.Group.class,
                         group.groupId,
                         group.name.as("groupName"),
-                        group.category
+                        group.category,
+                        group.isDelete,
+                        group.deleteDt.stringValue().as("deleteDt")
                         ))
                 .from(groupMemberMapping)
                 .innerJoin(groupMemberMapping.group, group)
