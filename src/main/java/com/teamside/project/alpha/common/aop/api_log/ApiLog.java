@@ -1,9 +1,9 @@
-package com.teamside.project.alpha.common.aop;
+package com.teamside.project.alpha.common.aop.api_log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teamside.project.alpha.common.aop.model.entity.ApiLogEntity;
-import com.teamside.project.alpha.common.aop.service.LogService;
+import com.teamside.project.alpha.common.aop.api_log.model.entity.ApiLogEntity;
+import com.teamside.project.alpha.common.aop.api_log.service.LogService;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;

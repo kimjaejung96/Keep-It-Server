@@ -28,4 +28,5 @@ public class PlaceServiceImpl implements PlaceService {
     public List<PlaceDto.PlacePinDto> getPlacePins(String groupId) {
         return placeRepository.getPlacePins(groupId);
     }
+
 }

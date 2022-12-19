@@ -1,4 +1,4 @@
-package com.teamside.project.alpha.common.aop.model.entity;
+package com.teamside.project.alpha.common.aop.api_log.model.entity;
 
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import lombok.AccessLevel;

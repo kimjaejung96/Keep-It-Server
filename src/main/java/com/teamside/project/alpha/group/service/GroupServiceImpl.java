@@ -321,7 +321,7 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public GroupDto.GroupHome selectGroupHome(String groupId) {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkExistMember(CryptUtils.getMid());
+//        group.checkExistMember(CryptUtils.getMid());
 
         return new GroupDto.GroupHome(group.getName(),
                 group.getIsDelete(),

@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.group.controller;
 
 
+import com.teamside.project.alpha.common.custom_annotaion.GroupAuthCheck;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
@@ -25,6 +26,7 @@ import javax.validation.constraints.Size;
 public class GroupController {
     private final GroupService groupService;
 
+    @GroupAuthCheck
     @GetMapping("/{groupId}/reviews")
     public ResponseEntity<ResponseObject> selectReviewsInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastReviewSeq) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -32,6 +34,7 @@ public class GroupController {
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+    @GroupAuthCheck
     @GetMapping("/{groupId}/daily")
     public ResponseEntity<ResponseObject> selectDailyInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastDailySeq) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -57,6 +60,7 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @GroupAuthCheck
     @DeleteMapping("/{groupId}/leave")
     public ResponseEntity<ResponseObject> leaveGroup(@PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -80,6 +84,7 @@ public class GroupController {
      * @return
      * @throws CustomException
      */
+    @GroupAuthCheck
     @GetMapping("/{groupId}")
     public ResponseEntity<ResponseObject> selectGroup(@PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -87,6 +92,7 @@ public class GroupController {
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+
     @PatchMapping("/{groupId}")
     public ResponseEntity<ResponseObject> updateGroup(@RequestBody @Valid GroupDto groupDto, @PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -188,6 +194,7 @@ public class GroupController {
      * @param memberId
      * @return
      */
+    @GroupAuthCheck
     @GetMapping("/{groupId}/members/{memberId}")
     public ResponseEntity<ResponseObject> groupMemberProfile(@PathVariable String groupId,
                                                              @PathVariable String memberId) {
@@ -201,6 +208,7 @@ public class GroupController {
      * @param groupId
      * @return
      */
+    @GroupAuthCheck
     @GetMapping("/{groupId}/home")
     public ResponseEntity<ResponseObject> groupHomePage(@PathVariable String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -216,6 +224,7 @@ public class GroupController {
      * @return
      * @throws CustomException
      */
+    @GroupAuthCheck
     @PostMapping("/{groupId}/members/{targetMid}/follow")
     public ResponseEntity<ResponseObject> follow(@PathVariable String groupId, @PathVariable String targetMid) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

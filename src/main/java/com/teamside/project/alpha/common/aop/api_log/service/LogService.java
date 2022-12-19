@@ -1,7 +1,7 @@
-package com.teamside.project.alpha.common.aop.service;
+package com.teamside.project.alpha.common.aop.api_log.service;
 
-import com.teamside.project.alpha.common.aop.model.entity.ApiLogEntity;
-import com.teamside.project.alpha.common.aop.repository.ApiLogRepo;
+import com.teamside.project.alpha.common.aop.api_log.model.entity.ApiLogEntity;
+import com.teamside.project.alpha.common.aop.api_log.repository.ApiLogRepo;
 import org.springframework.stereotype.Service;
 
 @Service
