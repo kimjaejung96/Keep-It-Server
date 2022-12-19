@@ -208,7 +208,7 @@ public class GroupController {
      * @param groupId
      * @return
      */
-//    @GroupAuthCheck
+    @GroupAuthCheck
     @GetMapping("/{groupId}/home")
     public ResponseEntity<ResponseObject> groupHomePage(@PathVariable String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
