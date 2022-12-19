@@ -28,4 +28,10 @@ public class PlaceServiceImpl implements PlaceService {
     public List<PlaceDto.PlacePinDto> getPlacePins(String groupId) {
         return placeRepository.getPlacePins(groupId);
     }
+
+    @Override
+    public PlaceDto.ReviewsInPlace getPlaceReviews(Long placeId, String groupId, Long pageSize, Long lastReviewSeq) {
+        List<PlaceDto.ReviewInfo> data = placeRepository.getPlaceReviews(placeId, groupId, pageSize, lastReviewSeq);
+        return new PlaceDto.ReviewsInPlace(data, pageSize);
+    }
 }
