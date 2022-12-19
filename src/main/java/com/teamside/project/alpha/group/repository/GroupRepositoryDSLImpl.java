@@ -573,7 +573,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .innerJoin(memberFollow.group, group)
                 .innerJoin(member).on(memberFollow.targetMid.eq(member.mid))
                 .where(memberFollow.mid.eq(CryptUtils.getMid()),
-                        memberFollow.followYn.eq(true))
+                        memberFollow.followYn.eq(true),
+                        group.isDelete.eq(false))
                 .orderBy(memberFollow.createTime.asc())
                 .fetch();
     }
@@ -921,7 +922,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .from(memberFollow)
                 .innerJoin(member).on(memberFollow.targetMid.eq(member.mid))
                 .innerJoin(group).on(memberFollow.groupId.eq(group.groupId))
-                .where(memberFollow.mid.eq(CryptUtils.getMid()), memberFollow.followYn.eq(true))
+                .where(memberFollow.mid.eq(CryptUtils.getMid()),
+                        memberFollow.followYn.eq(true),
+                        group.isDelete.eq(false))
                 .offset(nextOffset == null ? 0 : nextOffset)
                 .limit(pageSize)
                 .orderBy(memberFollow.updateTime.desc())
