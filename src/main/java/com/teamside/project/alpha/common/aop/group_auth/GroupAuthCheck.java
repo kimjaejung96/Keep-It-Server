@@ -5,6 +5,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
+import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.group.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @Component
 @Aspect
@@ -31,14 +33,17 @@ public class GroupAuthCheck {
         int idx = Arrays.asList(params).indexOf("groupId");
         String groupId = args[idx].toString();
         authCheck(groupId);
-        return null;
+        return joinPoint.proceed();
     }
     private void authCheck(String groupId) throws CustomException {
         String userMid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.getGroupMemberMappingEntity().stream()
+        Optional<GroupMemberMappingEntity> mappingMember = group.getGroupMemberMappingEntity().stream()
                 .filter(member -> member.getMid().equals(userMid))
                 .filter(member -> member.getStatus().equals(GroupMemberStatus.JOIN))
-                .noneMatch(e -> {throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);});
+                .findAny();
+        if (mappingMember.isEmpty()) {
+            throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
+        }
     }
 }
