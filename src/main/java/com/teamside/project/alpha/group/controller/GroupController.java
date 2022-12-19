@@ -84,7 +84,7 @@ public class GroupController {
      * @return
      * @throws CustomException
      */
-    @GroupAuthCheck
+//    @GroupAuthCheck
     @GetMapping("/{groupId}")
     public ResponseEntity<ResponseObject> selectGroup(@PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
