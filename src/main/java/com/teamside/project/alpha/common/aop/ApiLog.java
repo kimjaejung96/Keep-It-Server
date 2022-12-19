@@ -43,8 +43,6 @@ public class ApiLog {
 
     @Around("execution(* com.teamside.project.alpha..controller..*(..))")
     public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.info("\nremoteAddr : {}", httpServletRequest.getRemoteAddr());
-        log.info("\nremoteHost : {}", httpServletRequest.getRemoteHost());
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
@@ -113,6 +111,8 @@ public class ApiLog {
             CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
         }
 
+
+        log.info("\nremoteHost : {}", httpServletRequest.getRemoteHost());
 
         return result;
     }
