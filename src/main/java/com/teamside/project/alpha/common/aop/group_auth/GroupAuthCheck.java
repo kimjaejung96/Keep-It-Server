@@ -31,6 +31,9 @@ public class GroupAuthCheck {
         String[] params = methodSignature.getParameterNames();
 
         int idx = Arrays.asList(params).indexOf("groupId");
+        if (idx == -1) {
+            throw new CustomRuntimeException(ApiExceptionCode.BAD_REQUEST);
+        }
         String groupId = args[idx].toString();
         authCheck(groupId);
         return joinPoint.proceed();
