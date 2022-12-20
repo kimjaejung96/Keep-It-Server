@@ -33,7 +33,7 @@ public class MyGroupManagement {
         private Boolean existDailyComment;
 
         public void changeDeleteDt() {
-            if (this.isDelete) {
+            if (this.deleteDt != null) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime deleteDt = LocalDateTime.parse(this.deleteDt, formatter);
 
