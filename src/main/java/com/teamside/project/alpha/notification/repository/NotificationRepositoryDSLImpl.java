@@ -97,7 +97,8 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "WHERE\n" +
                 "NL.RECEIVER_MID = ?\n" +
                 "AND NL.DELETE_YN != 1\n" +
-                "and NL.NOTI_DATE between DATE_ADD(NOW(), INTERVAL -14 DAY) and now()\n" +
+                "AND NL.NOTI_DATE between DATE_ADD(NOW(), INTERVAL -14 DAY) and now()\n" +
+                "AND (GMM.STATUS = 'JOIN' or NL.NOTI_TYPE = 'KPS_GE')\n" +
                 "order by NL.NOTI_DATE desc \n" +
                 "limit ?\n" +
                 ")\n" +
@@ -141,6 +142,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "WHERE\n" +
                 "KNL.RECEIVER_MID = ?\n" +
                 "AND KNL.NOTI_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -14 DAY) AND NOW()\n" +
+                "AND GMM.STATUS = 'JOIN'\n" +
                 "AND KNL.KEEP_CNT != 1\n" +
                 "ORDER BY KNL.NOTI_DATE DESC\n" +
                 "limit ?\n" +
