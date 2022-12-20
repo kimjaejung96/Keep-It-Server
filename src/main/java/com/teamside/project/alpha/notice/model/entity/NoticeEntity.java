@@ -22,4 +22,7 @@ public class NoticeEntity extends CreateDtEntity {
 
     @Column(name = "CONTENT", columnDefinition = "varchar(500)")
     private String content;
+
+    @Column(name = "TYPE", columnDefinition = "varchar(10)")
+    private String type;
 }

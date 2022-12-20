@@ -30,7 +30,8 @@ public class NoticeRepositoryDSLImpl implements NoticeRepositoryDSL {
                         notice.title,
                         notice.createTime.stringValue()))
                 .from(notice)
-                .where(ltNoticeId(lastNoticeId))
+                .where(notice.type.ne("MARKETING"),
+                        ltNoticeId(lastNoticeId))
                 .limit(pageSize)
                 .orderBy(notice.noticeId.desc())
                 .fetch();
