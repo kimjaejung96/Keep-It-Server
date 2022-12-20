@@ -89,6 +89,7 @@ public class MemberEntity extends CreateDtEntity {
         this.alarmSetting = new AlarmSetting(this, true, true, true, true, true, true, true, true);
 
         createTerms(signUpDto.getTerms());
+        createNotificationCheck();
     }
 
 
@@ -98,6 +99,10 @@ public class MemberEntity extends CreateDtEntity {
                 terms.getCollect(),
                 terms.getGps(),
                 terms.getMarketing());
+    }
+
+    private void createNotificationCheck() {
+        this.notiCheck = new NotificationCheck(this);
     }
 
     public void createRefreshToken(String refreshToken) {

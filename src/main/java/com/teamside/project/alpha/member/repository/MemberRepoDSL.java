@@ -3,6 +3,7 @@ package com.teamside.project.alpha.member.repository;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyPageHome;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,4 +12,6 @@ public interface MemberRepoDSL {
     MyPageHome getMyPageHome(List<String> blocks);
 
     void unfollow(String mid, String targetMid);
+
+    Boolean notiCheck(String mid, LocalDateTime checkTime);
 }

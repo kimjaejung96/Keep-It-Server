@@ -20,4 +20,12 @@ public class NotificationCheck extends TimeEntity {
     @OneToOne
     @JoinColumn(name = "MID", referencedColumnName = "MID")
     private MemberEntity member;
+
+    public NotificationCheck(MemberEntity member) {
+        this.member = member;
+    }
+
+    public NotificationCheck() {
+
+    }
 }

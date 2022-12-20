@@ -17,6 +17,9 @@ import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.dto.QMemberDto_InviteMemberList;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +38,9 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
     QMemberFollowEntity follow = QMemberFollowEntity.memberFollowEntity;
     QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
     QGroupEntity group = QGroupEntity.groupEntity;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, String groupId) {
@@ -121,5 +127,44 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                         follow.targetMid.eq(targetMid),
                         follow.followYn.eq(true))
                 .execute();
+    }
+
+    @Override
+    public Boolean notiCheck(String mid, LocalDateTime checkTime) {
+        String queryString = "SELECT SUM(IF(A.CHECK = 1, 1, 0)) > 0\n" +
+                "FROM (\n" +
+                "SELECT COUNT(NL.SEQ) > 0 AS 'CHECK'\n" +
+                "FROM NOTI_LIST NL\n" +
+                "WHERE NL.RECEIVER_MID = ?\n" +
+                "AND NL.NOTI_DATE BETWEEN ? AND NOW()\n" +
+                "UNION ALL \n" +
+                "SELECT COUNT(RKNL.SEQ) > 0 AS 'CHECK'\n" +
+                "FROM REVIEW_KEEP_NOTI_LIST RKNL\n" +
+                "WHERE RKNL.RECEIVER_MID = ?\n" +
+                "AND RKNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
+                "UNION ALL\n" +
+                "SELECT COUNT(MNL.SEQ) > 0 AS 'CHECK'\n" +
+                "FROM MARKETING_NOTI_LIST MNL\n" +
+                "WHERE MNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
+                "UNION ALL\n" +
+                "SELECT COUNT(UNL.SEQ) > 0 AS 'CHECK'\n" +
+                "FROM UPDATE_NOTI_LIST UNL\n" +
+                "WHERE UNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
+                ") A";
+
+        Query query =  entityManager.createNativeQuery(queryString);
+
+        List<Object[]> resultSets = query
+                .setParameter(1, mid)
+                .setParameter(2, checkTime)
+                .setParameter(3, mid)
+                .setParameter(4, checkTime)
+                .setParameter(5, checkTime)
+                .setParameter(6, checkTime)
+                .getResultList();
+
+        Boolean result = String.valueOf(resultSets.get(0)).equals("1");
+        
+        return result;
     }
 }
