@@ -50,6 +50,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "CASE\n" +
                 "WHEN NL.NOTI_TYPE IN ('KPS_GD' , 'KPS_GJ') THEN GL.PROFILE_URL\n" +
                 "WHEN NL.NOTI_TYPE IN ('KPS_GE' , 'KPS_MKT' , 'KPS_UDT') THEN ''\n" +
+                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN') THEN ''\n" +
                 "ELSE SENDER.PROFILE_URL\n" +
                 "END, '') AS IMAGE_URL,\n" +
                 "IFNULL(\n" +
@@ -84,6 +85,9 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "LEFT JOIN GROUP_MEMBER_MAPPING GMM ON\n" +
                 "(GL.GROUP_ID = GMM.GROUP_ID\n" +
                 "AND GMM.MID = ?)\n" +
+                "LEFT JOIN GROUP_MEMBER_MAPPING SGMM ON\n" +
+                "(GL.GROUP_ID = SGMM.GROUP_ID\n" +
+                "AND SGMM.MID = SENDER.MID)\n" +
                 "LEFT JOIN REVIEW R ON\n" +
                 "(NL.REVIEW_ID = R.REVIEW_ID)\n" +
                 "LEFT JOIN PLACE P ON\n" +
@@ -119,7 +123,11 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "P.PLACE_NAME AS PLACE_NAME,\n" +
                 "'' AS DAILY_ID,\n" +
                 "'' AS TITLE,\n" +
-                "IFNULL(SENDER.PROFILE_URL, '') AS IMAGE_URL,\n" +
+                "IFNULL(\n" +
+                "CASE\n" +
+                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN') THEN ''\n" +
+                "ELSE SENDER.PROFILE_URL\n" +
+                "END, '') AS IMAGE_URL,\n" +
                 "'' AS COMMENT_ID,\n" +
                 "'' AS COMMENT_CONTENT,\n" +
                 "!ISNULL(R.IMAGES) AS EXISTS_IMAGE,\n" +
@@ -135,6 +143,9 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "INNER JOIN GROUP_MEMBER_MAPPING GMM ON\n" +
                 "(GL.GROUP_ID = GMM.GROUP_ID\n" +
                 "AND GMM.MID = ?)\n" +
+                "INNER JOIN GROUP_MEMBER_MAPPING SGMM ON\n" +
+                "(GL.GROUP_ID = SGMM.GROUP_ID\n" +
+                "AND SGMM.MID = SENDER.MID)\n" +
                 "INNER JOIN REVIEW R ON\n" +
                 "(KNL.REVIEW_ID = R.REVIEW_ID)\n" +
                 "INNER JOIN PLACE P ON\n" +
