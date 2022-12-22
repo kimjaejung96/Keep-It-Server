@@ -708,9 +708,10 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         .otherwise(Expressions.nullExpression()).as("imageUrl")
                 ))
                 .from(review)
+                .innerJoin(groupMemberMapping).on(review.group.groupId.eq(groupMemberMapping.groupId))
                 .innerJoin(group).on(group.groupId.eq(review.group.groupId))
                 .innerJoin(place).on(place.placeId.eq(review.place.placeId))
-                .where(review.isDelete.eq(false), review.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existReviewLastSeq(lastSeq))
+                .where(review.isDelete.eq(false), review.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existReviewLastSeq(lastSeq), groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
                 .limit(pageSize)
                 .orderBy(review.seq.desc())
                 .fetch();
@@ -753,7 +754,8 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ))
                 .from(daily)
                 .innerJoin(group).on(group.groupId.eq(daily.group.groupId))
-                .where(daily.isDelete.eq(false), daily.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existDailyLastSeq(lastSeq))
+                .innerJoin(groupMemberMapping).on(daily.group.groupId.eq(groupMemberMapping.groupId))
+                .where(daily.isDelete.eq(false), daily.masterMid.eq(CryptUtils.getMid()), existGroupId(groupId), existDailyLastSeq(lastSeq), groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
                 .limit(pageSize)
                 .orderBy(daily.seq.desc())
                 .fetch();

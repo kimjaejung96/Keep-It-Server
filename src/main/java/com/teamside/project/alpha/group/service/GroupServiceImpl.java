@@ -11,6 +11,7 @@ import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.common.util.TransactionUtils;
 import com.teamside.project.alpha.group.domain.daily.model.dto.DailyDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
+import com.teamside.project.alpha.group.domain.review.model.entity.ReviewEntity;
 import com.teamside.project.alpha.group.model.constant.GroupConstant;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
@@ -166,6 +167,12 @@ public class GroupServiceImpl implements GroupService {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
 
         group.leaveGroup();
+        group.getReviewEntities().stream()
+                .filter(d -> !d.getIsDelete())
+                .map(ReviewEntity::getReviewKeepEntities)
+                .forEach(keepEntity -> keepEntity.stream()
+                        .filter(keep -> keep.getMemberMid().equals(CryptUtils.getMid()))
+                        .forEach(keepEntity::remove));
     }
 
     @Override
