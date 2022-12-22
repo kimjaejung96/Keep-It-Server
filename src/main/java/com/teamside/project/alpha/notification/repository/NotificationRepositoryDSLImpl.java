@@ -50,7 +50,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "CASE\n" +
                 "WHEN NL.NOTI_TYPE IN ('KPS_GD' , 'KPS_GJ') THEN GL.PROFILE_URL\n" +
                 "WHEN NL.NOTI_TYPE IN ('KPS_GE' , 'KPS_MKT' , 'KPS_UDT') THEN ''\n" +
-                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN') THEN ''\n" +
+                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN') THEN 'dev/profile/default.jpg'\n" +
                 "ELSE SENDER.PROFILE_URL\n" +
                 "END, '') AS IMAGE_URL,\n" +
                 "IFNULL(\n" +
@@ -125,7 +125,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "'' AS TITLE,\n" +
                 "IFNULL(\n" +
                 "CASE\n" +
-                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN') THEN ''\n" +
+                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN') THEN 'dev/profile/default.jpg'\n" +
                 "ELSE SENDER.PROFILE_URL\n" +
                 "END, '') AS IMAGE_URL,\n" +
                 "'' AS COMMENT_ID,\n" +
