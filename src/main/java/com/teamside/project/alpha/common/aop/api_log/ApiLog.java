@@ -112,7 +112,7 @@ public class ApiLog {
         }
 
 
-        log.info("\nremoteHost : {}", httpServletRequest.getRemoteHost());
+        log.info("\nRequest Full URI : {}", httpServletRequest.getRemoteHost() + httpServletRequest.getRequestURI());
 
         return result;
     }
