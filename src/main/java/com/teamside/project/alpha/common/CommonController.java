@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class CommonController {
-    @GetMapping("/ping")
-    public ResponseEntity<ResponseObject> ping() {
+    @GetMapping("/healthCheck")
+    public ResponseEntity<ResponseObject> healthCheck() {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody("PONG~");
         return new ResponseEntity<>(responseObject, HttpStatus.ACCEPTED);
     }
 
