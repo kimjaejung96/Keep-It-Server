@@ -1,5 +1,5 @@
 server:
-  port: 1231
+  port: 8080
 
 spring:
   # Set the master node of the PCI-AD Database as the primary database for ATP Project to handle the "CUD" for it.
