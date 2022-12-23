@@ -10,6 +10,7 @@ import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.common.util.TransactionUtils;
 import com.teamside.project.alpha.group.domain.daily.model.dto.DailyDto;
+import com.teamside.project.alpha.group.domain.daily.model.entity.DailyEntity;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.domain.review.model.entity.ReviewEntity;
 import com.teamside.project.alpha.group.model.constant.GroupConstant;
@@ -168,8 +169,16 @@ public class GroupServiceImpl implements GroupService {
 
         group.leaveGroup();
         group.getReviewEntities().stream()
+                .filter(d -> d.getGroup().getGroupId().equals(groupId))
                 .filter(d -> !d.getIsDelete())
                 .map(ReviewEntity::getReviewKeepEntities)
+                .forEach(keepEntity -> keepEntity.stream()
+                        .filter(keep -> keep.getMemberMid().equals(CryptUtils.getMid()))
+                        .forEach(keepEntity::remove));
+        group.getDailyEntities().stream()
+                .filter(d -> d.getGroup().getGroupId().equals(groupId))
+                .filter(d -> !d.getIsDelete())
+                .map(DailyEntity::getDailyKeepEntities)
                 .forEach(keepEntity -> keepEntity.stream()
                         .filter(keep -> keep.getMemberMid().equals(CryptUtils.getMid()))
                         .forEach(keepEntity::remove));

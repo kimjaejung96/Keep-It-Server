@@ -61,6 +61,12 @@ public class GroupController {
     }
 
 
+    /**
+     * 그룹 탈퇴
+     * @param groupId
+     * @return
+     * @throws CustomException
+     */
     @DeleteMapping("/{groupId}/leave")
     public ResponseEntity<ResponseObject> leaveGroup(@PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
