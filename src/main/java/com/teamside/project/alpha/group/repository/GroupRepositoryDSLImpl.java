@@ -1094,4 +1094,14 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
         return data;
     }
+
+    @Override
+    public boolean groupAuthCheck(String groupId) {
+        return  jpaQueryFactory
+                .from(groupMemberMapping)
+                .where(groupMemberMapping.groupId.eq(groupId),
+                        groupMemberMapping.mid.eq(CryptUtils.getMid()),
+                        groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
+                .fetchFirst() != null;
+    }
 }

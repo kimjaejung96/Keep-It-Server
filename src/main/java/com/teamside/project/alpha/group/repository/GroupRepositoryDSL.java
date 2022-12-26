@@ -51,4 +51,5 @@ public interface GroupRepositoryDSL {
     List<MyBlock.Block> getMyBlocks(Long nextOffset, Long pageSize);
 
     List<MyGroupManagement.Group> getMyGroupsManagements(MyGroupManagementType type);
+    boolean groupAuthCheck(String groupId);
 }
