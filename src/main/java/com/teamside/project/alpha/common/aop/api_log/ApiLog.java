@@ -43,6 +43,7 @@ public class ApiLog {
 
     @Around("execution(* com.teamside.project.alpha..controller..*(..))")
     public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.info("\nRequest Full URI : {}", httpServletRequest.getRemoteHost() + httpServletRequest.getRequestURI());
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
@@ -110,10 +111,6 @@ public class ApiLog {
             ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc.toString(), apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
             CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
         }
-
-
-        log.info("\nRequest Full URI : {}", httpServletRequest.getRemoteHost() + httpServletRequest.getRequestURI());
-
         return result;
     }
 
