@@ -134,21 +134,21 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
         String queryString = "SELECT SUM(IF(A.CHECK = 1, 1, 0)) > 0\n" +
                 "FROM (\n" +
                 "SELECT COUNT(NL.SEQ) > 0 AS 'CHECK'\n" +
-                "FROM NOTI_LIST NL\n" +
+                "FROM noti_list NL\n" +
                 "WHERE NL.RECEIVER_MID = ?\n" +
                 "AND NL.NOTI_DATE BETWEEN ? AND NOW()\n" +
                 "UNION ALL \n" +
                 "SELECT COUNT(RKNL.SEQ) > 0 AS 'CHECK'\n" +
-                "FROM REVIEW_KEEP_NOTI_LIST RKNL\n" +
+                "FROM review_keep_noti_list RKNL\n" +
                 "WHERE RKNL.RECEIVER_MID = ?\n" +
                 "AND RKNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
                 "UNION ALL\n" +
                 "SELECT COUNT(MNL.SEQ) > 0 AS 'CHECK'\n" +
-                "FROM MARKETING_NOTI_LIST MNL\n" +
+                "FROM marketing_noti_list MNL\n" +
                 "WHERE MNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
                 "UNION ALL\n" +
                 "SELECT COUNT(UNL.SEQ) > 0 AS 'CHECK'\n" +
-                "FROM UPDATE_NOTI_LIST UNL\n" +
+                "FROM update_noti_list UNL\n" +
                 "WHERE UNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
                 ") A";
 

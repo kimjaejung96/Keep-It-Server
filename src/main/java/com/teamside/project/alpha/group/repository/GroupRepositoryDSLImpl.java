@@ -849,10 +849,10 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ", R.IS_DELETE AS 'VIEW_IS_DELETE' " +
                 ", G.GROUP_ID " +
                 ", R.REVIEW_ID AS 'VIEW_ID' " +
-                "FROM REVIEW_COMMENT RC " +
-                "INNER JOIN REVIEW R ON RC.REVIEW_ID = R.REVIEW_ID " +
-                "INNER JOIN PLACE P ON R.PLACE_ID = P.PLACE_ID " +
-                "INNER JOIN GROUP_LIST G ON R.GROUP_ID = G.GROUP_ID " +
+                "FROM review_comment RC " +
+                "INNER JOIN review R ON RC.REVIEW_ID = R.REVIEW_ID " +
+                "INNER JOIN place P ON R.PLACE_ID = P.PLACE_ID " +
+                "INNER JOIN group_list G ON R.GROUP_ID = G.GROUP_ID " +
                 "WHERE RC.MASTER_MID = ? " +
                 (groupId != null ? "AND G.GROUP_ID = ? " : "") +
                 "UNION " +
@@ -865,9 +865,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ", D.IS_DELETE AS 'VIEW_IS_DELETE' " +
                 ", G.GROUP_ID " +
                 ", D.DAILY_ID AS 'VIEW_ID' " +
-                "FROM DAILY_COMMENT DC " +
-                "INNER JOIN DAILY D ON DC.DAILY_ID = D.DAILY_ID " +
-                "INNER JOIN GROUP_LIST G ON D.GROUP_ID = G.GROUP_ID " +
+                "FROM daily_comment DC " +
+                "INNER JOIN daily D ON DC.DAILY_ID = D.DAILY_ID " +
+                "INNER JOIN group_list G ON D.GROUP_ID = G.GROUP_ID " +
                 "WHERE DC.MASTER_MID = ? " +
                 (groupId != null ? "AND G.GROUP_ID = ? " : "") +
                 ") A " +
@@ -1037,31 +1037,31 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 ", !ISNULL(D.GROUP_ID) AS EXIST_DAILY\n" +
                 ", !ISNULL(E.GROUP_ID) AS EXIST_REVIEW_COMMENT\n" +
                 ", !ISNULL(F.GROUP_ID) AS EXIST_DAILY_COMMENT\n" +
-                "FROM GROUP_MEMBER_MAPPING A\n" +
-                "INNER JOIN GROUP_LIST B ON A.GROUP_ID = B.GROUP_ID\n" +
+                "FROM group_member_mapping A\n" +
+                "INNER JOIN group_list B ON A.GROUP_ID = B.GROUP_ID\n" +
                 "LEFT JOIN (\n" +
                 "SELECT DISTINCT R.GROUP_ID\n" +
-                "FROM REVIEW R\n" +
+                "FROM review R\n" +
                 "WHERE R.MASTER = ?\n" +
                 "AND R.IS_DELETE = 0\n" +
                 ") C ON C.GROUP_ID = B.GROUP_ID\n" +
                 "LEFT JOIN (\n" +
                 "SELECT DISTINCT D.GROUP_ID\n" +
-                "FROM DAILY D\n" +
+                "FROM daily D\n" +
                 "WHERE D.MASTER = ?\n" +
                 "AND D.IS_DELETE = 0\n" +
                 ") D ON D.GROUP_ID = B.GROUP_ID\n" +
                 "LEFT JOIN (\n" +
                 "SELECT DISTINCT R.GROUP_ID\n" +
-                "FROM REVIEW_COMMENT RC\n" +
-                "INNER JOIN REVIEW R ON RC.REVIEW_ID = R.REVIEW_ID\n" +
+                "FROM review_comment RC\n" +
+                "INNER JOIN review R ON RC.REVIEW_ID = R.REVIEW_ID\n" +
                 "WHERE RC.MASTER_MID = ?\n" +
                 "AND RC.STATUS = 'CREATED'\n" +
                 ") E ON E.GROUP_ID = B.GROUP_ID \n" +
                 "LEFT JOIN (\n" +
                 "SELECT DISTINCT D.GROUP_ID\n" +
-                "FROM DAILY_COMMENT DC\n" +
-                "INNER JOIN DAILY D ON DC.DAILY_ID = D.DAILY_ID\n" +
+                "FROM daily_comment DC\n" +
+                "INNER JOIN daily D ON DC.DAILY_ID = D.DAILY_ID\n" +
                 "WHERE DC.MASTER_MID = ?\n" +
                 "AND DC.STATUS = 'CREATED'\n" +
                 ") F ON F.GROUP_ID = B.GROUP_ID\n" +

@@ -75,28 +75,28 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "ELSE 0\n" +
                 "END AS KEEP_CNT\n" +
                 "FROM\n" +
-                "NOTI_LIST NL\n" +
-                "INNER JOIN MEMBER RECEIVER ON\n" +
+                "noti_list NL\n" +
+                "INNER JOIN member RECEIVER ON\n" +
                 "(NL.RECEIVER_MID = RECEIVER.MID)\n" +
-                "LEFT JOIN MEMBER SENDER ON\n" +
+                "LEFT JOIN member SENDER ON\n" +
                 "(NL.SENDER_MID = SENDER.MID)\n" +
-                "LEFT JOIN GROUP_LIST GL ON\n" +
+                "LEFT JOIN group_list GL ON\n" +
                 "(NL.GROUP_ID = GL.GROUP_ID)\n" +
-                "LEFT JOIN GROUP_MEMBER_MAPPING GMM ON\n" +
+                "LEFT JOIN group_member_mapping GMM ON\n" +
                 "(GL.GROUP_ID = GMM.GROUP_ID\n" +
                 "AND GMM.MID = ?)\n" +
-                "LEFT JOIN GROUP_MEMBER_MAPPING SGMM ON\n" +
+                "LEFT JOIN group_member_mapping SGMM ON\n" +
                 "(GL.GROUP_ID = SGMM.GROUP_ID\n" +
                 "AND SGMM.MID = SENDER.MID)\n" +
-                "LEFT JOIN REVIEW R ON\n" +
+                "LEFT JOIN review R ON\n" +
                 "(NL.REVIEW_ID = R.REVIEW_ID)\n" +
-                "LEFT JOIN PLACE P ON\n" +
+                "LEFT JOIN place P ON\n" +
                 "(R.PLACE_ID = P.PLACE_ID)\n" +
-                "LEFT JOIN DAILY D ON\n" +
+                "LEFT JOIN daily D ON\n" +
                 "(NL.DAILY_ID = D.DAILY_ID)\n" +
-                "LEFT JOIN REVIEW_COMMENT RC ON\n" +
+                "LEFT JOIN review_comment RC ON\n" +
                 "(NL.COMMENT_ID = RC.COMMENT_ID)\n" +
-                "LEFT JOIN DAILY_COMMENT DC ON\n" +
+                "LEFT JOIN daily_comment DC ON\n" +
                 "(NL.COMMENT_ID = DC.COMMENT_ID)\n" +
                 "WHERE\n" +
                 "NL.RECEIVER_MID = ?\n" +
@@ -133,22 +133,22 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "!ISNULL(R.IMAGES) AS EXISTS_IMAGE,\n" +
                 "KNL.KEEP_CNT AS KEEP_CNT\n" +
                 "FROM\n" +
-                "REVIEW_KEEP_NOTI_LIST KNL\n" +
-                "INNER JOIN MEMBER RECEIVER ON\n" +
+                "review_keep_noti_list KNL\n" +
+                "INNER JOIN member RECEIVER ON\n" +
                 "(KNL.RECEIVER_MID = RECEIVER.MID)\n" +
-                "INNER JOIN MEMBER SENDER ON\n" +
+                "INNER JOIN member SENDER ON\n" +
                 "(KNL.LAST_KEEP_MID = SENDER.MID)\n" +
-                "INNER JOIN GROUP_LIST GL ON\n" +
+                "INNER JOIN group_list GL ON\n" +
                 "(KNL.GROUP_ID = GL.GROUP_ID)\n" +
-                "INNER JOIN GROUP_MEMBER_MAPPING GMM ON\n" +
+                "INNER JOIN group_member_mapping GMM ON\n" +
                 "(GL.GROUP_ID = GMM.GROUP_ID\n" +
                 "AND GMM.MID = ?)\n" +
-                "INNER JOIN GROUP_MEMBER_MAPPING SGMM ON\n" +
+                "INNER JOIN group_member_mapping SGMM ON\n" +
                 "(GL.GROUP_ID = SGMM.GROUP_ID\n" +
                 "AND SGMM.MID = SENDER.MID)\n" +
-                "INNER JOIN REVIEW R ON\n" +
+                "INNER JOIN review R ON\n" +
                 "(KNL.REVIEW_ID = R.REVIEW_ID)\n" +
-                "INNER JOIN PLACE P ON\n" +
+                "INNER JOIN place P ON\n" +
                 "(R.PLACE_ID = P.PLACE_ID)\n" +
                 "WHERE\n" +
                 "KNL.RECEIVER_MID = ?\n" +
