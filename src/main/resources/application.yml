@@ -19,13 +19,6 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  rabbitmq:
-    host: b-adbf0baf-496f-4415-a7dd-25d528875f82.mq.ap-northeast-2.amazonaws.com
-    port: 5671
-    username: alpha
-    password: alphaalpha#!12
-    ssl:
-      enabled: true
 alpha:
   sens:
     svc_id: "ncp:sms:kr:258742391636:alpha_sms"

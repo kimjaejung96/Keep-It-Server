@@ -17,8 +17,8 @@ import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -43,87 +43,85 @@ public class DailyServiceImpl implements DailyService {
             createdDailyId.set(groupEntity.createDaily(new DailyEntity(groupId, dailyDto)));
         });
 
-
-
         Map<String, String> data = new HashMap<>();
         data.put("senderMid", CryptUtils.getMid());
         data.put("groupId", groupId);
         data.put("dailyId", createdDailyId.get());
-                msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_NEW_DAILY, data);
-            }
+        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_NEW_DAILY, data);
+    }
 
-            @Override
-            @Transactional
-            public void updateDaily(String groupId, DailyDto.UpdateDailyDto dailyDto) throws CustomException {
-                GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-                groupEntity.checkExistMember(CryptUtils.getMid());
-                groupEntity.checkGroupStatus();
+    @Override
+    @Transactional
+    public void updateDaily(String groupId, DailyDto.UpdateDailyDto dailyDto) throws CustomException {
+        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+        groupEntity.checkExistMember(CryptUtils.getMid());
+        groupEntity.checkGroupStatus();
 
-                DailyEntity dailyEntity = groupEntity.getDailyEntities()
-                        .stream()
-                        .filter(d -> d.getDailyId().equals(dailyDto.getDailyId()))
+        DailyEntity dailyEntity = groupEntity.getDailyEntities()
+                .stream()
+                .filter(d -> d.getDailyId().equals(dailyDto.getDailyId()))
+                .findAny()
+                .orElseThrow((() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST)));
+        dailyEntity.checkDailyMaster(CryptUtils.getMid());
+        dailyEntity.updateDaily(dailyDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId) throws CustomException {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkDeletedDaily(dailyId);
+        group.checkExistMember(CryptUtils.getMid());
+
+        return groupRepository.selectDaily(groupId, dailyId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteDaily(String groupId, String dailyId) throws CustomException {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+
+        group.deleteDaily(dailyId);
+    }
+
+    @Override
+    public String createComment(String groupId, String dailyId, CommentDto.CreateComment comment) throws CustomException {
+        String mid = CryptUtils.getMid();
+        AtomicReference<String> masterMid = new AtomicReference<>("");
+        AtomicReference<String> commentId = new AtomicReference<>("");
+        transactionUtils.runTransaction(() -> {
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+            group.checkExistMember(mid);
+            group.checkGroupStatus();
+
+            DailyEntity daily = group.getDailyEntities().stream()
+                    .filter(d -> Objects.equals(d.getDailyId(), dailyId))
+                    .findAny()
+                    .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
+
+            masterMid.set(daily.getMasterMid());
+
+            if (comment.getParentCommentId() != null) {
+                daily.getDailyCommentEntities().stream()
+                        .filter(c -> Objects.equals(c.getCommentId(), comment.getParentCommentId()))
                         .findAny()
-                        .orElseThrow((() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST)));
-                dailyEntity.checkDailyMaster(CryptUtils.getMid());
-                dailyEntity.updateDaily(dailyDto);
+                        .orElseThrow(() -> new CustomException(ApiExceptionCode.COMMENT_NOT_ACCESS));
             }
 
-            @Override
-            @Transactional
-            public DailyDto.ResponseDailyDetail selectDaily(String groupId, String dailyId) throws CustomException {
-                GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-                group.checkDeletedDaily(dailyId);
-                group.checkExistMember(CryptUtils.getMid());
+            commentId.set(daily.createComment(comment, dailyId));
+        });
 
-                return groupRepository.selectDaily(groupId, dailyId);
-            }
 
-            @Override
-            @Transactional
-            public void deleteDaily(String groupId, String dailyId) throws CustomException {
-                GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-
-                group.deleteDaily(dailyId);
-            }
-
-            @Override
-            public String createComment(String groupId, String dailyId, CommentDto.CreateComment comment) throws CustomException {
-                String mid = CryptUtils.getMid();
-                AtomicReference<String> masterMid = new AtomicReference<>("");
-                AtomicReference<String> commentId = new AtomicReference<>("");
-                transactionUtils.runTransaction(() -> {
-                    GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-                    group.checkExistMember(mid);
-                    group.checkGroupStatus();
-
-                    DailyEntity daily = group.getDailyEntities().stream()
-                            .filter(d -> Objects.equals(d.getDailyId(), dailyId))
-                            .findAny()
-                            .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
-
-                    masterMid.set(daily.getMasterMid());
-
-                    if (comment.getParentCommentId() != null) {
-                        daily.getDailyCommentEntities().stream()
-                                .filter(c -> Objects.equals(c.getCommentId(), comment.getParentCommentId()))
-                                .findAny()
-                                .orElseThrow(() -> new CustomException(ApiExceptionCode.COMMENT_NOT_ACCESS));
-                    }
-
-                    commentId.set(daily.createComment(comment, dailyId));
+        if (!masterMid.get().equals(mid)) {
+            transactionUtils.runTransaction(() -> {
+                memberRepo.findByMid(masterMid.get()).ifPresent( m -> {
+                    Map<String, Object> newComment = new HashMap<>();
+                    newComment.put("dailyId", dailyId);
+                    newComment.put("groupId", groupId);
+                    newComment.put("commentId", commentId.get());
+                    msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_DAILY_COMMENT, newComment);
                 });
-
-
-                if (!masterMid.get().equals(mid)) {
-                    transactionUtils.runTransaction(() -> {
-                        memberRepo.findByMid(masterMid.get()).ifPresent( m -> {
-                            Map<String, Object> newComment = new HashMap<>();
-                            newComment.put("dailyId", dailyId);
-                            newComment.put("groupId", groupId);
-                            newComment.put("commentId", commentId.get());
-                            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_DAILY_COMMENT, newComment);
-                        });
-            });
+             });
         }
 
         if (comment.getParentCommentId() != null) {
@@ -136,7 +134,6 @@ public class DailyServiceImpl implements DailyService {
             data.put("newCommentId", commentId.get());
             msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);
         }
-
         return commentId.get();
     }
 

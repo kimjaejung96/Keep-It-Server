@@ -8,9 +8,6 @@ spring:
     url: jdbc:mysql://person.jjhserverworld.pe.kr:3316/alpha?characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: alpha
     password: alpha#!12
-    hikari:
-      maximum-pool-size: 1
-      connection-test-query: SELECT 1
   jpa:
     show-sql: false
     hibernate:
@@ -22,3 +19,10 @@ spring:
       generate_statistics: true
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+  rabbitmq:
+    host: person.jjhserverworld.pe.kr
+    port: 26783
+    username: alpha
+    password: alpha#!12
+    ssl:
+      enabled: false

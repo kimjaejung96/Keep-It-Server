@@ -131,7 +131,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public AlarmDto selectAlarm() {
         MemberEntity member = memberRepo.findByMid(CryptUtils.getMid())
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));

@@ -20,7 +20,7 @@ public class NotiCheckServiceImpl implements NotiCheckService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Boolean notiCheck() throws CustomException {
         String mid = CryptUtils.getMid();
         LocalDateTime checkTime;

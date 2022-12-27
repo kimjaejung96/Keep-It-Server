@@ -92,7 +92,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ReviewDto.ResponseReviewDetail selectReviewDetail(String groupId, String reviewId) {
         GroupEntity group = selectExistGroup(groupId);
         group.checkDeletedReview(reviewId);

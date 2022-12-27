@@ -34,7 +34,7 @@ public class GroupAuthCheck {
         return joinPoint.proceed();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public void authCheck(String groupId)  {
         if (!groupRepository.groupAuthCheck(groupId)) {
             throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);

@@ -48,6 +48,7 @@ public class SpringSecurity {
 
 
                         .antMatchers(HttpMethod.GET,"/healthCheck").permitAll()
+                        .antMatchers(HttpMethod.GET,"/").permitAll()
 
 
                         .antMatchers(HttpMethod.POST,"/members/sign-up/**").permitAll()

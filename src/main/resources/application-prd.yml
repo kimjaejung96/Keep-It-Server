@@ -8,9 +8,6 @@ spring:
     url: jdbc:mysql://keep-it-db.ckmboza0c4mv.ap-northeast-2.rds.amazonaws.com:3306/alpha?characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: alpha
     password: alpha#!12
-    hikari:
-      maximum-pool-size: 1
-      connection-test-query: SELECT 1
   jpa:
     show-sql: false
     hibernate:
@@ -23,3 +20,10 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
+  rabbitmq:
+    host: b-adbf0baf-496f-4415-a7dd-25d528875f82.mq.ap-northeast-2.amazonaws.com
+    port: 5671
+    username: alpha
+    password: alpha#!12
+    ssl:
+      enabled: true
