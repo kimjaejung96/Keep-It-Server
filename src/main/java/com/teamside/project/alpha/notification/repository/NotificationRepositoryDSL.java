@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface NotificationRepositoryDSL {
     List<NotificationDto> getNotifications(Long pageSize, Long nextOffset);
+
+    List<NotificationDto> getActNotifications(Long pageSize, Long nextOffset);
 }

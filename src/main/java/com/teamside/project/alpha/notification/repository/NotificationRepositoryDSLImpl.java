@@ -3,6 +3,7 @@ package com.teamside.project.alpha.notification.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
+import com.teamside.project.alpha.member.model.entity.QMemberBlockEntity;
 import com.teamside.project.alpha.notification.model.dto.NotificationDto;
 import com.teamside.project.alpha.notification.model.enumurate.NotificationType;
 
@@ -11,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
     private final JPAQueryFactory jpaQueryFactory;
@@ -23,7 +25,9 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
     @Override
     public List<NotificationDto> getNotifications(Long pageSize, Long nextOffset) {
         List<NotificationDto> data = new ArrayList<>();
+
         String mid = CryptUtils.getMid();
+        List<String> blocks = getBlocks(mid);
         Long offset = (nextOffset == null ? 0 : nextOffset);
 
         String queryString = "SELECT\n" +
@@ -103,6 +107,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "AND NL.DELETE_YN != 1\n" +
                 "AND NL.NOTI_DATE between DATE_ADD(NOW(), INTERVAL -14 DAY) and now()\n" +
                 "AND (GMM.STATUS = 'JOIN' or NL.NOTI_TYPE = 'KPS_GE')\n" +
+                "AND SENDER.MID NOT IN (?)\n" +
                 "order by NL.NOTI_DATE desc \n" +
                 "limit ?\n" +
                 ")\n" +
@@ -155,6 +160,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "AND KNL.NOTI_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -14 DAY) AND NOW()\n" +
                 "AND GMM.STATUS = 'JOIN'\n" +
                 "AND KNL.KEEP_CNT != 1\n" +
+                "AND SENDER.MID NOT IN (?)\n" +
                 "ORDER BY KNL.NOTI_DATE DESC\n" +
                 "limit ?\n" +
                 ")\n" +
@@ -168,12 +174,14 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
         List<Object[]> resultSets = query
                 .setParameter(1, mid)
                 .setParameter(2, mid)
-                .setParameter(3, offset + pageSize)
-                .setParameter(4, mid)
+                .setParameter(3, blocks.stream().collect(Collectors.joining(",")))
+                .setParameter(4, offset + pageSize)
                 .setParameter(5, mid)
-                .setParameter(6, offset + pageSize)
-                .setParameter(7, offset)
-                .setParameter(8, pageSize)
+                .setParameter(6, mid)
+                .setParameter(7, blocks.stream().collect(Collectors.joining(",")))
+                .setParameter(8, offset + pageSize)
+                .setParameter(9, offset)
+                .setParameter(10, pageSize)
                 .getResultList();
 
         resultSets.forEach(item -> data.add(NotificationDto.builder()
@@ -201,5 +209,60 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
         );
 
         return data;
+    }
+
+    @Override
+    public List<NotificationDto> getActNotifications(Long pageSize, Long nextOffset) {
+        List<NotificationDto> data = new ArrayList<>();
+
+        Long offset = (nextOffset == null ? 0 : nextOffset);
+
+        String queryString = "SELECT A.*\n" +
+                "FROM (\n" +
+                "(SELECT MNL.NOTI_DATE\n" +
+                ", MNL.CONTENT\n" +
+                "FROM marketing_noti_list MNL\n" +
+                "WHERE MNL.STATUS = 3\n" +
+                "AND MNL.NOTI_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -14 DAY) AND NOW()\n" +
+                "ORDER BY MNL.NOTI_DATE DESC\n" +
+                "LIMIT ?)\n" +
+                "UNION ALL\n" +
+                "(SELECT UNL.NOTI_DATE \n" +
+                ", UNL.CONTENT \n" +
+                "FROM update_noti_list UNL\n" +
+                "WHERE UNL.STATUS = 3\n" +
+                "AND UNL.NOTI_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -14 DAY) AND NOW()\n" +
+                "ORDER BY UNL.NOTI_DATE DESC\n" +
+                "LIMIT ?)\n" +
+                ") A\n" +
+                "ORDER BY A.NOTI_DATE DESC\n" +
+                "LIMIT ?, ?";
+
+        Query query =  entityManager.createNativeQuery(queryString);
+
+        List<Object[]> resultSets = query
+                .setParameter(1, offset + pageSize)
+                .setParameter(2, offset + pageSize)
+                .setParameter(3, offset)
+                .setParameter(4, pageSize)
+                .getResultList();
+
+        resultSets.forEach(item -> data.add(NotificationDto.builder()
+                .notiDate(item[0].toString())
+                .notiContent(item[1].toString())
+                .build())
+        );
+
+        return data;
+    }
+
+    public List<String> getBlocks(String mid) {
+        QMemberBlockEntity block = QMemberBlockEntity.memberBlockEntity;
+
+        return jpaQueryFactory
+                .select(block.targetMid)
+                .from(block)
+                .where(block.mid.eq(mid))
+                .fetch();
     }
 }

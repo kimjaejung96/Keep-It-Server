@@ -13,11 +13,17 @@ import java.util.List;
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     @Override
-    public NotificationDto.MyNotifications getNotifications(Long pageSize, Long nextOffset) {
-        List<NotificationDto> entityList = notificationRepository.getNotifications(pageSize, nextOffset);
-        entityList.forEach(data -> data.createMsg());
+    public NotificationDto.MyNotifications getNotifications(String type, Long pageSize, Long nextOffset) {
+        List<NotificationDto> notifications;
+        // ACT(활동), NEWS(소식)
+        if (type.equals("ACT")) {
+            notifications = notificationRepository.getNotifications(pageSize, nextOffset);
+            notifications.forEach(data -> data.createMsg());
+        } else {
+            notifications = notificationRepository.getActNotifications(pageSize, nextOffset);
+        }
 
-        return new NotificationDto.MyNotifications(entityList, nextOffset, pageSize);
+        return new NotificationDto.MyNotifications(notifications, nextOffset, pageSize);
     }
 
 }

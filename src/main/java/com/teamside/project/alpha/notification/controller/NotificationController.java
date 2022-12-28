@@ -6,21 +6,20 @@ import com.teamside.project.alpha.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/notifications")
 public class NotificationController {
     private final NotificationService notificationService;
-    @GetMapping
-    public ResponseEntity<ResponseObject> getNotifications(@RequestParam Long pageSize,
+
+    @GetMapping("/{type}")
+    public ResponseEntity<ResponseObject> getNotifications(@PathVariable String type,
+                                                           @RequestParam Long pageSize,
                                                            @RequestParam(required = false) Long nextOffset){
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        responseObject.setBody(notificationService.getNotifications(pageSize, nextOffset));
+        responseObject.setBody(notificationService.getNotifications(type, pageSize, nextOffset));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 }
