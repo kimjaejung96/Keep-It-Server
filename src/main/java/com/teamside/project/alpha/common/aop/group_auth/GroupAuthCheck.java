@@ -37,7 +37,7 @@ public class GroupAuthCheck {
     @Transactional(readOnly = true)
     public void authCheck(String groupId)  {
         if (!groupRepository.groupAuthCheck(groupId)) {
-            throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN);
+            throw new CustomRuntimeException(ApiExceptionCode.GROUP_CHECK_FORBIDDEN);
         }
     }
 }

@@ -46,6 +46,7 @@ public enum ApiExceptionCode {
     INVALID_VIEW_TYPE(824, "유효하지 않는 타입입니다."),
 
     NOTICE_NOT_FOUND(825, "공지사항을 찾을 수 없습니다."),
+    GROUP_CHECK_FORBIDDEN(826, "그룹 접근 권한이 없습니다."),
 
 
     IMAGE_CONTENT_TYPE_INVALID(996, "이미지 확장자가 올바르지 않습니다"),
