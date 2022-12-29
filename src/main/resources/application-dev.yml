@@ -21,7 +21,7 @@ spring:
       hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
   rabbitmq:
     host: person.jjhserverworld.pe.kr
-    port: 26783
+    port: 6783
     username: alpha
     password: alpha#!12
     ssl:
