@@ -53,7 +53,8 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "IFNULL(\n" +
                 "CASE\n" +
                 "WHEN NL.NOTI_TYPE IN ('KPS_GD' , 'KPS_GJ') THEN GL.PROFILE_URL\n" +
-                "WHEN NL.NOTI_TYPE IN ('KPS_GE' , 'KPS_MKT' , 'KPS_UDT') THEN ''\n" +
+                "WHEN NL.NOTI_TYPE IN ('KPS_MKT' , 'KPS_UDT') THEN ''\n" +
+                "WHEN NL.NOTI_TYPE = 'KPS_GE' THEN 'dev/common/group_expelled.jpg'\n" +
                 "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN') THEN 'dev/profile/default.jpg'\n" +
                 "ELSE SENDER.PROFILE_URL\n" +
                 "END, '') AS IMAGE_URL,\n" +
