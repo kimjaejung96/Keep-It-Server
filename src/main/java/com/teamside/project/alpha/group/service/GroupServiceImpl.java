@@ -378,7 +378,7 @@ public class GroupServiceImpl implements GroupService {
             GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
             group.checkGroupMaster();
             group.exileMember(memberId);
-            masterMid.set(group.getMasterMid());
+            masterMid.set(memberId);
         });
 
         Map<String, String> data = new HashMap<>();

@@ -32,6 +32,7 @@ public class NotificationDto {
     private String commentContent;
     private Boolean existsImage;
     private Integer keepCnt;
+    private Long noticeId;
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -106,10 +107,10 @@ public class NotificationDto {
                 this.notiContent = "그룹장에 의해 강제 탈퇴되었어요.";
                 break;
             case KPS_MKT:
-                this.notiContent = "";
+                this.notiContent = "(광고) " + this.notiContent;
                 break;
             case KPS_UDT:
-                this.notiContent = "";
+                this.notiContent = "(공지) " + this.notiContent;
                 break;
         }
     }

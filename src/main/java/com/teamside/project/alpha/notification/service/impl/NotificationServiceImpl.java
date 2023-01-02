@@ -18,10 +18,10 @@ public class NotificationServiceImpl implements NotificationService {
         // ACT(활동), NEWS(소식)
         if (type.equals("ACT")) {
             notifications = notificationRepository.getNotifications(pageSize, nextOffset);
-            notifications.forEach(data -> data.createMsg());
         } else {
             notifications = notificationRepository.getActNotifications(pageSize, nextOffset);
         }
+        notifications.forEach(data -> data.createMsg());
 
         return new NotificationDto.MyNotifications(notifications, nextOffset, pageSize);
     }

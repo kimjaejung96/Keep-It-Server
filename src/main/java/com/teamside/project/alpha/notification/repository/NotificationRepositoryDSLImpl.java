@@ -107,7 +107,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "AND NL.DELETE_YN != 1\n" +
                 "AND NL.NOTI_DATE between DATE_ADD(NOW(), INTERVAL -14 DAY) and now()\n" +
                 "AND (GMM.STATUS = 'JOIN' or (NL.NOTI_TYPE = 'KPS_GE' or NL.NOTI_TYPE = 'KPS_GD'))\n" +
-                "AND SENDER.MID NOT IN (?)\n" +
+                (blocks.size() > 0 ? "AND SENDER.MID NOT IN (?)\n" : "") +
                 "order by NL.NOTI_DATE desc \n" +
                 "limit ?\n" +
                 ")\n" +
@@ -160,7 +160,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "AND KNL.NOTI_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -14 DAY) AND NOW()\n" +
                 "AND GMM.STATUS = 'JOIN'\n" +
                 "AND KNL.KEEP_CNT != 1\n" +
-                "AND SENDER.MID NOT IN (?)\n" +
+                (blocks.size() > 0 ? "AND SENDER.MID NOT IN (?)\n" : "") +
                 "ORDER BY KNL.NOTI_DATE DESC\n" +
                 "limit ?\n" +
                 ")\n" +
@@ -171,18 +171,29 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
 
         Query query =  entityManager.createNativeQuery(queryString);
 
-        List<Object[]> resultSets = query
-                .setParameter(1, mid)
-                .setParameter(2, mid)
-                .setParameter(3, blocks.stream().collect(Collectors.joining(",")))
-                .setParameter(4, offset + pageSize)
-                .setParameter(5, mid)
-                .setParameter(6, mid)
-                .setParameter(7, blocks.stream().collect(Collectors.joining(",")))
-                .setParameter(8, offset + pageSize)
-                .setParameter(9, offset)
-                .setParameter(10, pageSize)
-                .getResultList();
+        if (blocks.size() > 0) {
+            query.setParameter(1, mid)
+                    .setParameter(2, mid)
+                    .setParameter(3, blocks.stream().collect(Collectors.joining(",")))
+                    .setParameter(4, offset + pageSize)
+                    .setParameter(5, mid)
+                    .setParameter(6, mid)
+                    .setParameter(7, blocks.stream().collect(Collectors.joining(",")))
+                    .setParameter(8, offset + pageSize)
+                    .setParameter(9, offset)
+                    .setParameter(10, pageSize);
+        } else {
+            query.setParameter(1, mid)
+                    .setParameter(2, mid)
+                    .setParameter(3, offset + pageSize)
+                    .setParameter(4, mid)
+                    .setParameter(5, mid)
+                    .setParameter(6, offset + pageSize)
+                    .setParameter(7, offset)
+                    .setParameter(8, pageSize);
+        }
+
+        List<Object[]> resultSets = query.getResultList();
 
         resultSets.forEach(item -> data.add(NotificationDto.builder()
                     .seq(Long.valueOf(item[0].toString()))
@@ -221,6 +232,8 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "FROM (\n" +
                 "(SELECT MNL.NOTI_DATE\n" +
                 ", MNL.CONTENT\n" +
+                ", 'KPS_MKT' AS NOTI_TYPE \n" +
+                ", IFNULL(MNL.NOTICE_ID, '') AS NOTICE_ID \n" +
                 "FROM marketing_noti_list MNL\n" +
                 "WHERE MNL.STATUS = 3\n" +
                 "AND MNL.NOTI_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -14 DAY) AND NOW()\n" +
@@ -229,6 +242,8 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "UNION ALL\n" +
                 "(SELECT UNL.NOTI_DATE \n" +
                 ", UNL.CONTENT \n" +
+                ", 'KPS_UDT' AS NOTI_TYPE \n" +
+                ", IFNULL(UNL.NOTICE_ID, '') AS NOTICE_ID \n" +
                 "FROM update_noti_list UNL\n" +
                 "WHERE UNL.STATUS = 3\n" +
                 "AND UNL.NOTI_DATE BETWEEN DATE_ADD(NOW(), INTERVAL -14 DAY) AND NOW()\n" +
@@ -250,6 +265,8 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
         resultSets.forEach(item -> data.add(NotificationDto.builder()
                 .notiDate(item[0].toString())
                 .notiContent(item[1].toString())
+                .notificationType(NotificationType.valueOf(item[2].toString()))
+                .noticeId(!item[3].toString().isBlank() ? Long.valueOf(item[3].toString()) : null)
                 .build())
         );
 
