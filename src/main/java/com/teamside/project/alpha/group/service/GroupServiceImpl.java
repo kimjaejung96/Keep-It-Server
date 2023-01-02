@@ -384,7 +384,7 @@ public class GroupServiceImpl implements GroupService {
         Map<String, String> data = new HashMap<>();
         data.put("receiverMid", masterMid.get());
         data.put("groupId", groupId);
-        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_JOIN, data);
+        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_EXPELLED, data);
     }
 
     @Override

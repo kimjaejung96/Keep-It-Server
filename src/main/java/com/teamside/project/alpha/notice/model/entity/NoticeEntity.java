@@ -20,7 +20,7 @@ public class NoticeEntity extends CreateDtEntity {
     @Column(name = "TITLE", columnDefinition = "varchar(100)")
     private String title;
 
-    @Column(name = "CONTENT", columnDefinition = "varchar(500)")
+    @Column(name = "CONTENT", columnDefinition = "varchar(8000)")
     private String content;
 
     @Column(name = "TYPE", columnDefinition = "varchar(10)")
