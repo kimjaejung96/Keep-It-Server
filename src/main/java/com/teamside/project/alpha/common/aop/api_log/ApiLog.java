@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -48,6 +49,7 @@ public class ApiLog {
         stopWatch.start();
 
         Object result;
+        ResponseEntity<?> responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         StringBuilder desc = new StringBuilder();
         StringBuilder logs = new StringBuilder();
         String apiStatus = KeepitConstant.SUCCESS;
@@ -78,11 +80,11 @@ public class ApiLog {
 
             result = joinPoint.proceed();
 
-            apiCode = ((ResponseEntity) result).getStatusCodeValue();
             stopWatch.stop();
-            ResponseEntity<?> response = (ResponseEntity<?>) result;
-            desc.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response.getBody()));
-            logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response.getBody()));
+            responseEntity = (ResponseEntity<?>) result;
+            apiCode = responseEntity.getStatusCodeValue();
+            desc.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseEntity.getBody()));
+            logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseEntity.getBody()));
 
         } catch (Exception ex) {
             stopWatch.stop();
@@ -109,9 +111,17 @@ public class ApiLog {
             logs.append("\n").append("PROCESS_TIME : ").append(stopWatch.getTotalTimeMillis() * 0.001);
             log.info("\n" + logs);
             ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc.toString(), apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
-            CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
+            apiCheck(apiLogEntity, joinPoint, responseEntity);
         }
         return result;
+    }
+
+    private void apiCheck(ApiLogEntity apiLogEntity, ProceedingJoinPoint joinPoint, ResponseEntity<?> responseEntity) {
+        String filteredMethodName = joinPoint.getSignature().getName();
+
+        if (filteredMethodName.equals("notiCheck") && responseEntity.getStatusCode().value() == 200) {
+
+        } else CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
     }
 
 
