@@ -95,11 +95,14 @@ public class DailyDto {
         private String content;
         private String imageUrl;
         private Integer commentCount;
+        private String groupId;
         private String groupName;
+        private Boolean groupIsDelete;
         private Boolean isKeep;
 
         @QueryProjection
-        public DailyDetail(String title, String mid, String memberName, String memberProfileUrl, String createDt, String content, String imageUrl, Integer commentCount, String groupName, Boolean isKeep) {
+        public DailyDetail(String title, String mid, String memberName, String memberProfileUrl, String createDt,
+                           String content, String imageUrl, Integer commentCount, String groupId, String groupName, Boolean groupIsDelete, Boolean isKeep) {
             this.title = title;
             this.mid = mid;
             this.memberName = memberName;
@@ -108,7 +111,9 @@ public class DailyDto {
             this.content = content;
             this.imageUrl = imageUrl;
             this.commentCount = commentCount;
+            this.groupId = groupId;
             this.groupName = groupName;
+            this.groupIsDelete = groupIsDelete;
             this.isKeep = isKeep;
         }
     }

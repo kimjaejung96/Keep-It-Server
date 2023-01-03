@@ -141,6 +141,8 @@ public class ReviewDto {
         private Boolean isKeep;
         private int commentCount;
         private String groupName;
+        private String groupId;
+        private Boolean groupIsDelete;
 
         @QueryProjection
         public ReviewDetail(ReviewEntity review, MemberEntity member, PlaceEntity place) {
@@ -157,6 +159,8 @@ public class ReviewDto {
             this.isKeep = review.getReviewKeepEntities().stream().anyMatch(r -> r.getMemberMid().equals(CryptUtils.getMid()) && r.isKeepYn());
             this.commentCount = review.getReviewCommentEntities().size();
             this.groupName = review.getGroup().getName();
+            this.groupId = review.getGroup().getGroupId();
+            this.groupIsDelete = review.getGroup().getIsDelete();
         }
     }
 

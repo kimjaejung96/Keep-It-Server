@@ -475,7 +475,9 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                         daily.content,
                         daily.image,
                         daily.dailyCommentEntities.size(),
+                        group.groupId,
                         group.name,
+                        group.isDelete,
                         new CaseBuilder()
                                 .when(dailyKeep.seq.isNull())
                                 .then(Boolean.FALSE)

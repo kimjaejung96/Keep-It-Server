@@ -11,6 +11,7 @@ import com.teamside.project.alpha.group.domain.review.model.entity.QReviewKeepEn
 import com.teamside.project.alpha.group.model.entity.QGroupEntity;
 import com.teamside.project.alpha.group.model.entity.QGroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.entity.QMemberFollowEntity;
+import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyPageHome;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.QMyPageHome;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
@@ -76,13 +77,19 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                                 JPAExpressions
                                         .select(review.count().coalesce(0L))
                                         .from(review)
-                                        .where(review.isDelete.eq(false), review.masterMid.eq(member.mid))
+                                        .innerJoin(review.group, group)
+                                        .innerJoin(group.groupMemberMappingEntity, groupMemberMapping)
+                                        .where(review.isDelete.eq(false), review.masterMid.eq(member.mid),
+                                                groupMemberMapping.mid.eq(member.mid), groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
                         , "reviewCount"),
                         ExpressionUtils.as(
                                 JPAExpressions
                                         .select(daily.count().coalesce(0L))
                                         .from(daily)
-                                        .where(daily.isDelete.eq(false), daily.masterMid.eq(member.mid))
+                                        .innerJoin(daily.group, group)
+                                        .innerJoin(group.groupMemberMappingEntity, groupMemberMapping)
+                                        .where(daily.isDelete.eq(false), daily.masterMid.eq(member.mid),
+                                                groupMemberMapping.mid.eq(member.mid), groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
                                 , "dailyCount"),
                         ExpressionUtils.as(
                                 JPAExpressions
@@ -146,10 +153,12 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                 "SELECT COUNT(MNL.SEQ) > 0 AS 'CHECK'\n" +
                 "FROM marketing_noti_list MNL\n" +
                 "WHERE MNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
+                "AND MNL.STATUS = 3" +
                 "UNION ALL\n" +
                 "SELECT COUNT(UNL.SEQ) > 0 AS 'CHECK'\n" +
                 "FROM update_noti_list UNL\n" +
                 "WHERE UNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
+                "AND UNL.STATUS = 3" +
                 ") A";
 
         Query query =  entityManager.createNativeQuery(queryString);
