@@ -111,17 +111,22 @@ public class ApiLog {
             logs.append("\n").append("PROCESS_TIME : ").append(stopWatch.getTotalTimeMillis() * 0.001);
             log.info("\n" + logs);
             ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc.toString(), apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
-            apiCheck(apiLogEntity, joinPoint, responseEntity);
+            boolean useLog = useLogCheck(joinPoint, responseEntity);
+            if (useLog) {
+                CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
+            }
+
         }
         return result;
     }
 
-    private void apiCheck(ApiLogEntity apiLogEntity, ProceedingJoinPoint joinPoint, ResponseEntity<?> responseEntity) {
+    private boolean useLogCheck(ProceedingJoinPoint joinPoint, ResponseEntity<?> responseEntity) {
         String filteredMethodName = joinPoint.getSignature().getName();
 
         if (filteredMethodName.equals("notiCheck") && responseEntity.getStatusCode().value() == 200) {
+            return false;
 
-        } else CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
+        } else return true;
     }
 
 
