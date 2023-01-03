@@ -14,6 +14,7 @@ import com.teamside.project.alpha.group.model.entity.QMemberFollowEntity;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyPageHome;
 import com.teamside.project.alpha.member.domain.mypage.model.dto.QMyPageHome;
+import com.teamside.project.alpha.member.domain.noti_check.model.entity.dto.NotificationCheckDTO;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.dto.QMemberDto_InviteMemberList;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
@@ -137,43 +138,49 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
     }
 
     @Override
-    public Boolean notiCheck(String mid, LocalDateTime checkTime) {
-        String queryString = "SELECT SUM(IF(A.CHECK = 1, 1, 0)) > 0\n" +
+    public NotificationCheckDTO notiCheck(String mid, LocalDateTime checkActTime, LocalDateTime checkNewsTime) {
+        String queryString = "SELECT SUM(IF(A.ACT_CHECK = 1, 1, 0)) > 0 AS ACT_CHECK\n" +
+                ", SUM(IF(A.NEWS_CHECK = 1, 1, 0)) > 0 AS NEWS_CHECK\n" +
                 "FROM (\n" +
-                "SELECT COUNT(NL.SEQ) > 0 AS 'CHECK'\n" +
+                "SELECT COUNT(NL.SEQ) > 0 AS 'ACT_CHECK'\n" +
+                ", 0 AS 'NEWS_CHECK'\n" +
                 "FROM noti_list NL\n" +
                 "WHERE NL.RECEIVER_MID = ?\n" +
                 "AND NL.NOTI_DATE BETWEEN ? AND NOW()\n" +
-                "UNION ALL \n" +
-                "SELECT COUNT(RKNL.SEQ) > 0 AS 'CHECK'\n" +
+                "UNION ALL\n" +
+                "SELECT COUNT(RKNL.SEQ) > 0 AS 'ACT_CHECK'\n" +
+                ", 0 AS 'NEWS_CHECK'\n" +
                 "FROM review_keep_noti_list RKNL\n" +
                 "WHERE RKNL.RECEIVER_MID = ?\n" +
                 "AND RKNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
                 "UNION ALL\n" +
-                "SELECT COUNT(MNL.SEQ) > 0 AS 'CHECK'\n" +
+                "SELECT 0 AS 'ACT_CHECK'\n" +
+                ", COUNT(MNL.SEQ) > 0 AS 'NEWS_CHECK'\n" +
                 "FROM marketing_noti_list MNL\n" +
                 "WHERE MNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
-                "AND MNL.STATUS = 3" +
+                "AND MNL.STATUS = 3\n" +
                 "UNION ALL\n" +
-                "SELECT COUNT(UNL.SEQ) > 0 AS 'CHECK'\n" +
+                "SELECT 0 AS 'ACT_CHECK'\n" +
+                ", COUNT(UNL.SEQ) > 0 AS 'NEWS_CHECK'\n" +
                 "FROM update_noti_list UNL\n" +
                 "WHERE UNL.NOTI_DATE BETWEEN ? AND NOW()\n" +
-                "AND UNL.STATUS = 3" +
+                "AND UNL.STATUS = 3\n" +
                 ") A";
 
         Query query =  entityManager.createNativeQuery(queryString);
 
         List<Object[]> resultSets = query
                 .setParameter(1, mid)
-                .setParameter(2, checkTime)
+                .setParameter(2, checkActTime)
                 .setParameter(3, mid)
-                .setParameter(4, checkTime)
-                .setParameter(5, checkTime)
-                .setParameter(6, checkTime)
+                .setParameter(4, checkActTime)
+                .setParameter(5, checkNewsTime)
+                .setParameter(6, checkNewsTime)
                 .getResultList();
 
-        Boolean result = String.valueOf(resultSets.get(0)).equals("1");
+        Boolean act = String.valueOf(resultSets.get(0)[0]).equals("1");
+        Boolean news = String.valueOf(resultSets.get(0)[1]).equals("1");
         
-        return result;
+        return new NotificationCheckDTO(act, news);
     }
 }

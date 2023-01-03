@@ -8,7 +8,10 @@ import com.teamside.project.alpha.member.domain.auth.model.dto.JwtTokens;
 import com.teamside.project.alpha.member.domain.auth.model.dto.SmsAuthDto;
 import com.teamside.project.alpha.member.domain.auth.model.enumurate.AuthType;
 import com.teamside.project.alpha.member.domain.auth.service.AuthService;
+import com.teamside.project.alpha.sms.event.SMSEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,24 +29,32 @@ public class AuthController {
 
     private final AuthService authService;
     private final ApplicationEventPublisher smsEventPublisher;
+    private final Environment env;
 
-    public AuthController(AuthService authService, ApplicationEventPublisher smsEventPublisher) {
+    public AuthController(AuthService authService, ApplicationEventPublisher smsEventPublisher, Environment env) {
         this.authService = authService;
         this.smsEventPublisher = smsEventPublisher;
+        this.env = env;
     }
 
     @PostMapping(value = "/sms/{phone}")
     public ResponseEntity<ResponseObject> sms(
             @Pattern(regexp = KeepitConstant.REGEXP_PHONE,
                     message = "핸드폰 번호가 올바르지 않습니다.") @PathVariable String phone, @RequestParam AuthType authType) throws CustomException {
-        String number = "000000";
+        String number;
         // check phone
         authService.checkPhone(phone, authType);
 
-//        String number = generateCertificationNumber();
+        String activeYml = env.getActiveProfiles()[0];
 
-        // authNum publish
-//        smsEventPublisher.publishEvent(new SMSEvent(phone, number));
+        if (activeYml.equals("local") || activeYml.equals("dev")) {
+            number = "000000";
+        } else {
+            number = generateCertificationNumber();
+
+            // authNum publish
+            smsEventPublisher.publishEvent(new SMSEvent(phone, number));
+        }
 
         // save smsLog
         authService.saveSmsLog(phone, number);

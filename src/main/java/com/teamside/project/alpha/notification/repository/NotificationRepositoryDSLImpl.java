@@ -52,10 +52,10 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "IFNULL(D.TITLE, '') AS TITLE,\n" +
                 "IFNULL(\n" +
                 "CASE\n" +
-                "WHEN NL.NOTI_TYPE IN ('KPS_GD' , 'KPS_GJ') THEN GL.PROFILE_URL\n" +
+                "WHEN NL.NOTI_TYPE IN ('KPS_GD' , 'KPS_GJ') THEN IFNULL(GL.PROFILE_URL, 'dev/common/group_default.jpg')\n" +
                 "WHEN NL.NOTI_TYPE IN ('KPS_MKT' , 'KPS_UDT') THEN ''\n" +
                 "WHEN NL.NOTI_TYPE = 'KPS_GE' THEN 'dev/common/group_expelled.jpg'\n" +
-                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN') THEN 'dev/profile/default.jpg'\n" +
+                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN' or SENDER.PROFILE_URL = '') THEN 'dev/profile/default.jpg'\n" +
                 "ELSE SENDER.PROFILE_URL\n" +
                 "END, '') AS IMAGE_URL,\n" +
                 "IFNULL(\n" +
@@ -131,7 +131,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                 "'' AS TITLE,\n" +
                 "IFNULL(\n" +
                 "CASE\n" +
-                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN') THEN 'dev/profile/default.jpg'\n" +
+                "WHEN (SENDER.IS_DELETE = 1 or SGMM.STATUS != 'JOIN' or SENDER.PROFILE_URL = '') THEN 'dev/profile/default.jpg'\n" +
                 "ELSE SENDER.PROFILE_URL\n" +
                 "END, '') AS IMAGE_URL,\n" +
                 "'' AS COMMENT_ID,\n" +

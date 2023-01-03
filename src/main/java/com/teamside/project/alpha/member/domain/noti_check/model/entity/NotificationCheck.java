@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,8 +22,16 @@ public class NotificationCheck extends TimeEntity {
     @JoinColumn(name = "MID", referencedColumnName = "MID")
     private MemberEntity member;
 
+    @Column(name = "ACT_DT", columnDefinition = "DATETIME")
+    private LocalDateTime actDt;
+
+    @Column(name = "NEWS_DT", columnDefinition = "DATETIME")
+    private LocalDateTime newsDt;
+
     public NotificationCheck(MemberEntity member) {
         this.member = member;
+        this.actDt = LocalDateTime.now();
+        this.newsDt = LocalDateTime.now();
     }
 
     public NotificationCheck() {

@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.member.repository;
 
 import com.teamside.project.alpha.member.domain.mypage.model.dto.MyPageHome;
+import com.teamside.project.alpha.member.domain.noti_check.model.entity.dto.NotificationCheckDTO;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 
 import java.time.LocalDateTime;
@@ -13,5 +14,5 @@ public interface MemberRepoDSL {
 
     void unfollow(String mid, String targetMid);
 
-    Boolean notiCheck(String mid, LocalDateTime checkTime);
+    NotificationCheckDTO notiCheck(String mid, LocalDateTime checkActTime, LocalDateTime checkNewsTime);
 }
