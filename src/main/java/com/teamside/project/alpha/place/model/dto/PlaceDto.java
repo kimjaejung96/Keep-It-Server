@@ -17,15 +17,19 @@ public class PlaceDto {
     private String address;
     private String roadAddress;
     private String phone;
+    private String categoryGroupCode;
+    private String categoryName;
     private BigDecimal x;
     private BigDecimal y;
 
-    public PlaceDto(Long placeId, String placeName, String address, String roadAddress, String phone, BigDecimal x, BigDecimal y) {
+    public PlaceDto(Long placeId, String placeName, String address, String roadAddress, String phone, String categoryGroupCode, String categoryName, BigDecimal x, BigDecimal y) {
         this.placeId = placeId;
         this.placeName = placeName;
         this.address = address;
         this.roadAddress = roadAddress;
         this.phone = phone;
+        this.categoryGroupCode = categoryGroupCode;
+        this.categoryName = categoryName;
         this.x = x;
         this.y = y;
     }
@@ -36,8 +40,8 @@ public class PlaceDto {
         private String imageUrl;
         private Long reviewCount;
 
-        public PlacePinDto(Long placeId, String placeName, String address, String roadAddress, String phone, BigDecimal x, BigDecimal y, Long reviewCount, String imageUrl) {
-            super(placeId, placeName, address, roadAddress, phone, x, y);
+        public PlacePinDto(Long placeId, String placeName, String address, String roadAddress, String phone, String categoryGroupCode, String categoryName, BigDecimal x, BigDecimal y, Long reviewCount, String imageUrl) {
+            super(placeId, placeName, address, roadAddress, phone, categoryGroupCode, categoryName, x, y);
             if (imageUrl != null && imageUrl.split(",").length >= 2) {
                 this.imageUrl = imageUrl.split(",")[0];
             } else {

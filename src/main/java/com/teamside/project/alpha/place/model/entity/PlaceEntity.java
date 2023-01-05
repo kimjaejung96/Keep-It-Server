@@ -35,6 +35,12 @@ public class PlaceEntity extends TimeEntity {
     @Column(name = "PHONE", columnDefinition = "varchar(15)")
     private String phone;
 
+    @Column(name = "CATEGORY_GROUP_CODE", columnDefinition = "varchar(3)")
+    private String categoryGroupCode;
+
+    @Column(name = "CATEGORY_NAME", columnDefinition = "varchar(100)")
+    private String categoryName;
+
     @Column(name = "X", nullable = false, columnDefinition = "DECIMAL(16,13)")
     private BigDecimal x;
 
@@ -51,6 +57,8 @@ public class PlaceEntity extends TimeEntity {
         this.address = placeDto.getAddress();
         this.roadAddress = placeDto.getRoadAddress();
         this.phone = placeDto.getPhone();
+        this.categoryGroupCode = placeDto.getCategoryGroupCode();
+        this.categoryName = placeDto.getCategoryName();
         this.x = placeDto.getX();
         this.y = placeDto.getY();
     }

@@ -65,6 +65,8 @@ public class PlaceRepositoryDSLImpl implements PlaceRepositoryDSL {
                 + ", P.ADDRESS "
                 + ", P.ROAD_ADDRESS "
                 + ", P.PHONE "
+                + ", P.CATEGORY_GROUP_CODE "
+                + ", TRIM(SUBSTRING_INDEX(P.CATEGORY_NAME, '& gt;', -1)) AS CATEGORY_NAME "
                 + ", P.X "
                 + ", P.Y "
                 + ", COUNT(R.REVIEW_ID) "
@@ -93,10 +95,12 @@ public class PlaceRepositoryDSLImpl implements PlaceRepositoryDSL {
                 d[2].toString().isEmpty() ? null : d[2].toString(),
                 d[3].toString().isEmpty() ? null : d[3].toString(),
                 d[4].toString().isEmpty() ? null : d[4].toString(),
-                new BigDecimal(d[5].toString()),
-                new BigDecimal(d[6].toString()),
-                d[7].toString().isEmpty() ? null : Long.parseLong(d[7].toString()),
-                d[8].toString().isEmpty() ? null : d[8].toString()
+                d[5].toString().isEmpty() ? null : d[5].toString(),
+                d[6].toString().isEmpty() ? null : d[6].toString(),
+                new BigDecimal(d[7].toString()),
+                new BigDecimal(d[8].toString()),
+                d[9].toString().isEmpty() ? null : Long.parseLong(d[9].toString()),
+                d[10].toString().isEmpty() ? null : d[10].toString()
                 )));
 
         return result;
