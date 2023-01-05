@@ -6,7 +6,9 @@ import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.domain.daily.model.entity.DailyEntity;
+import com.teamside.project.alpha.group.domain.daily.model.entity.DailyKeepEntity;
 import com.teamside.project.alpha.group.domain.review.model.entity.ReviewEntity;
+import com.teamside.project.alpha.group.domain.review.model.entity.ReviewKeepEntity;
 import com.teamside.project.alpha.group.model.converter.CategoryConverter;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
 import com.teamside.project.alpha.group.model.enumurate.Category;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -252,6 +255,9 @@ public class GroupEntity extends TimeEntity {
     public void exileMember(String targetMid) {
         GroupMemberMappingEntity groupMemberMapping = this.groupMemberMappingEntity.stream().filter(d -> d.getMid().equals(targetMid)).findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         groupMemberMapping.updateStatus(GroupMemberStatus.EXILE);
+
+        deleteKeepsInGroup();
+        deleteFollowsInGroup();
     }
 
     public void deleteGroup() {
@@ -266,6 +272,37 @@ public class GroupEntity extends TimeEntity {
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
         groupMemberMapping.updateStatus(GroupMemberStatus.EXIT);
+
+        deleteKeepsInGroup();
+        deleteFollowsInGroup();
+    }
+    private void deleteKeepsInGroup() {
+        this.getReviewEntities().stream()
+                .filter(f -> f.getGroup().getGroupId().equals(groupId))
+                .filter(f -> !f.getIsDelete())
+                .forEach(d -> {
+                    List<ReviewKeepEntity> reviewKeepList = d.getReviewKeepEntities().stream()
+                            .filter(f -> f.getMemberMid().equals(CryptUtils.getMid()))
+                            .collect(Collectors.toList());
+                    d.getReviewKeepEntities().removeAll(reviewKeepList);
+                });
+        this.getDailyEntities().stream()
+                .filter(f -> f.getGroup().getGroupId().equals(groupId))
+                .filter(f -> !f.getIsDelete())
+                .forEach(d -> {
+                    List<DailyKeepEntity> reviewKeepList = d.getDailyKeepEntities().stream()
+                            .filter(f -> f.getMemberMid().equals(CryptUtils.getMid()))
+                            .collect(Collectors.toList());
+                    d.getDailyKeepEntities().removeAll(reviewKeepList);
+                });
+    }
+    private void deleteFollowsInGroup() {
+        List<MemberFollowEntity> followEntities = this.getMemberFollowEntities().stream()
+                .filter(f -> f.getMid().equals(CryptUtils.getMid()) ||
+                        f.getTargetMid().equals(CryptUtils.getMid()))
+                .collect(Collectors.toList());
+
+        this.getMemberFollowEntities().removeAll(followEntities);
     }
 
     public void checkDeletedReview(String reviewId) {
