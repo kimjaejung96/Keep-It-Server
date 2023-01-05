@@ -256,8 +256,8 @@ public class GroupEntity extends TimeEntity {
         GroupMemberMappingEntity groupMemberMapping = this.groupMemberMappingEntity.stream().filter(d -> d.getMid().equals(targetMid)).findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         groupMemberMapping.updateStatus(GroupMemberStatus.EXILE);
 
-        deleteKeepsInGroup();
-        deleteFollowsInGroup();
+        deleteKeepsInGroup(targetMid);
+        deleteFollowsInGroup(targetMid);
     }
 
     public void deleteGroup() {
@@ -273,16 +273,16 @@ public class GroupEntity extends TimeEntity {
 
         groupMemberMapping.updateStatus(GroupMemberStatus.EXIT);
 
-        deleteKeepsInGroup();
-        deleteFollowsInGroup();
+        deleteKeepsInGroup(CryptUtils.getMid());
+        deleteFollowsInGroup(CryptUtils.getMid());
     }
-    private void deleteKeepsInGroup() {
+    private void deleteKeepsInGroup(String targetMid) {
         this.getReviewEntities().stream()
                 .filter(f -> f.getGroup().getGroupId().equals(groupId))
                 .filter(f -> !f.getIsDelete())
                 .forEach(d -> {
                     List<ReviewKeepEntity> reviewKeepList = d.getReviewKeepEntities().stream()
-                            .filter(f -> f.getMemberMid().equals(CryptUtils.getMid()))
+                            .filter(f -> f.getMemberMid().equals(targetMid))
                             .collect(Collectors.toList());
                     d.getReviewKeepEntities().removeAll(reviewKeepList);
                 });
@@ -291,15 +291,15 @@ public class GroupEntity extends TimeEntity {
                 .filter(f -> !f.getIsDelete())
                 .forEach(d -> {
                     List<DailyKeepEntity> reviewKeepList = d.getDailyKeepEntities().stream()
-                            .filter(f -> f.getMemberMid().equals(CryptUtils.getMid()))
+                            .filter(f -> f.getMemberMid().equals(targetMid))
                             .collect(Collectors.toList());
                     d.getDailyKeepEntities().removeAll(reviewKeepList);
                 });
     }
-    private void deleteFollowsInGroup() {
+    private void deleteFollowsInGroup(String targetMid) {
         List<MemberFollowEntity> followEntities = this.getMemberFollowEntities().stream()
-                .filter(f -> f.getMid().equals(CryptUtils.getMid()) ||
-                        f.getTargetMid().equals(CryptUtils.getMid()))
+                .filter(f -> f.getMid().equals(targetMid) ||
+                        f.getTargetMid().equals(targetMid))
                 .collect(Collectors.toList());
 
         this.getMemberFollowEntities().removeAll(followEntities);
