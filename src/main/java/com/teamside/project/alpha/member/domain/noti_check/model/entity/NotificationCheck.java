@@ -37,4 +37,12 @@ public class NotificationCheck extends TimeEntity {
     public NotificationCheck() {
 
     }
+
+    public void updateDt(String type) {
+        if (type.equals("ACT")) {
+            this.actDt = LocalDateTime.now();
+        } else if (type.equals("NEWS")) {
+            this.newsDt = LocalDateTime.now();
+        }
+    }
 }
