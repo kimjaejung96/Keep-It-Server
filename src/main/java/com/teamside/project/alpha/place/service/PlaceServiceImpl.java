@@ -4,8 +4,10 @@ import com.teamside.project.alpha.place.model.dto.PlaceDto;
 import com.teamside.project.alpha.place.model.entity.PlaceEntity;
 import com.teamside.project.alpha.place.repository.PlaceRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlaceServiceImpl implements PlaceService {
@@ -16,12 +18,15 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
+    @Transactional
     public void createPlace(PlaceDto place) {
-        if (placeRepository.findByPlaceId(place.getPlaceId()).isPresent()) {
-            return;
+        Optional<PlaceEntity> placeEntity = placeRepository.findByPlaceId(place.getPlaceId());
+        if (placeEntity.isEmpty()){
+            PlaceEntity newPlace = new PlaceEntity(place);
+            placeRepository.save(newPlace);
+        } else {
+            placeEntity.get().placeCategoryCheck(place);
         }
-        PlaceEntity newPlace = new PlaceEntity(place);
-        placeRepository.save(newPlace);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.teamside.project.alpha.place.model.dto.PlaceDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
@@ -61,5 +62,12 @@ public class PlaceEntity extends TimeEntity {
         this.categoryName = placeDto.getCategoryName();
         this.x = placeDto.getX();
         this.y = placeDto.getY();
+    }
+
+    public void placeCategoryCheck(PlaceDto place) {
+        if (Strings.isBlank(this.categoryGroupCode)) {
+            this.categoryGroupCode = place.getCategoryGroupCode();
+            this.categoryName = place.getCategoryName();
+        }
     }
 }
