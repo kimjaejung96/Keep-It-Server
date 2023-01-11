@@ -158,7 +158,6 @@ public class ReviewServiceImpl implements ReviewService {
         transactionUtils.runTransaction(() -> {
             GroupEntity group = selectExistGroup(groupId);
             group.checkExistMember(mid);
-            group.checkGroupStatus();
 
             ReviewEntity review = group.getReviewEntities().stream()
                     .filter(r -> Objects.equals(r.getReviewId(), reviewId))

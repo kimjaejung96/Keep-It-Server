@@ -186,7 +186,6 @@ public class DailyServiceImpl implements DailyService {
         String mid = CryptUtils.getMid();
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
         group.checkExistMember(mid);
-        group.checkGroupStatus();
 
         DailyEntity daily = group.getDailyEntities().stream()
                 .filter(d -> Objects.equals(d.getDailyId(), dailyId))
