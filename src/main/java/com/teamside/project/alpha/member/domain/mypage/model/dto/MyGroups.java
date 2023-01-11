@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 public class MyGroups {
     private String groupName;
     private String groupId;
-
+    private Boolean isDelete;
 }

@@ -20,9 +20,9 @@ public class MsgService {
         try {
             amqpTemplate.convertAndSend(exchange.getValue(), routingKey.getValue(), objectMapper.writeValueAsString(message));
             return true;
-        } catch (JsonProcessingException e) {
-            log.error("\n[Error sending message]routingKey : {}", routingKey);
+        } catch (JsonProcessingException | RuntimeException e) {
+            log.error("\n[Error] failed to publish message");
+            return false;
         }
-        return false;
     }
 }

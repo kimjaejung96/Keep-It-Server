@@ -678,13 +678,14 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
     @Override
     public List<MyGroups> getMyGroups() {
-        return jpaQueryFactory.select(Projections.fields(MyGroups.class
-                        , group.groupId
-                        , group.name.as("groupName")))
+        return jpaQueryFactory.select(Projections.fields(MyGroups.class,
+                        group.groupId,
+                        group.name.as("groupName"),
+                group.isDelete.as("isDelete")
+                ))
                 .from(group)
                 .innerJoin(groupMemberMapping).on(group.groupId.eq(groupMemberMapping.groupId))
-                .where(group.isDelete.eq(false),
-                        groupMemberMapping.member.mid.eq(CryptUtils.getMid())
+                .where(groupMemberMapping.member.mid.eq(CryptUtils.getMid())
                         , groupMemberMapping.status.eq(GroupMemberStatus.JOIN))
                 .fetch();
     }
