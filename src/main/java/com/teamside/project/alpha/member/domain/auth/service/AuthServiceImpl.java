@@ -162,10 +162,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void checkAuthNum(SmsAuthDto smsAuthDto) throws CustomException {
-        // authNum 5m valid
+        // authNum 3m valid
         SmsLogEntity smsLogEntity = smsLogRepo.findTop1ByPhoneAndCreateTimeBetweenOrderByCreateTimeDesc(
                 CryptUtils.encode(smsAuthDto.getPhone()),
-                LocalDateTime.now().minusMinutes(5),
+                LocalDateTime.now().minusMinutes(3),
                 LocalDateTime.now())
                 .orElseThrow(() -> new CustomException(ApiExceptionCode.AUTH_FAIL));
 
