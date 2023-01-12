@@ -71,6 +71,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public String refreshAccessToken(String refreshToken) throws CustomException {
         if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer ")) {
             refreshToken = refreshToken.substring(7);
@@ -203,6 +204,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void updateFcmTokenLife() {
         MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         member.updateFcmTokenLife();
