@@ -162,7 +162,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void checkAuthNum(SmsAuthDto smsAuthDto) throws CustomException {
-        if (smsAuthDto.getPhone().equals("NnARg3W2MvWNODVeaLXIWQ==") && smsAuthDto.getAuthNum().equals("134679")) return;
+        if (smsAuthDto.getPhone().equals("01000000000") && smsAuthDto.getAuthNum().equals("134679")) return;
+        //admin 임시 체크
+
+
         // authNum 3m valid
         SmsLogEntity smsLogEntity = smsLogRepo.findTop1ByPhoneAndCreateTimeBetweenOrderByCreateTimeDesc(
                 CryptUtils.encode(smsAuthDto.getPhone()),
