@@ -49,6 +49,7 @@ public enum ApiExceptionCode {
     GROUP_CHECK_FORBIDDEN(826, "그룹 접근 권한이 없습니다."),
 
 
+    FORBIDDEN_NAME(995, "이름에 금지된 단어가 포함되어 있습니다."),
     IMAGE_CONTENT_TYPE_INVALID(996, "이미지 확장자가 올바르지 않습니다"),
     IMAGE_TYPE_INVALID(997, "이미지 타입이 올바르지 않습니다."),
     VALIDATION_ERROR(998, "밸리데이션이 올바르지 않습니다."),

@@ -125,7 +125,7 @@ public class AuthServiceImpl implements AuthService {
                 .parseClaimsJws(token)
                 .getBody();
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.error("잘못된 JWT 서명입니다.");
+            log.error("잘못된 JWT;] 서명입니다.");
             throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
         } catch (ExpiredJwtException e) {
             log.error("만료된 JWT 토큰입니다.");
