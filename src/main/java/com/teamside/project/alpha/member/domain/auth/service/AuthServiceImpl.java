@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -73,6 +72,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional(readOnly = true)
     public String refreshAccessToken(String refreshToken) throws CustomException {
+        refreshToken = CryptUtils.arrangeBearer(refreshToken);
         String mid = getAuthPayload(refreshToken);
 
         MemberEntity member = memberRepo.findByMid(mid).orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
@@ -118,9 +118,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public void tokenValidationCheck(String token) throws CustomException {
-        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
-            token =  token.substring(7);
-        }
+        token = CryptUtils.arrangeBearer(token);
         try {
             Jwts.parserBuilder()
                 .setSigningKey(getSigninKey(secretKey)).build()
@@ -143,9 +141,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String getAuthPayload(String token)  {
-        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
+        token = CryptUtils.arrangeBearer(token);
 
         return Jwts.parserBuilder()
                 .setSigningKey(getSigninKey(secretKey)).build()

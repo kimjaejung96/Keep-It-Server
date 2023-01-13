@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -62,5 +63,12 @@ public class CryptUtils {
     public static String getMid() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (String) authentication.getPrincipal();
+    }
+
+    public static String arrangeBearer(String token) {
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            token =  token.substring(7);
+        }
+        return token;
     }
 }

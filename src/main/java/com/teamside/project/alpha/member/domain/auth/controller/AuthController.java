@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -102,7 +103,7 @@ public class AuthController {
 
     @PostMapping(value = "/refresh/access-token")
     public ResponseEntity<ResponseObject> refreshAccessToken(@RequestHeader(value = KeepitConstant.REFRESH_TOKEN, required = false) @Valid @NotBlank(message = "리프레시 토큰이 널이거나 빈값입니다.")  String refreshToken) throws CustomException {
-        if (!refreshToken.startsWith("Bearer ")) throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
+        if (!refreshToken.startsWith("Bearer ") || !StringUtils.hasText(refreshToken)) throw new CustomException(ApiExceptionCode.UNAUTHORIZED);
 
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         authService.tokenValidationCheck(refreshToken);
