@@ -8,9 +8,7 @@ import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.place.model.entity.PlaceEntity;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -25,6 +23,8 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicUpdate
 @DynamicInsert
+@Builder
+@AllArgsConstructor
 public class ReviewEntity extends TimeEntity {
     @Id
     @Column(name = "REVIEW_ID", columnDefinition = "char(36)")

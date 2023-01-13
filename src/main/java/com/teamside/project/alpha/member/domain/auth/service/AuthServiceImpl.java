@@ -73,10 +73,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional(readOnly = true)
     public String refreshAccessToken(String refreshToken) throws CustomException {
-        if (StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer ")) {
-            refreshToken = refreshToken.substring(7);
-        }
-
         String mid = getAuthPayload(refreshToken);
 
         MemberEntity member = memberRepo.findByMid(mid).orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
@@ -147,6 +143,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String getAuthPayload(String token)  {
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
         return Jwts.parserBuilder()
                 .setSigningKey(getSigninKey(secretKey)).build()
                 .parseClaimsJws(token)
@@ -209,8 +209,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void updateFcmTokenLife() {
-        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+    public void updateFcmTokenLife(String mid) {
+        MemberEntity member = memberRepo.findByMid(mid).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         member.updateFcmTokenLife();
     }
 }

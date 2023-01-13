@@ -16,5 +16,5 @@ public interface AuthService {
     JwtTokens checkMember(String phone) throws CustomException;
     void checkPhone(String phone, AuthType authType) throws CustomException;
 
-    void updateFcmTokenLife();
+    void updateFcmTokenLife(String mid);
 }
