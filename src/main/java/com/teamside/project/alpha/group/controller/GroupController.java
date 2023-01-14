@@ -97,6 +97,13 @@ public class GroupController {
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+    @GetMapping("/{groupId}/is_delete")
+    public ResponseEntity<ResponseObject> checkIsDelete(@PathVariable String groupId) throws CustomException {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(groupService.checkIsDelete(groupId));
+
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
 
     @PatchMapping("/{groupId}")
     public ResponseEntity<ResponseObject> updateGroup(@RequestBody @Valid GroupDto groupDto, @PathVariable String groupId) throws CustomException {

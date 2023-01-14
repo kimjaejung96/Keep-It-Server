@@ -14,4 +14,5 @@ public interface GroupRepository  extends JpaRepository<GroupEntity, Long>, Grou
     Long countByNameContainingAndIsDelete(String search, boolean isDelete);
     Long countByMasterMidAndIsDelete(String memberMid, boolean isDelete);
     List<GroupEntity> findAllByMasterMidAndIsDelete(String memberMid, boolean isDelete);
+    Boolean existsByIsDeleteAndGroupId(boolean isDelete, String groupId);
 }

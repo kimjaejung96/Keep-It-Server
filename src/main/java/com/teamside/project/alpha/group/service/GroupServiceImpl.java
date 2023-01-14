@@ -409,4 +409,9 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND))
                 .getBlockTarget();
     }
+
+    @Override
+    public Boolean checkIsDelete(String groupId) {
+        return groupRepository.existsByIsDeleteAndGroupId(true, groupId);
+    }
 }

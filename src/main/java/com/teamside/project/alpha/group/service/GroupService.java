@@ -40,4 +40,6 @@ public interface GroupService {
     List<GroupDto.MyFollow> selectMyFollow();
 
     void updateFollowAlarm(GroupDto.MyFollow myFollow);
+
+    Boolean checkIsDelete(String groupId);
 }
