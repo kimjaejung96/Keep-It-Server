@@ -3,7 +3,8 @@ package com.teamside.project.alpha.member.service;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
-import com.teamside.project.alpha.common.msg.MsgService;
+import com.teamside.project.alpha.common.forbidden.model.enumutrate.ForbiddenWordType;
+import com.teamside.project.alpha.common.forbidden.service.ForbiddenService;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.repository.GroupRepository;
@@ -30,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepo memberRepo;
     private final AuthService authService;
     private final InquiryRepo inquiryRepo;
-    private final MsgService msgService;
+    private final ForbiddenService forbiddenService;
     private final GroupRepository groupRepo;
 
     @Override
@@ -52,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void checkExistsName(String name) throws CustomException {
+        forbiddenService.checkForbiddenWords(ForbiddenWordType.NAME, name);
         checkExistName(name);
     }
 

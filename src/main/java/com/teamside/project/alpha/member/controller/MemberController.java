@@ -2,9 +2,6 @@ package com.teamside.project.alpha.member.controller;
 
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
-import com.teamside.project.alpha.common.exception.CustomRuntimeException;
-import com.teamside.project.alpha.common.forbidden.model.enumutrate.ForbiddenWordType;
-import com.teamside.project.alpha.common.forbidden.repository.ForbiddenWordRepo;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.domain.auth.model.dto.JwtTokens;
@@ -33,7 +30,6 @@ public class MemberController {
 
     private final ApplicationEventPublisher smsEventPublisher;
     private final MemberService memberService;
-    private final ForbiddenWordRepo forbiddenWordRepo;
 
 
     /**
@@ -55,20 +51,12 @@ public class MemberController {
     public ResponseEntity<ResponseObject> checkExistName(
              @Pattern(regexp = KeepitConstant.REGEXP_MEMBER_NAME,
             message = "이름이 올바르지 않습니다.") @PathVariable String name) throws CustomException {
-        checkForbiddenWords(name);
         if (name.contains("\\.\\.") || name.contains("\\_\\_")) {
             throw new CustomException(ApiExceptionCode.VALIDATION_ERROR);
         }
         memberService.checkExistsName(name);
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
-    }
-    private void checkForbiddenWords(String name) {
-        List<String> words = forbiddenWordRepo.findForbiddenWords(ForbiddenWordType.NAME);
-        if (words.stream().map(String::toLowerCase)
-                .anyMatch(w -> name.toLowerCase().contains(w.toLowerCase()))) {
-            throw new CustomRuntimeException(ApiExceptionCode.FORBIDDEN_NAME);
-        }
     }
     @PostMapping("/logout")
     public ResponseEntity<ResponseObject> logout() {
