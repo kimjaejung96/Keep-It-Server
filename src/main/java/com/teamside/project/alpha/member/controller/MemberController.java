@@ -42,7 +42,7 @@ public class MemberController {
     public ResponseEntity<ResponseObject> signUp(@RequestBody @Valid MemberDto.SignUpDto signUpDto) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         //회원가입
-        JwtTokens jwtTokens = memberService.sigunUp(signUpDto);
+        JwtTokens jwtTokens = memberService.signUp(signUpDto);
         responseObject.setBody(jwtTokens);
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
