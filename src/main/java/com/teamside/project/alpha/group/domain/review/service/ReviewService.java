@@ -3,7 +3,6 @@ package com.teamside.project.alpha.group.domain.review.service;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface ReviewService {
     void createReview(String groupId, ReviewDto review) throws CustomException;
@@ -22,7 +21,4 @@ public interface ReviewService {
     void deleteComment(String groupId, String reviewId, String commentId);
 
     CommentDto.CommentDetail getNextComments(String groupId, String reviewId, Integer nextOffset, int limit);
-
-    @Transactional
-    String createComment2(String groupId, CommentDto.CreateComment comment, String reviewId) throws CustomException;
 }
