@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -331,12 +333,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @Transactional
     public void follow(String groupId, String targetMid) throws CustomException {
+        AtomicBoolean alarmYn = new AtomicBoolean(false);
+        transactionUtils.runTransaction(() -> {
             GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-            Boolean alarmYn = group.follow(groupId, targetMid);
+            alarmYn.set(group.follow(groupId, targetMid));
+        });
 
-        if (alarmYn) {
+        if (alarmYn.get()) {
             Map<String, Object> data = new HashMap<>();
             data.put("receiverMid", targetMid);
             data.put("senderMid", CryptUtils.getMid());
@@ -347,14 +351,17 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @Transactional
-    public void exileMember(String groupId, String memberId) {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkGroupMaster();
-        group.exileMember(memberId);
+    public void exileMember(String groupId, String memberId) throws CustomException {
+        AtomicReference<String> masterMid = new AtomicReference<>("");
+        transactionUtils.runTransaction(() -> {
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+            group.checkGroupMaster();
+            group.exileMember(memberId);
+            masterMid.set(memberId);
+        });
 
         Map<String, String> data = new HashMap<>();
-        data.put("receiverMid", memberId);
+        data.put("receiverMid", masterMid.get());
         data.put("groupId", groupId);
         msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_EXPELLED, data);
     }
