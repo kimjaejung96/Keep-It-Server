@@ -234,6 +234,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .filter(r -> Objects.equals(r.getReviewId(), reviewId))
                 .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
+        String commentId = review.createComment(comment, reviewId).getCommentId();
 
         if (comment.getTargetMid() != null && !memberRepo.existsByMid(comment.getTargetMid())) {
             throw new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND);
@@ -248,7 +249,7 @@ public class ReviewServiceImpl implements ReviewService {
             Map<String, String> data = new HashMap<>();
             data.put("groupId", groupId);
             data.put("reviewId", reviewId);
-            data.put("commentId", review.createComment(comment, reviewId).getCommentId());
+            data.put("commentId", commentId);
 
             msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, data);
         }
@@ -259,10 +260,10 @@ public class ReviewServiceImpl implements ReviewService {
             data.put("contentsId", reviewId);
             data.put("targetCommentId", comment.getTargetCommentId());
             data.put("senderMid", mid);
-            data.put("newCommentId", review.createComment(comment, reviewId).getCommentId());
+            data.put("newCommentId", commentId);
             msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);
         }
-        return review.createComment(comment, reviewId).getCommentId();
+        return commentId;
     }
 
 }
