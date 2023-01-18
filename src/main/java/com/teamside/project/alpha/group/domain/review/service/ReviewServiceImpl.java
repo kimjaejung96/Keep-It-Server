@@ -97,17 +97,18 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void keepReview(String groupId, String reviewId) throws CustomException {
         String mid = CryptUtils.getMid();
-            GroupEntity group = selectExistGroup(groupId);
-            group.checkExistMember(mid);
+        GroupEntity group = selectExistGroup(groupId);
+        group.checkExistMember(mid);
 
-            ReviewEntity review = group.getReviewEntities().stream()
-                    .filter(r -> Objects.equals(r.getReviewId(), reviewId))
-                    .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+        ReviewEntity review = group.getReviewEntities().stream()
+                .filter(r -> Objects.equals(r.getReviewId(), reviewId))
+                .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
-            String masterMid = review.getMasterMid();
-            boolean isNew = review.keepReview(reviewId, mid);
+        String masterMid = review.getMasterMid();
+        boolean isNew = review.keepReview(reviewId, mid);
 
         if (!masterMid.equals(CryptUtils.getMid()) && isNew) {
             Map<String, String> data = new HashMap<>();

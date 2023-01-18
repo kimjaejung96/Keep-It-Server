@@ -11,6 +11,8 @@ import com.teamside.project.alpha.place.model.entity.PlaceEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.List;
@@ -84,6 +86,7 @@ public class ReviewEntity extends TimeEntity {
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ReviewCommentEntity createComment(CommentDto.CreateComment comment, String reviewId) {
         ReviewCommentEntity reviewCommentEntity = ReviewCommentEntity.createComment(comment, reviewId);
         this.reviewCommentEntities.add(reviewCommentEntity);
