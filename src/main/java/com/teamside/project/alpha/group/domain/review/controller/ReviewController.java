@@ -98,7 +98,7 @@ public class ReviewController {
             throw new CustomException(ApiExceptionCode.VALIDATION_ERROR);
         }
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
-        responseObject.setBody(reviewService.createComment(groupId, comment, reviewId));
+        responseObject.setBody(reviewService.createComment2(groupId, comment, reviewId));
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }

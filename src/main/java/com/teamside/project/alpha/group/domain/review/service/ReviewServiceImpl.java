@@ -222,4 +222,47 @@ public class ReviewServiceImpl implements ReviewService {
         return groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
     }
 
+    @Override
+    @Transactional
+    public String createComment2(String groupId, CommentDto.CreateComment comment, String reviewId) throws CustomException {
+        String mid = CryptUtils.getMid();
+        GroupEntity group = selectExistGroup(groupId);
+        group.checkExistMember(mid);
+        group.checkGroupStatus();
+
+        ReviewEntity review = group.getReviewEntities().stream()
+                .filter(r -> Objects.equals(r.getReviewId(), reviewId))
+                .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+
+
+        if (comment.getTargetMid() != null && !memberRepo.existsByMid(comment.getTargetMid())) {
+            throw new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND);
+        }
+
+
+        if (comment.getParentCommentId() != null && review.getReviewCommentEntities().stream().noneMatch(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))) {
+            throw new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS);
+        }
+
+        if (!review.getMasterMid().equals(mid)) {
+            Map<String, String> data = new HashMap<>();
+            data.put("groupId", groupId);
+            data.put("reviewId", reviewId);
+            data.put("commentId", review.createComment(comment, reviewId).getCommentId());
+
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, data);
+        }
+        if (comment.getParentCommentId() != null) {
+            Map<String, String> data = new HashMap<>();
+            data.put("groupId", groupId);
+            data.put("notiType", "R");
+            data.put("contentsId", reviewId);
+            data.put("targetCommentId", comment.getTargetCommentId());
+            data.put("senderMid", mid);
+            data.put("newCommentId", review.createComment(comment, reviewId).getCommentId());
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);
+        }
+        return review.createComment(comment, reviewId).getCommentId();
+    }
+
 }
