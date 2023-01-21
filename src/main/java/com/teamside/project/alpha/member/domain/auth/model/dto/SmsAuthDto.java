@@ -11,8 +11,8 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SmsAuthDto {
 
-    @Pattern(regexp = KeepitConstant.REGEXP_PHONE,
-            message = "핸드폰 번호가 올바르지 않습니다.")
+//    @Pattern(regexp = KeepitConstant.REGEXP_PHONE,
+//            message = "핸드폰 번호가 올바르지 않습니다.")
     private String phone;
 
     @Pattern(regexp = KeepitConstant.REGEXP_AUTH_NUM,

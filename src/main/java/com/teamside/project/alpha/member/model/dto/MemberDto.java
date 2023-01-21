@@ -18,7 +18,7 @@ public class MemberDto {
     @NotNull
     @Pattern(regexp = KeepitConstant.REGEXP_MEMBER_NAME, message = "이름이 올바르지 않습니다.")
     private String name;
-    @Pattern(regexp = KeepitConstant.REGEXP_PHONE, message = "핸드폰 번호가 올바르지 않습니다.")
+//    @Pattern(regexp = KeepitConstant.REGEXP_PHONE, message = "핸드폰 번호가 올바르지 않습니다.")
     @NotNull
     private String phone;
     private String profileUrl;
