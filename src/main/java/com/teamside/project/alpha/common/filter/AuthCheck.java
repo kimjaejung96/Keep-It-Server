@@ -8,6 +8,7 @@ import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.domain.auth.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,17 +27,22 @@ import java.io.IOException;
 public class AuthCheck extends OncePerRequestFilter {
     private final AuthService authService;
     private final ObjectMapper objectMapper;
+    private final Environment environment;
 
-    public AuthCheck(AuthService authService, ObjectMapper objectMapper) {
+    public AuthCheck(AuthService authService, ObjectMapper objectMapper, Environment environment) {
         this.authService = authService;
         this.objectMapper = objectMapper;
+        this.environment = environment;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String activeYml = environment.getActiveProfiles()[0];
         try {
             String token = getAccessToken(request);
-            log.info("\nAccess Token : {}", token);
+            if (!activeYml.equals("prd")) {
+                log.info("\nAccess Token : {}", token);
+            }
             if(token != null){
                 authService.tokenValidationCheck(token);
                 String mid = authService.getAuthPayload(getAccessToken(request));
