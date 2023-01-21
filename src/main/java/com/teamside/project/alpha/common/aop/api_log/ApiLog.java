@@ -44,14 +44,13 @@ public class ApiLog {
 
     @Around("execution(* com.teamside.project.alpha..controller..*(..))")
     public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.info("\nRequest Full URI : {}", httpServletRequest.getRemoteHost() + httpServletRequest.getRequestURI());
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
         Object result;
         ResponseEntity<?> responseEntity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         StringBuilder desc = new StringBuilder();
-        StringBuilder logs = new StringBuilder();
+//        StringBuilder logs = new StringBuilder();
         String apiStatus = KeepitConstant.SUCCESS;
         String methodName = "";
         String controllerName;
@@ -67,7 +66,7 @@ public class ApiLog {
 //                    .replace("\\", "").replace("\"{", "{").replace("}\"", "}")
                     ;
 
-            logs.append("[REQUEST] method : ").append(controllerName).append("{").append(methodName).append("}\nDATA : ").append(params).append("\n");
+//            logs.append("[REQUEST] method : ").append(controllerName).append("{").append(methodName).append("}\nDATA : ").append(params).append("\n");
             desc.append("[REQUEST] ").append("\ndata : ").append(params).append("\n");
 
             Map<String, String> pathVariablesMap = (Map<String, String>)httpServletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
@@ -76,7 +75,7 @@ public class ApiLog {
                 for (Map.Entry<String, String> entry : pathVariablesMap.entrySet()) {
                     pathVariables.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
                 }
-                logs.append("pathVariables : \n").append(pathVariables);
+//                logs.append("pathVariables : \n").append(pathVariables);
                 desc.append("pathVariables : \n").append(pathVariables);
             }
 
@@ -86,38 +85,37 @@ public class ApiLog {
             responseEntity = (ResponseEntity<?>) result;
             apiCode = responseEntity.getStatusCodeValue();
             desc.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseEntity.getBody()));
-            logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseEntity.getBody()));
+//            logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseEntity.getBody()));
 
         } catch (Exception ex) {
             stopWatch.stop();
             if (ex instanceof CustomException) {
                 apiCode = ((CustomException) ex).getApiExceptionCode().getApiCode();
                 desc.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomException) ex).getErrorDetail()));
-                logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomException) ex).getErrorDetail()));
+//                logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomException) ex).getErrorDetail()));
             }
             if (ex instanceof CustomRuntimeException) {
                 apiCode = ((CustomRuntimeException) ex).getApiExceptionCode().getApiCode();
                 desc.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomRuntimeException) ex).getErrorDetail()));
-                logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomRuntimeException) ex).getErrorDetail()));
+//                logs.append("[RESPONSE]\n").append(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(((CustomRuntimeException) ex).getErrorDetail()));
             }
             if (ex instanceof ConstraintViolationException) {
                 apiCode = 999;
                 desc.append("[RESPONSE]\n").append(((ConstraintViolationException) ex).getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate).collect(Collectors.joining()))  ;
-                logs.append("[RESPONSE]\n").append(((ConstraintViolationException) ex).getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate).collect(Collectors.joining()))  ;
+//                logs.append("[RESPONSE]\n").append(((ConstraintViolationException) ex).getConstraintViolations().stream().map(ConstraintViolation::getMessageTemplate).collect(Collectors.joining()))  ;
 
             }
             apiStatus = KeepitConstant.FAIL;
             throw ex;
         }
         finally {
-            logs.append("\n").append("PROCESS_TIME : ").append(stopWatch.getTotalTimeMillis() * 0.001);
-            log.info("\n" + logs);
+            log.info("\n[{}]"+ httpServletRequest.getRemoteHost()+ httpServletRequest.getRemotePort() + httpServletRequest.getRequestURI() + " -----> {} / {}ms", httpServletRequest.getMethod(), apiStatus, stopWatch.getTotalTimeMillis() * 0.001);
+//            log.info("\n" + logs);
             ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc.toString(), apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
             boolean useLog = useLogCheck(joinPoint, responseEntity);
             if (useLog) {
                 CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
             }
-
         }
         return result;
     }

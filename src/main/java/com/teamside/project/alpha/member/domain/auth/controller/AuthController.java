@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import java.util.Random;
 
 @Validated
@@ -40,8 +39,8 @@ public class AuthController {
 
     @PostMapping(value = "/sms/{phone}")
     public ResponseEntity<ResponseObject> sms(
-            @Pattern(regexp = KeepitConstant.REGEXP_PHONE,
-                    message = "핸드폰 번호가 올바르지 않습니다.") @PathVariable String phone, @RequestParam AuthType authType) throws CustomException {
+//            @Pattern(regexp = KeepitConstant.REGEXP_PHONE, message = "핸드폰 번호가 올바르지 않습니다.")
+            @PathVariable String phone, @RequestParam AuthType authType) throws CustomException {
         String number;
         // check phone
         authService.checkPhone(phone, authType);
