@@ -63,7 +63,9 @@ public class ApiLog {
             String[] packagedMethodName = joinPoint.getTarget().getClass().getName().split("\\.");
             controllerName = packagedMethodName[packagedMethodName.length - 1];
 
-            String params = getRequestParams().replace("\\", "").replace("\"{", "{").replace("}\"", "}");
+            String params = getRequestParams()
+//                    .replace("\\", "").replace("\"{", "{").replace("}\"", "}")
+                    ;
 
             logs.append("[REQUEST] method : ").append(controllerName).append("{").append(methodName).append("}\nDATA : ").append(params).append("\n");
             desc.append("[REQUEST] ").append("\ndata : ").append(params).append("\n");

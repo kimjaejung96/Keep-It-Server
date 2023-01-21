@@ -112,10 +112,10 @@ public class GroupController {
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
-    @GetMapping("/{groupName}/exists")
+    @GetMapping("/exists")
     public ResponseEntity<ResponseObject> isExistGroupName(@Pattern(regexp = KeepitConstant.REGEXP_GROUP_NAME, message = "그룹 이름이 올바르지 않습니다.")
                                                                @Size(min = 4, max = 20, message = "그룹 제목은 4~20자 입니다.")
-                                                               @PathVariable String groupName) throws CustomException {
+                                                               @RequestParam String groupName) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.isExistGroupName(groupName);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
