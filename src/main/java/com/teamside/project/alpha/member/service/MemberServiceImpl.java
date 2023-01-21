@@ -79,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private void checkExistPhone(String phone) throws CustomException {
-        if (memberRepo.existsByPhone(CryptUtils.encode(phone))) {
+        if (memberRepo.existsByPhone(phone)) {
             throw new CustomException(ApiExceptionCode.DUPLICATE_PHONE);
         }
     }

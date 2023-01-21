@@ -152,19 +152,19 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void saveSmsLog(String requestPhoneNum, String number)  {
-        SmsLogEntity smsLogEntity = new SmsLogEntity(CryptUtils.encode(requestPhoneNum), number);
+        SmsLogEntity smsLogEntity = new SmsLogEntity(requestPhoneNum, number);
         smsLogRepo.save(smsLogEntity);
     }
 
     @Override
     public void checkAuthNum(SmsAuthDto smsAuthDto) throws CustomException {
-        if (smsAuthDto.getPhone().equals("01000000000") && smsAuthDto.getAuthNum().equals("134679")) return;
+//        if (smsAuthDto.getPhone().equals("NnARg3W2MvWNODVeaLXIWQ==") && smsAuthDto.getAuthNum().equals("134679")) return;
         //admin 임시 체크
 
 
         // authNum 3m valid
         SmsLogEntity smsLogEntity = smsLogRepo.findTop1ByPhoneAndCreateTimeBetweenOrderByCreateTimeDesc(
-                CryptUtils.encode(smsAuthDto.getPhone()),
+                smsAuthDto.getPhone(),
                 LocalDateTime.now().minusMinutes(3),
                 LocalDateTime.now())
                 .orElseThrow(() -> new CustomException(ApiExceptionCode.AUTH_FAIL));
@@ -178,7 +178,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public JwtTokens checkMember(String phone) throws CustomException {
-        MemberEntity member = memberRepo.findByPhoneAndType(CryptUtils.encode(phone), SignUpType.PHONE)
+        MemberEntity member = memberRepo.findByPhoneAndType(phone, SignUpType.PHONE)
                 .orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
         JwtTokens jwtTokens = this.createTokens(member.getMid());
@@ -190,7 +190,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void checkPhone(String phone, AuthType authType) throws CustomException {
-        Optional<MemberEntity> member = memberRepo.findByPhoneAndType(CryptUtils.encode(phone), SignUpType.PHONE);
+        Optional<MemberEntity> member = memberRepo.findByPhoneAndType(phone, SignUpType.PHONE);
 
         if (authType.equals(AuthType.SIGN_UP)) {
             member.ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.MEMBER_ALREADY_EXIST);});

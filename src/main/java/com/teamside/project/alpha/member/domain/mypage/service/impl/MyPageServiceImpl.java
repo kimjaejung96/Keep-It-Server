@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -162,7 +161,7 @@ public class MyPageServiceImpl implements MyPageService {
     public void changePhone(SmsAuthDto smsAuthDto) throws CustomException {
         // authNum 5m valid
         SmsLogEntity smsLogEntity = smsLogRepo.findTop1ByPhoneAndCreateTimeBetweenOrderByCreateTimeDesc(
-                        CryptUtils.encode(smsAuthDto.getPhone()),
+                        smsAuthDto.getPhone(),
                         LocalDateTime.now().minusMinutes(5),
                         LocalDateTime.now())
                 .orElseThrow(() -> new CustomException(ApiExceptionCode.AUTH_FAIL));

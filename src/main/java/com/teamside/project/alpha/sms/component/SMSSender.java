@@ -3,6 +3,7 @@ package com.teamside.project.alpha.sms.component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.sms.dto.SmsDto;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -115,6 +116,7 @@ public class SMSSender {
 
         StringEntity stringEntity = new StringEntity(jsonStr, "UTF-8");
 
+        sendPhoneNum = CryptUtils.encode(sendPhoneNum);
         try{
             stopWatch.start();
             HttpClient httpClient = HttpClients.custom().setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build()).setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();
