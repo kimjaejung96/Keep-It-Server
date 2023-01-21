@@ -102,7 +102,7 @@ public class SMSSender {
 //                .content("기본 콘텐츠" + Integer.toString(RandomUtils.nextInt(10000, 100000)))
                 .messages(Collections
                         .singletonList(SmsDto.MessageInfoDto.builder()
-                                .to(sendPhoneNum)
+                                .to(CryptUtils.decode(sendPhoneNum))
                                 .content(String.format(CERTIFICATION_MSG_FORMAT, smsAuthNum))
                                 .build()))
                 .build();
@@ -116,7 +116,6 @@ public class SMSSender {
 
         StringEntity stringEntity = new StringEntity(jsonStr, "UTF-8");
 
-        sendPhoneNum = CryptUtils.encode(sendPhoneNum);
         try{
             stopWatch.start();
             HttpClient httpClient = HttpClients.custom().setSSLContext(new SSLContextBuilder().loadTrustMaterial(null, TrustAllStrategy.INSTANCE).build()).setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE).build();

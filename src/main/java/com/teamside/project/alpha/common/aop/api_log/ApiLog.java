@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -35,15 +36,18 @@ public class ApiLog {
     private final LogService logService;
     private final ObjectMapper objectMapper;
     private final HttpServletRequest httpServletRequest;
+    private final Environment environment;
 
-    public ApiLog(LogService logService, ObjectMapper objectMapper, HttpServletRequest httpServletRequest) {
+    public ApiLog(LogService logService, ObjectMapper objectMapper, HttpServletRequest httpServletRequest, Environment environment) {
         this.logService = logService;
         this.objectMapper = objectMapper;
         this.httpServletRequest = httpServletRequest;
+        this.environment = environment;
     }
 
     @Around("execution(* com.teamside.project.alpha..controller..*(..))")
     public Object logging(ProceedingJoinPoint joinPoint) throws Throwable {
+        String activeYml = environment.getActiveProfiles()[0];
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
@@ -111,10 +115,13 @@ public class ApiLog {
         finally {
             log.info("\n[{}]"+ httpServletRequest.getRemoteHost()+ httpServletRequest.getRemotePort() + httpServletRequest.getRequestURI() + " -----> {} / {} / {}ms", httpServletRequest.getMethod(), CryptUtils.getMid(), apiStatus, stopWatch.getTotalTimeMillis() * 0.001);
             ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc.toString(), apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
-//            boolean useLog = useLogCheck(joinPoint, responseEntity);
-//            if (useLog) {
-                CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
-//            }
+            boolean useLog = useLogCheck(joinPoint, responseEntity);
+
+            if (activeYml.equals("prd")){
+                if (useLog) {
+                    CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
+                }
+            }  else CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
         }
         return result;
     }
