@@ -117,7 +117,7 @@ public class ApiLog {
             ApiLogEntity apiLogEntity = new ApiLogEntity(mid, methodName, desc.toString(), apiStatus, (float) (stopWatch.getTotalTimeMillis() * 0.001), apiCode);
             boolean useLog = useLogCheck(joinPoint, responseEntity);
 
-            if (!activeYml.equals("prd")){
+            if (activeYml.equals("prd")){
                 if (useLog) {
                     CompletableFuture.runAsync(() -> logService.insertLog(apiLogEntity));
                 }
