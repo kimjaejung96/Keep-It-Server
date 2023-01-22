@@ -87,6 +87,7 @@ public class DailyDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class DailyDetail {
+        private String dailyId;
         private String title;
         private String mid;
         private String memberName;
@@ -101,8 +102,9 @@ public class DailyDto {
         private Boolean isKeep;
 
         @QueryProjection
-        public DailyDetail(String title, String mid, String memberName, String memberProfileUrl, String createDt,
+        public DailyDetail(String dailyId, String title, String mid, String memberName, String memberProfileUrl, String createDt,
                            String content, String imageUrl, Integer commentCount, String groupId, String groupName, Boolean groupIsDelete, Boolean isKeep) {
+            this.dailyId = dailyId;
             this.title = title;
             this.mid = mid;
             this.memberName = memberName;

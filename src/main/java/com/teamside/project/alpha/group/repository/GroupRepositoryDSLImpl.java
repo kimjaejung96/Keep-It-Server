@@ -467,6 +467,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
 
         DailyDto.DailyDetail dailyDetail = jpaQueryFactory
                 .select(new QDailyDto_DailyDetail(
+                        daily.dailyId,
                         daily.title,
                         member.mid,
                         member.name,
