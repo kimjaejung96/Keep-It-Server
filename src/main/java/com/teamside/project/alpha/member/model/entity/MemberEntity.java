@@ -4,7 +4,7 @@ package com.teamside.project.alpha.member.model.entity;
 import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
-import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
+import com.teamside.project.alpha.common.model.entity.entitiy.TimeEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.entity.GroupMemberMappingEntity;
 import com.teamside.project.alpha.group.model.enumurate.GroupMemberStatus;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Table(name = "MEMBER")
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberEntity extends CreateDtEntity {
+public class MemberEntity extends TimeEntity {
     @Id
     @Column(name = "MID", columnDefinition = "char(36)")
     private String mid;
@@ -57,8 +57,6 @@ public class MemberEntity extends CreateDtEntity {
 
     @Column(name = "IS_DELETE", columnDefinition = "boolean")
     private Boolean isDelete;
-    @Column(name = "UPDATE_DT",nullable = true, columnDefinition = "DATETIME")
-    private LocalDateTime updateTime;
 
 
     @OneToOne(mappedBy = "member",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false, orphanRemoval = true)
