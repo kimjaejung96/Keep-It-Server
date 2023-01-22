@@ -113,27 +113,26 @@ public class DailyServiceImpl implements DailyService {
 
 
         if (!masterMid.get().equals(mid)) {
-            transactionUtils.runTransaction(() -> {
-                memberRepo.findByMid(masterMid.get()).ifPresent( m -> {
-                    Map<String, Object> newComment = new HashMap<>();
-                    newComment.put("dailyId", dailyId);
-                    newComment.put("groupId", groupId);
-                    newComment.put("commentId", commentId.get());
-                    msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_DAILY_COMMENT, newComment);
-                });
-             });
+            memberRepo.findByMid(masterMid.get()).ifPresent( m -> {
+                Map<String, Object> newComment = new HashMap<>();
+                newComment.put("dailyId", dailyId);
+                newComment.put("groupId", groupId);
+                newComment.put("commentId", commentId.get());
+                msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_DAILY_COMMENT, newComment);
+            });
+            if (comment.getParentCommentId() != null) {
+                Map<String, String> data = new HashMap<>();
+                data.put("groupId", groupId);
+                data.put("notiType", "D");
+                data.put("contentsId", dailyId);
+                data.put("targetCommentId", comment.getTargetCommentId());
+                data.put("senderMid", mid);
+                data.put("newCommentId", commentId.get());
+                msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);
+            }
         }
 
-        if (comment.getParentCommentId() != null) {
-            Map<String, String> data = new HashMap<>();
-            data.put("groupId", groupId);
-            data.put("notiType", "D");
-            data.put("contentsId", dailyId);
-            data.put("targetCommentId", comment.getTargetCommentId());
-            data.put("senderMid", mid);
-            data.put("newCommentId", commentId.get());
-            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);
-        }
+
         return commentId.get();
     }
 
