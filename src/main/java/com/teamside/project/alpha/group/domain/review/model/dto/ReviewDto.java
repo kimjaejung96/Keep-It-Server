@@ -128,6 +128,7 @@ public class ReviewDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ReviewDetail {
+        private String reviewId;
         private String reviewContent;
         private String memberName;
         private String memberMid;
@@ -146,6 +147,7 @@ public class ReviewDto {
 
         @QueryProjection
         public ReviewDetail(ReviewEntity review, MemberEntity member, PlaceEntity place) {
+            this.reviewId = review.getReviewId();
             this.reviewContent = review.getContent();
             this.memberName = member.getName();
             this.memberMid = member.getMid();
