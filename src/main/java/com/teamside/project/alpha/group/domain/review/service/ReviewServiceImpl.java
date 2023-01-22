@@ -130,24 +130,23 @@ public class ReviewServiceImpl implements ReviewService {
 
 
         if (!masterMid.get().equals(mid)) {
-            Map<String, String> myReviewComment = new HashMap<>();
-            myReviewComment.put("groupId", groupId);
-            myReviewComment.put("reviewId", reviewId);
-            myReviewComment.put("commentId", createdCommentId.get());
-            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, myReviewComment);
+            Map<String, String> data = new HashMap<>();
+            data.put("groupId", groupId);
+            data.put("reviewId", reviewId);
+            data.put("commentId", createdCommentId.get());
 
-            if (comment.getParentCommentId() != null) {
-                Map<String, String> myCommentComment = new HashMap<>();
-                myCommentComment.put("groupId", groupId);
-                myCommentComment.put("notiType", "R");
-                myCommentComment.put("contentsId", reviewId);
-                myCommentComment.put("targetCommentId", comment.getTargetCommentId());
-                myCommentComment.put("senderMid", mid);
-                myCommentComment.put("newCommentId", createdCommentId.get());
-                msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, myCommentComment);
-            }
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, data);
         }
-
+        if (comment.getParentCommentId() != null) {
+            Map<String, String> data = new HashMap<>();
+            data.put("groupId", groupId);
+            data.put("notiType", "R");
+            data.put("contentsId", reviewId);
+            data.put("targetCommentId", comment.getTargetCommentId());
+            data.put("senderMid", mid);
+            data.put("newCommentId", createdCommentId.get());
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);
+        }
         return createdCommentId.get();
     }
 
