@@ -47,14 +47,14 @@ public class AuthController {
 
         String activeYml = env.getActiveProfiles()[0];
 
-        if (activeYml.equals("local") || activeYml.equals("dev")) {
-            number = "000000";
-        } else {
+//        if (activeYml.equals("local") || activeYml.equals("dev")) {
+//            number = "000000";
+//        } else {
             number = generateCertificationNumber();
 
             // authNum publish
             smsEventPublisher.publishEvent(new SMSEvent(phone, number, authType.getType()));
-        }
+//        }
 
         // save smsLog
         authService.saveSmsLog(phone, number);
