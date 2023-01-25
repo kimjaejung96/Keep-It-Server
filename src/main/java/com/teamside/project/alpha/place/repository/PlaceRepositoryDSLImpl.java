@@ -144,6 +144,7 @@ public class PlaceRepositoryDSLImpl implements PlaceRepositoryDSL {
                         reviewKeep.memberMid.eq(CryptUtils.getMid()),
                         reviewKeep.keepYn.eq(true))
                 .where(review.group.groupId.eq(groupId),
+                        review.isDelete.eq(false),
                         place.placeId.eq(placeId),
                         ltReviewId(lastReviewSeq),
                         notInBlocks()
