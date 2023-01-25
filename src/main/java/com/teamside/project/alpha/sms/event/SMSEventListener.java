@@ -33,7 +33,7 @@ public class SMSEventListener {
     @EventListener
     public void onApplicationEvent(SMSEvent event){
         try {
-            smsSender.sendAuthMessage(event.getPhoneNum(), event.getSmsAuthNum());
+            smsSender.sendAuthMessage(event.getPhoneNum(), event.getSmsAuthNum(), event.getSmsType());
 
         } catch (IOException | CustomException e) {
             log.error("SMS Send Exception : {}", e.toString());

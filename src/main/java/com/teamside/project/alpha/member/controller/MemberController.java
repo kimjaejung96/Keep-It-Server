@@ -5,6 +5,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.member.domain.auth.model.dto.JwtTokens;
+import com.teamside.project.alpha.member.domain.auth.model.enumurate.AuthType;
 import com.teamside.project.alpha.member.model.dto.AlarmDto;
 import com.teamside.project.alpha.member.model.dto.InquiryDto;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
@@ -137,7 +138,7 @@ public class MemberController {
     public ResponseEntity<String> smsTest(@RequestParam(value = "phone") String receiver) {
         String number = generateCertificationNumber();
 
-        smsEventPublisher.publishEvent(new SMSEvent(receiver, number));
+//        smsEventPublisher.publishEvent(new SMSEvent(receiver, number, AuthType.SIGN_IN.getType()));
 
         return ResponseEntity.status(HttpStatus.OK).body("200");
     }

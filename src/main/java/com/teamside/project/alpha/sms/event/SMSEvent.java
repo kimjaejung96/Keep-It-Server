@@ -15,6 +15,7 @@ public class SMSEvent  {
 
     private final String phoneNum;
     private final String smsAuthNum;
+    private final String smsType;
 
     /**
      * Description : 생성자
@@ -24,9 +25,10 @@ public class SMSEvent  {
      * Author      : 조 준 희
      * History     : [2022-08-03] - 조 준 희 - Create
      */
-    public SMSEvent( String phoneNum, String smsAuthNum){
+    public SMSEvent( String phoneNum, String smsAuthNum, String smsType){
         this.phoneNum = phoneNum;
         this.smsAuthNum = smsAuthNum;
+        this.smsType = smsType;
     }
 
 }

@@ -85,12 +85,20 @@ public class SMSSender {
      * History     : [2022-08-03] - 조 준 희 - Create
      */
     @Retryable(value = CustomException.class, maxAttempts = 3, backoff = @Backoff(1000))
-    public void sendAuthMessage(String sendPhoneNum, String smsAuthNum) throws IOException, CustomException {
+    public void sendAuthMessage(String sendPhoneNum, String smsAuthNum, String smsType) throws IOException, CustomException {
         int resultCode = 0;
         long executeTimer;
         StopWatch stopWatch = new StopWatch();
         String timeStamp = Long.toString(System.currentTimeMillis());
         String apiUrl = SENS_HOST_URL + SENS_REQUEST_URL + SENS_SVC_ID + SENS_REQUEST_TYPE;
+        String type = "";
+        if (smsType.equals("sign-up")) {
+            type= "회원가입";
+        } else if (smsType.equals("sign-in")) {
+            type= "로그인";
+        } else if (smsType.equals("change-phone")) {
+            type= "번호변경";
+        }
 
         SmsDto smsDto  = SmsDto.builder()
                 .type(SENS_MESSAGE_TYPE_SMS)
@@ -103,7 +111,7 @@ public class SMSSender {
                 .messages(Collections
                         .singletonList(SmsDto.MessageInfoDto.builder()
                                 .to(CryptUtils.decode(sendPhoneNum))
-                                .content(String.format(CERTIFICATION_MSG_FORMAT, smsAuthNum))
+                                .content(String.format(CERTIFICATION_MSG_FORMAT, type, smsAuthNum))
                                 .build()))
                 .build();
 

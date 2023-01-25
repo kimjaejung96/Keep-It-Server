@@ -53,7 +53,7 @@ public class AuthController {
             number = generateCertificationNumber();
 
             // authNum publish
-            smsEventPublisher.publishEvent(new SMSEvent(phone, number));
+            smsEventPublisher.publishEvent(new SMSEvent(phone, number, authType.getType()));
         }
 
         // save smsLog
