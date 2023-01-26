@@ -73,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private void checkExistName(String name) throws CustomException {
-        if (memberRepo.existsByName(name)) {
+        if (memberRepo.existsByNameAndIsDelete(name, false)) {
             throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
         }
     }
