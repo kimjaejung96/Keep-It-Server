@@ -125,8 +125,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void updateFcm(String fcmToken) {
+        MemberEntity member = memberRepo.findByMidAndIsDelete(CryptUtils.getMid(), false).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         memberRepo.findAllByFcmToken(fcmToken).forEach(d -> d.updateFcmToken(""));
-        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid()).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         member.updateFcmToken(fcmToken);
     }
 

@@ -14,5 +14,6 @@ public interface MemberRepo extends JpaRepository<MemberEntity, Long>, MemberRep
     boolean existsByMid(String mid);
     Optional<MemberEntity> findByPhoneAndType(String phone, SignUpType signUpType);
     Optional<MemberEntity> findByMid(String mid);
+    Optional<MemberEntity> findByMidAndIsDelete(String mid, boolean isDelete);
     List<MemberEntity> findAllByFcmToken(String token);
 }
