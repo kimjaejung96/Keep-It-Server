@@ -306,6 +306,7 @@ public class GroupRepositoryDSLImpl implements GroupRepositoryDSL {
                 .select(new QGroupDto_GroupMemberProfileDto(
                         member.mid,
                         member.name,
+                        member.profileUrl,
                         new CaseBuilder()
                                 .when(memberFollow.mid.isNull())
                                 .then(false)

@@ -190,12 +190,14 @@ public class GroupDto {
     public static class GroupMemberProfileDto {
         private String mid;
         private String name;
+        private String profileUrl;
         private Boolean isFollow;
 
         @QueryProjection
-        public GroupMemberProfileDto(String mid, String name, Boolean isFollow) {
+        public GroupMemberProfileDto(String mid, String name, String profileUrl, Boolean isFollow) {
             this.mid = mid;
             this.name = name;
+            this.profileUrl = profileUrl;
             this.isFollow = isFollow;
         }
     }
