@@ -17,7 +17,10 @@ import com.teamside.project.alpha.group.repository.GroupRepository;
 import com.teamside.project.alpha.member.repository.MemberRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,22 +34,23 @@ public class DailyServiceImpl implements DailyService {
     private final MemberRepo memberRepo;
     private final MsgService msgService;
     private final TransactionUtils transactionUtils;
+    private final PlatformTransactionManager platformTransactionManager;
 
 
     @Override
     public void createDaily(String groupId, DailyDto dailyDto) throws CustomException {
-        AtomicReference<String> createdDailyId = new AtomicReference<>("");
-        transactionUtils.runTransaction(() -> {
-            GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-            groupEntity.checkExistMember(CryptUtils.getMid());
-            groupEntity.checkGroupStatus();
-            createdDailyId.set(groupEntity.createDaily(new DailyEntity(groupId, dailyDto)));
-        });
+        TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+        groupEntity.checkExistMember(CryptUtils.getMid());
+        groupEntity.checkGroupStatus();
+        String createdDailyId = groupEntity.createDaily(new DailyEntity(groupId, dailyDto));
+        platformTransactionManager.commit(transactionStatus);
 
         Map<String, String> data = new HashMap<>();
         data.put("senderMid", CryptUtils.getMid());
         data.put("groupId", groupId);
-        data.put("dailyId", createdDailyId.get());
+        data.put("dailyId", createdDailyId);
         msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_NEW_DAILY, data);
     }
 
