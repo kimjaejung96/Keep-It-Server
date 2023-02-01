@@ -18,13 +18,14 @@ import com.teamside.project.alpha.member.repository.MemberRepo;
 import com.teamside.project.alpha.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -34,35 +35,36 @@ public class ReviewServiceImpl implements ReviewService {
     private final MemberRepo memberRepo;
     private final MsgService msgService;
     private final TransactionUtils transactionUtils;
+    private final PlatformTransactionManager platformTransactionManager;
 
 
     @Override
     public void createReview(String groupId, ReviewDto review) throws CustomException {
+        TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
+
         String mid = CryptUtils.getMid();
-        AtomicReference<String> newReviewId = new AtomicReference<>("");
-        transactionUtils.runTransaction(() -> {
-            checkExistPlace(review.getPlaceId());
+        checkExistPlace(review.getPlaceId());
 
-            GroupEntity group = selectExistGroup(groupId);
+        GroupEntity group = selectExistGroup(groupId);
 
-            group.checkExistMember(mid);
-            group.checkGroupStatus();
+        group.checkExistMember(mid);
+        group.checkGroupStatus();
 
-            newReviewId.set(group.createReview(new ReviewEntity(groupId, review)));
-        });
+        String newReviewId = group.createReview(new ReviewEntity(groupId, review));
+        platformTransactionManager.commit(transactionStatus);
 
 
         Map<String, Object> newReview = new HashMap<>();
         newReview.put("senderMid", mid);
         newReview.put("groupId", groupId);
-        newReview.put("reviewId", newReviewId.get());
+        newReview.put("reviewId", newReviewId);
         msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.NEW_REVIEW, newReview);
 
         Map<String, String> newContent = new HashMap<>();
         newContent.put("senderMid", mid);
         newContent.put("groupId", groupId);
         newContent.put("notiType", "R");
-        newContent.put("contentsId", newReviewId.get());
+        newContent.put("contentsId", newReviewId);
         msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.FOLLOW_CONTENTS_REGISTER, newContent);
     }
 
@@ -102,38 +104,37 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public String createComment(String groupId, CommentDto.CreateComment comment, String reviewId) throws CustomException {
+        TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
+
         String mid = CryptUtils.getMid();
-        AtomicReference<String>  masterMid = new AtomicReference<>("");
-        AtomicReference<String> createdCommentId = new AtomicReference<>("");
-        transactionUtils.runTransaction(() -> {
-            GroupEntity group = selectExistGroup(groupId);
-            group.checkExistMember(mid);
-            group.checkGroupStatus();
+        GroupEntity group = selectExistGroup(groupId);
+        group.checkExistMember(mid);
+        group.checkGroupStatus();
 
-            ReviewEntity review = group.getReviewEntities().stream()
-                    .filter(r -> Objects.equals(r.getReviewId(), reviewId))
-                    .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+        ReviewEntity review = group.getReviewEntities().stream()
+                .filter(r -> Objects.equals(r.getReviewId(), reviewId))
+                .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
-            masterMid.set(review.getMasterMid());
+        String masterMid = review.getMasterMid();
 
-            if (comment.getTargetMid() != null && !memberRepo.existsByMid(comment.getTargetMid())) {
-                throw new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND);
-            }
+        if (comment.getTargetMid() != null && !memberRepo.existsByMid(comment.getTargetMid())) {
+            throw new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND);
+        }
 
 
-            if (comment.getParentCommentId() != null && review.getReviewCommentEntities().stream().noneMatch(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))) {
-                throw new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS);
-            }
+        if (comment.getParentCommentId() != null && review.getReviewCommentEntities().stream().noneMatch(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))) {
+            throw new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS);
+        }
 
-            createdCommentId.set(review.createComment(comment, reviewId).getCommentId());
-        });
+        String createdCommentId = review.createComment(comment, reviewId).getCommentId();
+        platformTransactionManager.commit(transactionStatus);
 
 
-        if (!masterMid.get().equals(mid)) {
+        if (!masterMid.equals(mid)) {
             Map<String, String> data = new HashMap<>();
             data.put("groupId", groupId);
             data.put("reviewId", reviewId);
-            data.put("commentId", createdCommentId.get());
+            data.put("commentId", createdCommentId);
 
             msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_REVIEW_COMMENT, data);
         }
@@ -144,18 +145,15 @@ public class ReviewServiceImpl implements ReviewService {
             data.put("contentsId", reviewId);
             data.put("targetCommentId", comment.getTargetCommentId());
             data.put("senderMid", mid);
-            data.put("newCommentId", createdCommentId.get());
+            data.put("newCommentId", createdCommentId);
             msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_COMMENT_COMMENT, data);
         }
-        return createdCommentId.get();
+        return createdCommentId;
     }
 
     @Override
     public void keepReview(String groupId, String reviewId) throws CustomException {
         String mid = CryptUtils.getMid();
-        AtomicReference<String> masterMid = new AtomicReference<>("");
-        AtomicBoolean isNew = new AtomicBoolean(false);
-        transactionUtils.runTransaction(() -> {
             GroupEntity group = selectExistGroup(groupId);
             group.checkExistMember(mid);
 
@@ -163,13 +161,12 @@ public class ReviewServiceImpl implements ReviewService {
                     .filter(r -> Objects.equals(r.getReviewId(), reviewId))
                     .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
-            masterMid.set(review.getMasterMid());
-            isNew.set(review.keepReview(reviewId, mid));
+            String masterMid = review.getMasterMid();
+            boolean isNew = review.keepReview(reviewId, mid);
 
-        });
-        if (!masterMid.get().equals(CryptUtils.getMid()) && isNew.get()) {
+        if (!masterMid.equals(CryptUtils.getMid()) && isNew) {
             Map<String, String> data = new HashMap<>();
-            data.put("receiverMid", masterMid.get());
+            data.put("receiverMid", masterMid);
             data.put("senderMid", mid);
             data.put("reviewId", reviewId);
             data.put("groupId", groupId);
