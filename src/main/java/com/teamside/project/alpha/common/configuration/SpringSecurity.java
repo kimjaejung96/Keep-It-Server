@@ -1,13 +1,10 @@
 package com.teamside.project.alpha.common.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teamside.project.alpha.common.filter.AuthCheck;
 import com.teamside.project.alpha.common.handler.AuthenticationHandler;
 import com.teamside.project.alpha.common.handler.AuthorizationHandler;
-import com.teamside.project.alpha.member.domain.auth.service.AuthService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,18 +17,14 @@ import org.springframework.security.web.firewall.HttpFirewall;
 @Configuration
 @EnableWebSecurity
 public class SpringSecurity {
-    private final AuthService authService;
-    private final ObjectMapper objectMapper;
+    private final AuthCheck authCheck;
     private final AuthenticationHandler authenticationHandler;
     private final AuthorizationHandler authorizationHandler;
-    private final Environment environment;
 
-    public SpringSecurity(AuthService authService, ObjectMapper objectMapper, AuthenticationHandler authenticationHandler, AuthorizationHandler authorizationHandler, Environment environment) {
-        this.authService = authService;
-        this.objectMapper = objectMapper;
+    public SpringSecurity(AuthCheck authCheck, AuthenticationHandler authenticationHandler, AuthorizationHandler authorizationHandler) {
+        this.authCheck = authCheck;
         this.authenticationHandler = authenticationHandler;
         this.authorizationHandler = authorizationHandler;
-        this.environment = environment;
     }
 
     @Bean
@@ -67,7 +60,7 @@ public class SpringSecurity {
 
                         .anyRequest().authenticated()
                         .and()
-                .addFilterBefore(new AuthCheck(authService, objectMapper, environment), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authCheck, UsernamePasswordAuthenticationFilter.class)
         ;
         return http.build();
     }
