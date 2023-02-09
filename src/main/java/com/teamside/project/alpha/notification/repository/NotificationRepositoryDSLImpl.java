@@ -214,7 +214,7 @@ public class NotificationRepositoryDSLImpl implements NotificationRepositoryDSL{
                     .dailyTitle(!item[14].toString().isBlank() ? item[14].toString() : null)
                     .imageUrl(!item[15].toString().isBlank() ? item[15].toString() : null)
                     .commentId(!item[16].toString().isBlank() ? item[16].toString() : null)
-                    .commentContent(!item[17].toString().isBlank() ? item[17].toString() : null)
+                    .commentContent(item[17].toString())
                     .existsImage(item[18].toString().equals("1"))
                     .keepCnt(Integer.valueOf(item[19].toString()))
                 .build())

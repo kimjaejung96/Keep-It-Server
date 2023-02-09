@@ -92,7 +92,11 @@ public class NotificationDto {
                     cmt = cmt.substring(0, cmt.indexOf("\n")) + "...";
                 }
 
-                this.notiContent = "'" + cmt + "'댓글에 '" + this.senderName + "'님이 댓글을 달았어요.";
+                if (cmt.isBlank()) {
+                    this.notiContent = "사진댓글에 '" + this.senderName + "'님이 댓글을 달았어요.";
+                } else {
+                    this.notiContent = "'" + cmt + "'댓글에 '" + this.senderName + "'님이 댓글을 달았어요.";
+                }
                 break;
             case KPS_MFW:
                 this.notiContent = "'" + this.senderName + "’님이 '" + this.receiverName + "’님을 팔로우했어요.";
