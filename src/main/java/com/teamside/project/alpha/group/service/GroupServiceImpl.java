@@ -325,11 +325,11 @@ public class GroupServiceImpl implements GroupService {
     @Transactional(readOnly = true)
     public GroupDto.GroupHome selectGroupHome(String groupId) {
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-//        group.checkExistMember(CryptUtils.getMid());
 
         return new GroupDto.GroupHome(group.getName(),
                 group.getIsDelete(),
                 group.getDeleteDt(),
+                group.getGroupMemberMappingEntity().stream().anyMatch(m -> m.getMid().equals(CryptUtils.getMid()) && m.getStatus().equals(GroupMemberStatus.JOIN)),
                 group.getGroupMemberMappingEntity().stream().filter(m -> m.getStatus().equals(GroupMemberStatus.JOIN)).count(),
                 group.getReviewEntities().stream().filter(d-> Objects.equals(d.getMasterMid(), CryptUtils.getMid()) && !d.getIsDelete()).count()
                 );

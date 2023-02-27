@@ -206,19 +206,20 @@ public class GroupDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class GroupHome {
         private String groupName;
-
         private Boolean isDelete;
         private String deleteDt;
+        private Boolean isJoin;
 
         private long memberCount;
         private long myReviewCount;
 
-        public GroupHome(String groupName, Boolean isDelete, LocalDateTime deleteDt, long memberCount, long myReviewCount) {
+        public GroupHome(String groupName, Boolean isDelete, LocalDateTime deleteDt, Boolean isJoin, long memberCount, long myReviewCount) {
             this.groupName = groupName;
             this.isDelete = isDelete;
             if (isDelete) {
                 this.deleteDt = deleteDt.plusMonths(1).format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
             }
+            this.isJoin = isJoin;
             this.memberCount = memberCount;
             this.myReviewCount = myReviewCount;
         }
