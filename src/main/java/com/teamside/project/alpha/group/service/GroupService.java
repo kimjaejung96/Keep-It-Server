@@ -8,15 +8,15 @@ import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import java.util.List;
 
 public interface GroupService {
-    String createGroup(GroupDto group) throws CustomException;
-    void updateGroup(String groupId, GroupDto groupDto) throws CustomException;
-    void isExistGroupName(String groupName) throws CustomException;
-    void deleteGroup(String groupId) throws CustomException;
-    GroupDto.GroupInfoDto selectGroup(String groupId) throws CustomException;
+    String createGroup(GroupDto group);
+    void updateGroup(String groupId, GroupDto groupDto);
+    void isExistGroupName(String groupName);
+    void deleteGroup(String groupId);
+    GroupDto.GroupInfoDto selectGroup(String groupId);
     GroupDto.ResponseSearchGroupDto selectGroups(Long lastGroupId, Long pageSize);
     List<GroupDto.SearchGroupDto> random();
-    void joinGroup(String groupId, String password) throws CustomException;
-    void leaveGroup(String groupId) throws CustomException;
+    void joinGroup(String groupId, String password);
+    void leaveGroup(String groupId);
     GroupDto.ResponseMyGroupDto selectMyGroups(MyGroupType type);
     void editFavorite(String groupId) throws CustomException;
     void inviteMember(String groupId, String memberId) throws CustomException;
@@ -29,13 +29,13 @@ public interface GroupService {
     Object selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailyId);
 
     GroupDto.GroupHome selectGroupHome(String groupId);
-    void follow(String groupId, String targetMid) throws CustomException;
+    void follow(String groupId, String targetMid);
 
-    void exileMember(String groupId, String memberId) throws CustomException;
+    void exileMember(String groupId, String memberId);
 
-    List<GroupDto.GroupAlarmSetting> selectGroupReviewAlarm(String alarmType) throws CustomException;
+    List<GroupDto.GroupAlarmSetting> selectGroupReviewAlarm(String alarmType);
 
-    void updateGroupAlarm(GroupDto.GroupAlarmSetting groupAlarmSetting) throws CustomException;
+    void updateGroupAlarm(GroupDto.GroupAlarmSetting groupAlarmSetting);
 
     List<GroupDto.MyFollow> selectMyFollow();
 

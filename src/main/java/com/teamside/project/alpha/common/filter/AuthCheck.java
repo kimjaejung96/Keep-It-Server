@@ -50,6 +50,9 @@ public class AuthCheck extends OncePerRequestFilter {
                 String mid = authService.getAuthPayload(getAccessToken(request));
                 Authentication authentication = new UsernamePasswordAuthenticationToken(mid, getAccessToken(request),null);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                Authentication authentication = new UsernamePasswordAuthenticationToken("ANONYMOUS", null,null);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             filterChain.doFilter(request, response);
         } catch (CustomException | CustomRuntimeException e) {

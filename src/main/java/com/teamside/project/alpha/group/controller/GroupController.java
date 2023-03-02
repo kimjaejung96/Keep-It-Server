@@ -26,17 +26,38 @@ import javax.validation.constraints.Size;
 public class GroupController {
     private final GroupService groupService;
 
-    @GroupAuthCheck
+    /**
+     * 그룹의 리뷰 조회
+     * @param groupId
+     * @param targetMid - 입력시 해당 멤버의 리뷰만 조회
+     * @param pageSize
+     * @param lastReviewSeq
+     * @return
+     */
     @GetMapping("/{groupId}/reviews")
-    public ResponseEntity<ResponseObject> selectReviewsInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastReviewSeq) throws CustomException {
+    public ResponseEntity<ResponseObject> selectReviewsInGroup(@PathVariable String groupId,
+                                                               @RequestParam(required = false) String targetMid,
+                                                               @RequestParam Long pageSize,
+                                                               @RequestParam(required = false) Long lastReviewSeq) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectReviewsInGroup(groupId, targetMid, pageSize, lastReviewSeq));
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
-    @GroupAuthCheck
+
+    /**
+     * 그룹의 일상 조회
+     * @param groupId
+     * @param targetMid - 입력시 해당 멤버의 일상만 조회
+     * @param pageSize
+     * @param lastDailySeq
+     * @return
+     */
     @GetMapping("/{groupId}/daily")
-    public ResponseEntity<ResponseObject> selectDailyInGroup(@PathVariable String groupId, @RequestParam(required = false) String targetMid, @RequestParam Long pageSize, @RequestParam(required = false) Long lastDailySeq) throws CustomException {
+    public ResponseEntity<ResponseObject> selectDailyInGroup(@PathVariable String groupId,
+                                                             @RequestParam(required = false) String targetMid,
+                                                             @RequestParam Long pageSize,
+                                                             @RequestParam(required = false) Long lastDailySeq) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectDailyInGroup(groupId, targetMid, pageSize, lastDailySeq));
 
@@ -44,16 +65,28 @@ public class GroupController {
     }
 
 
+    /**
+     * 그룹 생성
+     * @param group
+     * @return
+     */
     @PostMapping
-    public ResponseEntity<ResponseObject> createGroup(@RequestBody @Valid GroupDto group) throws CustomException {
+    public ResponseEntity<ResponseObject> createGroup(@RequestBody @Valid GroupDto group) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.CREATED);
         responseObject.setBody(groupService.createGroup(group));
 
         return new ResponseEntity<>(responseObject, HttpStatus.CREATED);
     }
 
+    /**
+     * 그룹 참가
+     * @param groupId
+     * @param password
+     * @return
+     */
     @PostMapping("/{groupId}/join")
-    public ResponseEntity<ResponseObject> joinGroup(@PathVariable String groupId, @RequestParam(required = false) String password) throws CustomException {
+    public ResponseEntity<ResponseObject> joinGroup(@PathVariable String groupId,
+                                                    @RequestParam(required = false) String password) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.joinGroup(groupId, password);
 
@@ -65,18 +98,22 @@ public class GroupController {
      * 그룹 탈퇴
      * @param groupId
      * @return
-     * @throws CustomException
      */
     @DeleteMapping("/{groupId}/leave")
-    public ResponseEntity<ResponseObject> leaveGroup(@PathVariable String groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> leaveGroup(@PathVariable String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.leaveGroup(groupId);
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 삭제
+     * @param groupId
+     * @return
+     */
     @DeleteMapping("/{groupId}")
-    public ResponseEntity<ResponseObject> deleteGroup(@PathVariable String groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> deleteGroup(@PathVariable String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.deleteGroup(groupId);
 
@@ -88,39 +125,64 @@ public class GroupController {
      *
      * @param groupId
      * @return
-     * @throws CustomException
      */
     @GetMapping("/{groupId}")
-    public ResponseEntity<ResponseObject> selectGroup(@PathVariable String groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> selectGroup(@PathVariable String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectGroup(groupId));
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+
+    /**
+     * 그룹 삭제 체크
+     * @param groupId
+     * @return
+     */
     @GetMapping("/{groupId}/is_delete")
-    public ResponseEntity<ResponseObject> checkIsDelete(@PathVariable String groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> checkIsDelete(@PathVariable String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.checkIsDelete(groupId));
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 수정
+     * @param groupDto
+     * @param groupId
+     * @return
+     */
     @PatchMapping("/{groupId}")
-    public ResponseEntity<ResponseObject> updateGroup(@RequestBody @Valid GroupDto groupDto, @PathVariable String groupId) throws CustomException {
+    public ResponseEntity<ResponseObject> updateGroup(@RequestBody @Valid GroupDto groupDto,
+                                                      @PathVariable String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.updateGroup(groupId, groupDto);
 
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+
+    /**
+     * 그룹 이름 중복 체크
+     * @param groupName
+     * @return
+     */
     @GetMapping("/exists")
     public ResponseEntity<ResponseObject> isExistGroupName(@Pattern(regexp = KeepitConstant.REGEXP_GROUP_NAME, message = "그룹 이름이 올바르지 않습니다.")
                                                                @Size(min = 4, max = 20, message = "그룹 제목은 4~20자 입니다.")
-                                                               @RequestParam String groupName) throws CustomException {
+                                                               @RequestParam String groupName) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.isExistGroupName(groupName);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 검색
+     * @param lastGroupSeq
+     * @param pageSize
+     * @param search
+     * @return
+     */
     @GetMapping("/search")
     public ResponseEntity<ResponseObject> searchGroups(@RequestParam(required = false) Long lastGroupSeq,
                                                        @RequestParam Long pageSize,
@@ -130,6 +192,11 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 내 그룹 조회
+     * @param type
+     * @return
+     */
     @GetMapping("/my-groups")
     public ResponseEntity<ResponseObject> selectMyGroups(@RequestParam MyGroupType type) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -137,12 +204,27 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 즐겨찾기 추가/제거
+     * @param groupId
+     * @return
+     * @throws CustomException
+     */
     @PostMapping("/{groupId}/favorite")
     public ResponseEntity<ResponseObject> editFavorite(@PathVariable String groupId) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.editFavorite(groupId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
+
+    /**
+     * 그룹 멤버 초대
+     * @param groupId
+     * @param memberId
+     * @return
+     * @throws CustomException
+     */
+    //todo - 그룹 멤버 초대 개발 해야함.
     @PostMapping("/{groupId}/members/{memberId}")
     public ResponseEntity<ResponseObject> inviteMember(@PathVariable String groupId,
                                                        @PathVariable String memberId) throws CustomException {
@@ -157,16 +239,20 @@ public class GroupController {
      * @param groupId
      * @param memberId
      * @return
-     * @throws CustomException
      */
     @PostMapping("/{groupId}/members/{memberId}/exile")
     public ResponseEntity<ResponseObject> exileMember(@PathVariable String groupId,
-                                                       @PathVariable String memberId) throws CustomException {
+                                                      @PathVariable String memberId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.exileMember(groupId, memberId);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 즐겨찾기 순서 변경
+     * @param request
+     * @return
+     */
     @PostMapping("/ords")
     public ResponseEntity<ResponseObject> updateOrd(@RequestBody GroupDto.RequestUpdateOrdDto request) throws CustomException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -220,7 +306,6 @@ public class GroupController {
      * @param groupId
      * @return
      */
-    @GroupAuthCheck
     @GetMapping("/{groupId}/home")
     public ResponseEntity<ResponseObject> groupHomePage(@PathVariable String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -234,25 +319,25 @@ public class GroupController {
      * @param groupId
      * @param targetMid
      * @return
-     * @throws CustomException
      */
     @GroupAuthCheck
     @PostMapping("/{groupId}/members/{targetMid}/follow")
-    public ResponseEntity<ResponseObject> follow(@PathVariable String groupId, @PathVariable String targetMid) throws CustomException {
+    public ResponseEntity<ResponseObject> follow(@PathVariable String groupId,
+                                                 @PathVariable String targetMid) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.follow(groupId, targetMid);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
     @GetMapping("/alarms")
-    public ResponseEntity<ResponseObject> selectGroupAlarm(@RequestParam String alarmType) throws CustomException {
+    public ResponseEntity<ResponseObject> selectGroupAlarm(@RequestParam String alarmType) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         responseObject.setBody(groupService.selectGroupReviewAlarm(alarmType));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
     @PatchMapping("/alarms")
-    public ResponseEntity<ResponseObject> updateGroupAlarm(@RequestBody GroupDto.GroupAlarmSetting groupAlarmSetting) throws CustomException {
+    public ResponseEntity<ResponseObject> updateGroupAlarm(@RequestBody GroupDto.GroupAlarmSetting groupAlarmSetting) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         groupService.updateGroupAlarm(groupAlarmSetting);
         return new ResponseEntity<>(responseObject, HttpStatus.OK);

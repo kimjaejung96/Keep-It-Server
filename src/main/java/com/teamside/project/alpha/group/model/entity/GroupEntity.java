@@ -133,10 +133,10 @@ public class GroupEntity extends TimeEntity {
         this.profileUrl = group.getProfileUrl();
     }
 
-    public void checkJoinPossible(GroupEntity group, String password) throws CustomException {
+    public void checkJoinPossible(GroupEntity group, String password) {
         if (Boolean.TRUE.equals(group.getUsePrivate())) {
             if (password == null || !password.equals(group.getPassword())) {
-                throw new CustomException(ApiExceptionCode.PASSWORD_IS_INCORRECT);
+                throw new CustomRuntimeException(ApiExceptionCode.PASSWORD_IS_INCORRECT);
             }
         }
 
@@ -148,9 +148,9 @@ public class GroupEntity extends TimeEntity {
             GroupMemberStatus status = groupMemberMapping.get().getStatus();
 
             if (status.equals(GroupMemberStatus.JOIN)) {
-                throw new CustomException(ApiExceptionCode.ALREADY_JOINED_GROUP);
+                throw new CustomRuntimeException(ApiExceptionCode.ALREADY_JOINED_GROUP);
             } else if (status.equals(GroupMemberStatus.EXILE)) {
-                throw new CustomException(ApiExceptionCode.EXILED_GROUP);
+                throw new CustomRuntimeException(ApiExceptionCode.EXILED_GROUP);
             }
         }
 
@@ -159,7 +159,7 @@ public class GroupEntity extends TimeEntity {
                 .count();
 
         if (joinMemberCount >= this.memberQuantity) {
-            throw new CustomException(ApiExceptionCode.MEMBER_QUANTITY_IS_FULL);
+            throw new CustomRuntimeException(ApiExceptionCode.MEMBER_QUANTITY_IS_FULL);
         }
     }
 
@@ -187,6 +187,11 @@ public class GroupEntity extends TimeEntity {
                 .noneMatch(member -> member.getMember().getMid().equals(mid))) {
             throw new CustomRuntimeException(ApiExceptionCode.NOT_PARTICIPANT_IN_GROUP);
         }
+    }
+
+    public boolean checkIsMember() {
+        return this.groupMemberMappingEntity.stream()
+                .anyMatch(m -> m.getMid().equals(CryptUtils.getMid()));
     }
 
     public GroupEntity(String groupId) {
