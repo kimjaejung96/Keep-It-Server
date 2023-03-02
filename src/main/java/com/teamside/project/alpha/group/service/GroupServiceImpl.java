@@ -301,13 +301,11 @@ public class GroupServiceImpl implements GroupService {
         List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, seq, blocks);
         Long responseLastGroupId = reviewsInGroup.size() == pageSize ? reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewSeq() : null;
 
-        long reviewCount = groupEntity.checkIsMember()
-                ? groupEntity.getReviewEntities().stream()
-                    .filter(d -> !d.getIsDelete())
-                    .filter((blocks != null && blocks.size() > 0) ? d -> !blocks.contains(d.getMasterMid()) : d -> true)
-                    .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
-                    .count()
-                : 0L;
+        long reviewCount =  groupEntity.getReviewEntities().stream()
+                .filter(d -> !d.getIsDelete())
+                .filter((blocks != null && blocks.size() > 0) ? d -> !blocks.contains(d.getMasterMid()) : d -> true)
+                .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
+                .count();
 
         return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId, reviewCount);
     }
@@ -324,13 +322,11 @@ public class GroupServiceImpl implements GroupService {
         List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailySeq, blocks);
         Long responseLastDailySeq = dailyInGroup.size() == pageSize ? dailyInGroup.get(dailyInGroup.size() - 1).getDailySeq() : null;
 
-        long dailyCount = groupEntity.checkIsMember()
-                ? groupEntity.getDailyEntities().stream()
-                    .filter(d -> !d.getIsDelete())
-                    .filter((blocks != null && blocks.size() > 0) ? d -> !blocks.contains(d.getMasterMid()) : d -> true)
-                    .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
-                    .count()
-                : 0L;
+        long dailyCount = groupEntity.getDailyEntities().stream()
+                .filter(d -> !d.getIsDelete())
+                .filter((blocks != null && blocks.size() > 0) ? d -> !blocks.contains(d.getMasterMid()) : d -> true)
+                .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
+                .count();
 
         return new DailyDto.ResponseDailyInGroup(dailyInGroup, responseLastDailySeq, dailyCount);
     }
