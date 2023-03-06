@@ -1,5 +1,6 @@
 package com.teamside.project.alpha.place.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,6 +38,7 @@ public class PlaceDto {
 
     @Getter
     @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PlacePinDto extends PlaceDto {
         private String imageUrl;
         private Long reviewCount;
