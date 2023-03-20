@@ -7,6 +7,7 @@ import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.model.constant.KeepitConstant;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
 import com.teamside.project.alpha.group.model.dto.GroupDto;
+import com.teamside.project.alpha.group.model.enumurate.InviteType;
 import com.teamside.project.alpha.group.model.enumurate.MyGroupType;
 import com.teamside.project.alpha.group.service.GroupService;
 import lombok.RequiredArgsConstructor;
@@ -218,23 +219,6 @@ public class GroupController {
     }
 
     /**
-     * 그룹 멤버 초대
-     * @param groupId
-     * @param memberId
-     * @return
-     * @throws CustomException
-     */
-    //todo - 그룹 멤버 초대 개발 해야함.
-    @PostMapping("/{groupId}/members/{memberId}")
-    public ResponseEntity<ResponseObject> inviteMember(@PathVariable String groupId,
-                                                       @PathVariable String memberId) throws CustomException {
-        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        groupService.inviteMember(groupId, memberId);
-        return new ResponseEntity<>(responseObject, HttpStatus.OK);
-    }
-
-
-    /**
      * 그룹 내 멤버 내보내기
      * @param groupId
      * @param memberId
@@ -329,6 +313,12 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 알람 조회
+     *
+     * @param alarmType
+     * @return
+     */
     @GetMapping("/alarms")
     public ResponseEntity<ResponseObject> selectGroupAlarm(@RequestParam String alarmType) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -336,6 +326,12 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 알람 업데이트
+     *
+     * @param groupAlarmSetting
+     * @return
+     */
     @PatchMapping("/alarms")
     public ResponseEntity<ResponseObject> updateGroupAlarm(@RequestBody GroupDto.GroupAlarmSetting groupAlarmSetting) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -343,6 +339,11 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 팔로우 조회
+     *
+     * @return
+     */
     @GetMapping("/follow")
     public ResponseEntity<ResponseObject> selectFollow() {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
@@ -350,6 +351,12 @@ public class GroupController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    /**
+     * 그룹 팔로우 알람 업데이트
+     *
+     * @param myFollow
+     * @return
+     */
     @PatchMapping("/follow")
     public ResponseEntity<ResponseObject> updateFollowAlarm(@RequestBody GroupDto.MyFollow myFollow) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);

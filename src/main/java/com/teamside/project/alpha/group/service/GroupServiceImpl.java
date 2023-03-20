@@ -221,11 +221,6 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void inviteMember(String groupId, String memberId)  {
-
-    }
-
-    @Override
     @Transactional
     public void updateOrd(GroupDto.RequestUpdateOrdDto request) throws CustomException {
         String mId = CryptUtils.getMid();
