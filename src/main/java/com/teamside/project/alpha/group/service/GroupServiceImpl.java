@@ -377,9 +377,12 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void exileMember(String groupId, String memberId) {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
-            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-            group.checkGroupMaster();
-            group.exileMember(memberId);
+
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        group.checkGroupMaster();
+        group.exileMember(memberId);
+
+        platformTransactionManager.commit(transactionStatus);
 
         Map<String, String> data = new HashMap<>();
         data.put("receiverMid", memberId);
