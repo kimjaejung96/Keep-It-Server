@@ -65,7 +65,7 @@ public class PlaceEntity extends TimeEntity {
     }
 
     public void placeCategoryCheck(PlaceDto place) {
-        if (Strings.isBlank(this.categoryGroupCode) || Strings.isBlank(this.categoryName)) {
+        if (Strings.isBlank(this.categoryGroupCode) && Strings.isBlank(this.categoryName)) {
             this.categoryGroupCode = place.getCategoryGroupCode() != null
                     ? place.getCategoryGroupCode() : "";
             this.categoryName = place.getCategoryName() != null
