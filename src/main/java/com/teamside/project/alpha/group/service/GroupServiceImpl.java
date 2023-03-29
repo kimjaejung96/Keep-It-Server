@@ -46,9 +46,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public String createGroup(GroupDto group) throws CustomException {
+    public String createGroup(GroupDto group) {
         if (groupRepository.countByMasterMidAndIsDelete(CryptUtils.getMid(), false) >= GroupConstant.GROUP_MAKE_POSSIBLE_COUNT) {
-            throw new CustomException(ApiExceptionCode.CAN_NOT_CREATE_GROUP);
+            throw new CustomRuntimeException(ApiExceptionCode.CAN_NOT_CREATE_GROUP);
         }
         isExistGroupName(group.getName());
         GroupEntity groupEntity = new GroupEntity(group);
@@ -60,7 +60,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void updateGroup(String groupId, GroupDto groupDto) throws CustomException {
+    public void updateGroup(String groupId, GroupDto groupDto) {
         GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
         groupEntity.checkGroupStatus();
@@ -74,15 +74,15 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void isExistGroupName(String groupName) throws CustomException {
+    public void isExistGroupName(String groupName) {
         if (groupRepository.existsByName(groupName)) {
-            throw new CustomException(ApiExceptionCode.DUPLICATE_NAME);
+            throw new CustomRuntimeException(ApiExceptionCode.DUPLICATE_NAME);
         }
     }
     @Override
-    public void deleteGroup(String groupId) throws CustomException {
+    public void deleteGroup(String groupId) {
         transactionUtils.runTransaction(() -> {
-            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
             group.checkGroupMaster();
 
             group.deleteGroup();
@@ -97,7 +97,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional(readOnly = true)
     public GroupDto.GroupInfoDto selectGroup(String groupId) {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(
+                () -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND)
+        );
 
         GroupDto.GroupInfoDto result = groupRepository.selectGroup(groupId);
 
@@ -141,17 +143,18 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void joinGroup(String groupId, String password) throws CustomException {
+    public void joinGroup(String groupId, String password) {
         String mid = CryptUtils.getMid();
         transactionUtils.runTransaction(() -> {
-            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(
+                    () -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
             group.checkGroupStatus();
             group.checkJoinPossible(group, password);
 
             long joinGroupCount = groupRepository.countJoinGroup(mid);
 
             if (joinGroupCount >= GroupConstant.MEMBER_JOIN_POSSIBLE_COUNT) {
-                throw new CustomException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
+                throw new CustomRuntimeException(ApiExceptionCode.CAN_NOT_PARTICIPANT);
             }
             // 내가 참여한 그룹 갯수 (status - join)
             group.addMember(mid);
@@ -165,8 +168,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void leaveGroup(String groupId) throws CustomException {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+    public void leaveGroup(String groupId) {
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
         group.leaveGroup();
 
@@ -289,30 +292,37 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional(readOnly = true)
     public ReviewDto.ResponseSelectReviewsInGroup selectReviewsInGroup(String groupId, String targetMid, Long pageSize, Long seq) {
+        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(
+                () -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND)
+        );
+
         List<String> blocks = getBlockTarget();
 
         List<ReviewDto.SelectReviewsInGroup> reviewsInGroup = groupRepository.selectReviewsInGroup(groupId, targetMid, pageSize, seq, blocks);
         Long responseLastGroupId = reviewsInGroup.size() == pageSize ? reviewsInGroup.get(reviewsInGroup.size()-1).getReview().getReviewSeq() : null;
-        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
-        Long reviewCount = groupEntity.getReviewEntities().stream()
+        long reviewCount =  groupEntity.getReviewEntities().stream()
                 .filter(d -> !d.getIsDelete())
                 .filter((blocks != null && blocks.size() > 0) ? d -> !blocks.contains(d.getMasterMid()) : d -> true)
                 .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
                 .count();
+
         return new ReviewDto.ResponseSelectReviewsInGroup(reviewsInGroup, responseLastGroupId, reviewCount);
     }
 
     @Override
     @Transactional(readOnly = true)
     public DailyDto.ResponseDailyInGroup selectDailyInGroup(String groupId, String targetMid, Long pageSize, Long lastDailySeq) {
+        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(
+                () -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND)
+        );
+
         List<String> blocks = getBlockTarget();
 
         List<DailyDto.DailyInGroup> dailyInGroup = groupRepository.selectDailyInGroup(groupId, targetMid, pageSize, lastDailySeq, blocks);
         Long responseLastDailySeq = dailyInGroup.size() == pageSize ? dailyInGroup.get(dailyInGroup.size() - 1).getDailySeq() : null;
-        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
 
-        Long dailyCount = groupEntity.getDailyEntities().stream()
+        long dailyCount = groupEntity.getDailyEntities().stream()
                 .filter(d -> !d.getIsDelete())
                 .filter((blocks != null && blocks.size() > 0) ? d -> !blocks.contains(d.getMasterMid()) : d -> true)
                 .filter(targetMid != null ? d -> d.getMasterMid().equals(targetMid) : d -> true)
@@ -324,19 +334,30 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional(readOnly = true)
     public GroupDto.GroupHome selectGroupHome(String groupId) {
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(
+                () -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND)
+        );
 
-        return new GroupDto.GroupHome(group.getName(),
+        return new GroupDto.GroupHome(
+                group.getName(),
                 group.getIsDelete(),
                 group.getDeleteDt(),
-                group.getGroupMemberMappingEntity().stream().anyMatch(m -> m.getMid().equals(CryptUtils.getMid()) && m.getStatus().equals(GroupMemberStatus.JOIN)),
-                group.getGroupMemberMappingEntity().stream().filter(m -> m.getStatus().equals(GroupMemberStatus.JOIN)).count(),
-                group.getReviewEntities().stream().filter(d-> Objects.equals(d.getMasterMid(), CryptUtils.getMid()) && !d.getIsDelete()).count()
+                group.getGroupMemberMappingEntity().stream()
+                        .anyMatch(
+                                m -> m.getMid().equals(CryptUtils.getMid())
+                                        && m.getStatus().equals(GroupMemberStatus.JOIN)
+                        ),
+                group.getGroupMemberMappingEntity().stream()
+                        .filter(m -> m.getStatus().equals(GroupMemberStatus.JOIN))
+                        .count(),
+                group.getReviewEntities().stream()
+                        .filter(d-> Objects.equals(d.getMasterMid(), CryptUtils.getMid()) && !d.getIsDelete())
+                        .count()
                 );
     }
 
     @Override
-    public void follow(String groupId, String targetMid) throws CustomException {
+    public void follow(String groupId, String targetMid) {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
 
         GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
@@ -354,7 +375,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void exileMember(String groupId, String memberId) throws CustomException {
+    public void exileMember(String groupId, String memberId) {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
             GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
             group.checkGroupMaster();
@@ -367,9 +388,9 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupDto.GroupAlarmSetting> selectGroupReviewAlarm(String alarmType) throws CustomException {
+    public List<GroupDto.GroupAlarmSetting> selectGroupReviewAlarm(String alarmType) {
         if (!alarmType.equals("REVIEW") && !alarmType.equals("DAILY")) {
-            throw new CustomException(ApiExceptionCode.INVALID_ALARM_TYPE);
+            throw new CustomRuntimeException(ApiExceptionCode.INVALID_ALARM_TYPE);
         }
 
         return groupRepository.selectGroupAlarm(alarmType);
@@ -377,15 +398,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void updateGroupAlarm(GroupDto.GroupAlarmSetting groupAlarmSetting) throws CustomException {
+    public void updateGroupAlarm(GroupDto.GroupAlarmSetting groupAlarmSetting) {
         String alarmType = groupAlarmSetting.getAlarmType() == null ? "" : groupAlarmSetting.getAlarmType();
         if (!alarmType.equals("REVIEW") && !alarmType.equals("DAILY")) {
-            throw new CustomException(ApiExceptionCode.INVALID_ALARM_TYPE);
+            throw new CustomRuntimeException(ApiExceptionCode.INVALID_ALARM_TYPE);
         }
 
         String mId = CryptUtils.getMid();
         GroupMemberMappingEntity groupMemberMapping = groupRepository.selectGroupMemberMappingEntity(mId, groupAlarmSetting.getGroupId())
-                .orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_MEMBER_NOT_FOUND));
 
         groupMemberMapping.updateGroupAlarm(alarmType);
     }
@@ -406,8 +427,8 @@ public class GroupServiceImpl implements GroupService {
 
     public List<String> getBlockTarget() {
         return memberRepository.findByMid(CryptUtils.getMid())
-                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND))
-                .getBlockTarget();
+                .map(MemberEntity::getBlockTarget)
+                .orElse(Collections.emptyList());
     }
 
     @Override
