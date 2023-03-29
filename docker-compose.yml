@@ -9,13 +9,7 @@ services:
       - TZ=Asia/Seoul
     networks:
       - alpha
-      - alpha-dev_alpha
 
 networks:
   alpha:
     driver: bridge
-  
-  alpha-dev_alpha:
-    driver: bridge
-    external:
-      name: alpha-dev_alpha
