@@ -38,9 +38,8 @@ public class AuthController {
     }
 
     @PostMapping(value = "/sms")
-    public ResponseEntity<ResponseObject> sms(
-//            @Pattern(regexp = KeepitConstant.REGEXP_PHONE, message = "핸드폰 번호가 올바르지 않습니다.")
-            @RequestParam String phone, @RequestParam AuthType authType) throws CustomException {
+    public ResponseEntity<ResponseObject> sms(@RequestParam String phone,
+                                              @RequestParam AuthType authType) {
         String number;
         // check phone
         authService.checkPhone(phone, authType);

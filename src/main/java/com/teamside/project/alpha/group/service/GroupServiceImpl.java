@@ -360,9 +360,16 @@ public class GroupServiceImpl implements GroupService {
     public void follow(String groupId, String targetMid) {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
 
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        boolean alarmYn = group.follow(groupId, targetMid);
-        platformTransactionManager.commit(transactionStatus);
+        Boolean alarmYn = null;
+        try {
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+            alarmYn = group.follow(groupId, targetMid);
+            platformTransactionManager.commit(transactionStatus);
+        } catch (RuntimeException runtimeException) {
+            platformTransactionManager.rollback(transactionStatus);
+        }
+
+
 
         if (alarmYn) {
             Map<String, Object> data = new HashMap<>();
@@ -378,11 +385,16 @@ public class GroupServiceImpl implements GroupService {
     public void exileMember(String groupId, String memberId) {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
 
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkGroupMaster();
-        group.exileMember(memberId);
+        try {
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+            group.checkGroupMaster();
+            group.exileMember(memberId);
 
-        platformTransactionManager.commit(transactionStatus);
+            platformTransactionManager.commit(transactionStatus);
+        } catch (RuntimeException runtimeException) {
+            platformTransactionManager.rollback(transactionStatus);
+        }
+
 
         Map<String, String> data = new HashMap<>();
         data.put("receiverMid", memberId);

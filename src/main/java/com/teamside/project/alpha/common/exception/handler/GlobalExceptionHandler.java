@@ -4,11 +4,13 @@ import com.teamside.project.alpha.common.exception.ApiExceptionCode;
 import com.teamside.project.alpha.common.exception.CustomException;
 import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.dto.ResponseObject;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,7 +24,9 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    private final PlatformTransactionManager platformTransactionManager;
 
     @ExceptionHandler({CustomException.class})
     public ResponseEntity<ResponseObject> handleCustomException(CustomException ex) {
@@ -36,9 +40,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
-    // 사용자 정의 예외
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseObject> handleException(Exception ex) {
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.SYSTEM_ERROR);
+        log.error("ExceptionHandler : {} \n StackTrace : ", ex.getMessage(), ex.getStackTrace());
+        return new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ResponseObject> handleException(RuntimeException ex) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.SYSTEM_ERROR);
         log.error("RuntimeExceptionHandler : {} \n StackTrace : ", ex.getMessage(), ex.getStackTrace());
         return new ResponseEntity<>(responseObject, HttpStatus.BAD_REQUEST);
@@ -78,5 +87,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 }

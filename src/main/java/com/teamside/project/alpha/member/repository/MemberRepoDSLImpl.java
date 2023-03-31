@@ -17,6 +17,7 @@ import com.teamside.project.alpha.member.domain.mypage.model.dto.QMyPageHome;
 import com.teamside.project.alpha.member.domain.noti_check.model.entity.dto.NotificationCheckDTO;
 import com.teamside.project.alpha.member.model.dto.MemberDto;
 import com.teamside.project.alpha.member.model.dto.QMemberDto_InviteMemberList;
+import com.teamside.project.alpha.member.model.entity.QMemberBlockEntity;
 import com.teamside.project.alpha.member.model.entity.QMemberEntity;
 
 import javax.persistence.EntityManager;
@@ -24,7 +25,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public class MemberRepoDSLImpl implements MemberRepoDSL {
     private final JPAQueryFactory jpaQueryFactory;
@@ -40,32 +40,66 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
     QMemberFollowEntity follow = QMemberFollowEntity.memberFollowEntity;
     QGroupMemberMappingEntity groupMemberMapping = QGroupMemberMappingEntity.groupMemberMappingEntity;
     QGroupEntity group = QGroupEntity.groupEntity;
+    QMemberBlockEntity memberBlock = QMemberBlockEntity.memberBlockEntity;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public Optional<List<MemberDto.InviteMemberList>> searchMembers(String name, String groupId) {
-        List<MemberDto.InviteMemberList> result;
-        if (groupId == null) {
-            result = jpaQueryFactory
-                    .select(new QMemberDto_InviteMemberList(member.name, member.mid))
-                    .from(member)
-                    .where(member.name.contains(name).and(member.mid.ne(CryptUtils.getMid())))
-                    .fetch();
-        } else {
-            result = jpaQueryFactory
-                    .select(new QMemberDto_InviteMemberList(member.name, member.mid))
-                    .from(member)
-                    .leftJoin(groupMemberMapping).on(groupMemberMapping.mid.eq(member.mid))
-                    .where((groupMemberMapping.groupId.ne(groupId).or(groupMemberMapping.groupId.isNull()))
-                            .and(member.name.contains(name))
-                            .and(member.mid.ne(CryptUtils.getMid())))
-                    .groupBy(member.name, member.mid)
-                    .fetch();
-        }
-        return Optional.ofNullable(result);
+    public List<MemberDto.InviteMemberList> searchMembers(String name, String groupId) {
+        String mid = CryptUtils.getMid();
+
+        List<MemberDto.InviteMemberList> result = jpaQueryFactory
+                .select(new QMemberDto_InviteMemberList(
+                        member.name,
+                        member.mid,
+                        member.profileUrl
+                        )
+                )
+                .from(member)
+
+                .leftJoin(memberBlock)
+                .on(memberBlock.mid.eq(member.mid))
+                .where(
+                        member.mid
+                                .notIn(
+                                        jpaQueryFactory
+                                                .select(groupMemberMapping.mid)
+                                                .from(groupMemberMapping)
+                                                .where(groupMemberMapping.groupId.eq(groupId),
+                                                        groupMemberMapping.status
+                                                                .in(GroupMemberStatus.JOIN,
+                                                                        GroupMemberStatus.EXILE))
+                                                .groupBy(groupMemberMapping.mid)
+                                                .fetch()
+                                ),
+                        member.mid
+                                .notIn(
+                                        jpaQueryFactory
+                                                .select(memberBlock.targetMid)
+                                                .from(memberBlock)
+                                                .where(memberBlock.mid.eq(mid))
+                                                .fetch()
+                        ),
+                        member.isDelete.eq(false),
+                        member.mid.ne(mid),
+                        member.name.like("%" + name + "%")
+                )
+                .groupBy(member.name,
+                        member.mid,
+                        member.profileUrl)
+                .fetch();
+        return result;
     }
+
+    private List<String> getBlocksMid() {
+        return jpaQueryFactory.select(memberBlock.targetMember.mid)
+                .from(memberBlock)
+                .where(memberBlock.mid.eq(CryptUtils.getMid()))
+                .fetch();
+    }
+
+
 
     @Override
     public MyPageHome getMyPageHome(List<String> blocks) {
@@ -180,7 +214,7 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
 
         Boolean act = String.valueOf(resultSets.get(0)[0]).equals("1");
         Boolean news = String.valueOf(resultSets.get(0)[1]).equals("1");
-        
+
         return new NotificationCheckDTO(act, news);
     }
 }

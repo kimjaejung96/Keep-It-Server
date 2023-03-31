@@ -7,7 +7,6 @@ import com.teamside.project.alpha.common.msg.MsgService;
 import com.teamside.project.alpha.common.msg.enumurate.MQExchange;
 import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
 import com.teamside.project.alpha.common.util.CryptUtils;
-import com.teamside.project.alpha.common.util.TransactionUtils;
 import com.teamside.project.alpha.group.common.dto.CommentDto;
 import com.teamside.project.alpha.group.domain.review.model.dto.ReviewDto;
 import com.teamside.project.alpha.group.domain.review.model.entity.ReviewCommentEntity;
@@ -34,24 +33,30 @@ public class ReviewServiceImpl implements ReviewService {
     private final PlaceRepository placeRepository;
     private final MemberRepo memberRepo;
     private final MsgService msgService;
-    private final TransactionUtils transactionUtils;
     private final PlatformTransactionManager platformTransactionManager;
 
 
     @Override
     public void createReview(String groupId, ReviewDto review) throws CustomException {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
-
         String mid = CryptUtils.getMid();
-        checkExistPlace(review.getPlaceId());
+        String newReviewId = null;
 
-        GroupEntity group = selectExistGroup(groupId);
+        try {
+            checkExistPlace(review.getPlaceId());
 
-        group.checkExistMember(mid);
-        group.checkGroupStatus();
+            GroupEntity group = selectExistGroup(groupId);
 
-        String newReviewId = group.createReview(new ReviewEntity(groupId, review));
-        platformTransactionManager.commit(transactionStatus);
+            group.checkExistMember(mid);
+            group.checkGroupStatus();
+
+            newReviewId = group.createReview(new ReviewEntity(groupId, review));
+            platformTransactionManager.commit(transactionStatus);
+        } catch (RuntimeException runtimeException) {
+            platformTransactionManager.rollback(transactionStatus);
+        }
+
+
 
 
         Map<String, Object> newReview = new HashMap<>();
@@ -107,27 +112,37 @@ public class ReviewServiceImpl implements ReviewService {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
 
         String mid = CryptUtils.getMid();
-        GroupEntity group = selectExistGroup(groupId);
-        group.checkExistMember(mid);
-        group.checkGroupStatus();
+        String masterMid = null;
+        String createdCommentId = null;
 
-        ReviewEntity review = group.getReviewEntities().stream()
-                .filter(r -> Objects.equals(r.getReviewId(), reviewId))
-                .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
-        String masterMid = review.getMasterMid();
+        try {
+            GroupEntity group = selectExistGroup(groupId);
+            group.checkExistMember(mid);
+            group.checkGroupStatus();
 
-        if (comment.getTargetMid() != null && !memberRepo.existsByMid(comment.getTargetMid())) {
-            throw new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND);
+            ReviewEntity review = group.getReviewEntities().stream()
+                    .filter(r -> Objects.equals(r.getReviewId(), reviewId))
+                    .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+
+            masterMid = review.getMasterMid();
+
+            if (comment.getTargetMid() != null && !memberRepo.existsByMid(comment.getTargetMid())) {
+                throw new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND);
+            }
+
+
+            if (comment.getParentCommentId() != null && review.getReviewCommentEntities().stream().noneMatch(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))) {
+                throw new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS);
+            }
+
+            createdCommentId = review.createComment(comment, reviewId).getCommentId();
+            platformTransactionManager.commit(transactionStatus);
+        } catch (RuntimeException runtimeException) {
+            platformTransactionManager.rollback(transactionStatus);
         }
 
 
-        if (comment.getParentCommentId() != null && review.getReviewCommentEntities().stream().noneMatch(rc -> Objects.equals(rc.getCommentId(), comment.getParentCommentId()))) {
-            throw new CustomRuntimeException(ApiExceptionCode.COMMENT_NOT_ACCESS);
-        }
-
-        String createdCommentId = review.createComment(comment, reviewId).getCommentId();
-        platformTransactionManager.commit(transactionStatus);
 
 
         if (!masterMid.equals(mid)) {
@@ -156,16 +171,24 @@ public class ReviewServiceImpl implements ReviewService {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
 
         String mid = CryptUtils.getMid();
-        GroupEntity group = selectExistGroup(groupId);
-        group.checkExistMember(mid);
+        String masterMid = null;
+        Boolean isNew = null;
+        try {
+            GroupEntity group = selectExistGroup(groupId);
+            group.checkExistMember(mid);
 
-        ReviewEntity review = group.getReviewEntities().stream()
-                .filter(r -> Objects.equals(r.getReviewId(), reviewId))
-                .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
+            ReviewEntity review = group.getReviewEntities().stream()
+                    .filter(r -> Objects.equals(r.getReviewId(), reviewId))
+                    .findAny().orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.REVIEW_NOT_EXIST));
 
-        String masterMid = review.getMasterMid();
-        boolean isNew = review.keepReview(reviewId, mid);
-        platformTransactionManager.commit(transactionStatus);
+            masterMid = review.getMasterMid();
+            isNew = review.keepReview(reviewId, mid);
+            platformTransactionManager.commit(transactionStatus);
+        } catch (RuntimeException runtimeException) {
+            platformTransactionManager.rollback(transactionStatus);
+        }
+
+
 
 
         if (!masterMid.equals(CryptUtils.getMid()) && isNew) {

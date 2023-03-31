@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberDto.InviteMemberList> search(String name, String groupId) {
-        return memberRepo.searchMembers(name, groupId).orElse(Collections.emptyList());
+        return memberRepo.searchMembers(name, groupId);
     }
 
 
