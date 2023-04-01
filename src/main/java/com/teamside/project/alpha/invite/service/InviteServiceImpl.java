@@ -57,7 +57,7 @@ public class InviteServiceImpl implements InviteService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public InviteDto.InviteInfo getInvite(String inviteId, String groupId) {
         GroupEntity group = groupRepository.findByGroupId(groupId)
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
