@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 public class MemberRepoDSLImpl implements MemberRepoDSL {
@@ -57,22 +58,9 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                         )
                 )
                 .from(member)
-
-                .leftJoin(memberBlock)
-                .on(memberBlock.mid.eq(member.mid))
                 .where(
                         member.mid
-                                .notIn(
-                                        jpaQueryFactory
-                                                .select(groupMemberMapping.mid)
-                                                .from(groupMemberMapping)
-                                                .where(groupMemberMapping.groupId.eq(groupId),
-                                                        groupMemberMapping.status
-                                                                .in(GroupMemberStatus.JOIN,
-                                                                        GroupMemberStatus.EXILE))
-                                                .groupBy(groupMemberMapping.mid)
-                                                .fetch()
-                                ),
+                                .notIn(checkGroupId(groupId)),
                         member.mid
                                 .notIn(
                                         jpaQueryFactory
@@ -83,20 +71,25 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                         ),
                         member.isDelete.eq(false),
                         member.mid.ne(mid),
-                        member.name.like("%" + name + "%")
+                        member.name.contains(name != null ? name : "")
                 )
-                .groupBy(member.name,
-                        member.mid,
-                        member.profileUrl)
                 .fetch();
         return result;
     }
 
-    private List<String> getBlocksMid() {
-        return jpaQueryFactory.select(memberBlock.targetMember.mid)
-                .from(memberBlock)
-                .where(memberBlock.mid.eq(CryptUtils.getMid()))
-                .fetch();
+    private List<String> checkGroupId(String groupId) {
+        if (groupId == null) {
+            return Collections.emptyList();
+        } else {
+            return jpaQueryFactory
+                    .select(groupMemberMapping.mid)
+                    .from(groupMemberMapping)
+                    .where(groupMemberMapping.groupId.eq(groupId),
+                            groupMemberMapping.status
+                                    .in(GroupMemberStatus.JOIN,
+                                            GroupMemberStatus.EXILE))
+                    .fetch();
+        }
     }
 
 
