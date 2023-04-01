@@ -11,10 +11,10 @@ public interface AuthService {
     String refreshRefreshToken() throws CustomException;
     void tokenValidationCheck(String token) throws CustomException;
     String getAuthPayload(String token) ;
-    void saveSmsLog(String requestPhoneNum, String number) throws CustomException;
+    void saveSmsLog(String requestPhoneNum, String number);
     void checkAuthNum(SmsAuthDto smsAuthDto) throws CustomException;
     JwtTokens checkMember(String phone) throws CustomException;
-    void checkPhone(String phone, AuthType authType) throws CustomException;
+    void checkPhone(String phone, AuthType authType);
 
     void updateFcmTokenLife(String mid);
 }

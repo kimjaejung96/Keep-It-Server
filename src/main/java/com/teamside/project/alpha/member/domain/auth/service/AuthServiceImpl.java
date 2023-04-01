@@ -189,17 +189,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void checkPhone(String phone, AuthType authType) throws CustomException {
+    public void checkPhone(String phone, AuthType authType) {
         Optional<MemberEntity> member = memberRepo.findByPhoneAndType(phone, SignUpType.PHONE);
 
         if (authType.equals(AuthType.SIGN_UP)) {
             member.ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.MEMBER_ALREADY_EXIST);});
         } else if (authType.equals(AuthType.SIGN_IN)) {
-            member.orElseThrow(() -> new CustomException(ApiExceptionCode.MEMBER_NOT_FOUND));
+            member.orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
         } else if (authType.equals(AuthType.CHANGE_PHONE)) {
             member.ifPresent(m -> {throw new CustomRuntimeException(ApiExceptionCode.DUPLICATE_PHONE);});
         } else {
-            throw new CustomException(ApiExceptionCode.INVALID_AUTH_TYPE);
+            throw new CustomRuntimeException(ApiExceptionCode.INVALID_AUTH_TYPE);
         }
     }
 

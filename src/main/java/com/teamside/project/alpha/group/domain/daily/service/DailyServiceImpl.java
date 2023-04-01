@@ -39,12 +39,17 @@ public class DailyServiceImpl implements DailyService {
     @Override
     public void createDaily(String groupId, DailyDto dailyDto) throws CustomException {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
+        String createdDailyId = null;
+        try {
+            GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
+            groupEntity.checkExistMember(CryptUtils.getMid());
+            groupEntity.checkGroupStatus();
+            createdDailyId = groupEntity.createDaily(new DailyEntity(groupId, dailyDto));
+            platformTransactionManager.commit(transactionStatus);
+        } catch (RuntimeException runtimeException) {
+            platformTransactionManager.rollback(transactionStatus);
+        }
 
-        GroupEntity groupEntity = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomException(ApiExceptionCode.GROUP_NOT_FOUND));
-        groupEntity.checkExistMember(CryptUtils.getMid());
-        groupEntity.checkGroupStatus();
-        String createdDailyId = groupEntity.createDaily(new DailyEntity(groupId, dailyDto));
-        platformTransactionManager.commit(transactionStatus);
 
         Map<String, String> data = new HashMap<>();
         data.put("senderMid", CryptUtils.getMid());
@@ -92,38 +97,42 @@ public class DailyServiceImpl implements DailyService {
         TransactionStatus transactionStatus = platformTransactionManager.getTransaction(new DefaultTransactionDefinition());
 
         String mid = CryptUtils.getMid();
-        GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
-        group.checkExistMember(mid);
-        group.checkGroupStatus();
+        String masterMid = null;
+        String commentId = null;
 
-        DailyEntity daily = group.getDailyEntities().stream()
-                .filter(d -> Objects.equals(d.getDailyId(), dailyId))
-                .findAny()
-                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
+        try {
+            GroupEntity group = groupRepository.findByGroupId(groupId).orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+            group.checkExistMember(mid);
+            group.checkGroupStatus();
 
-        String masterMid = daily.getMasterMid();
-
-        if (comment.getParentCommentId() != null) {
-            daily.getDailyCommentEntities().stream()
-                    .filter(c -> Objects.equals(c.getCommentId(), comment.getParentCommentId()))
+            DailyEntity daily = group.getDailyEntities().stream()
+                    .filter(d -> Objects.equals(d.getDailyId(), dailyId))
                     .findAny()
-                    .orElseThrow(() -> new CustomException(ApiExceptionCode.COMMENT_NOT_ACCESS));
+                    .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.DAILY_NOT_EXIST));
+
+            masterMid = daily.getMasterMid();
+
+            if (comment.getParentCommentId() != null) {
+                daily.getDailyCommentEntities().stream()
+                        .filter(c -> Objects.equals(c.getCommentId(), comment.getParentCommentId()))
+                        .findAny()
+                        .orElseThrow(() -> new CustomException(ApiExceptionCode.COMMENT_NOT_ACCESS));
+            }
+
+            commentId = daily.createComment(comment, dailyId);
+            platformTransactionManager.commit(transactionStatus);        } catch (RuntimeException runtimeException) {
+            platformTransactionManager.rollback(transactionStatus);
         }
 
-        String commentId = daily.createComment(comment, dailyId);
-        platformTransactionManager.commit(transactionStatus);
 
 
-        if (!masterMid.equals(mid)) {
-            transactionUtils.runTransaction(() -> {
-                memberRepo.findByMid(masterMid).ifPresent( m -> {
-                    Map<String, Object> newComment = new HashMap<>();
-                    newComment.put("dailyId", dailyId);
-                    newComment.put("groupId", groupId);
-                    newComment.put("commentId", commentId);
-                    msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_DAILY_COMMENT, newComment);
-                });
-             });
+
+        if (!masterMid.equals(mid) && memberRepo.findByMid(masterMid).isPresent()) {
+            Map<String, Object> newComment = new HashMap<>();
+            newComment.put("dailyId", dailyId);
+            newComment.put("groupId", groupId);
+            newComment.put("commentId", commentId);
+            msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.MY_DAILY_COMMENT, newComment);
         }
 
         if (comment.getParentCommentId() != null) {

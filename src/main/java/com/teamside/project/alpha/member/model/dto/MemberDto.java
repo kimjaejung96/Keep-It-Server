@@ -56,13 +56,15 @@ public class MemberDto {
 
     @Getter
     public static class InviteMemberList {
-        String name;
-        String mid;
+        private final String name;
+        private final String mid;
+        private final String profileUrl;
 
         @QueryProjection
-        public InviteMemberList(String name, String mid) {
+        public InviteMemberList(String name, String mid, String profileUrl) {
             this.name = name;
             this.mid = mid;
+            this.profileUrl = profileUrl;
         }
     }
 
