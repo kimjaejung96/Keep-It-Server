@@ -5,7 +5,7 @@ spring:
   # Set the master node of the PCI-AD Database as the primary database for ATP Project to handle the "CUD" for it.
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://person.jjhserverworld.pe.kr:3316/alpha?characterEncoding=utf8&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://alpha-mysql:3306/alpha?characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: alpha
     password: alpha#!12
     hikari:
@@ -31,8 +31,8 @@ spring:
 jwt:
   accessToken:
     #단위 : 분
-    validTime: 1
+    validTime: 30 #30분
   refreshToken:
-    validTime: 5
+    validTime: 43200 #30일
   secret: a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDZraW1qYWVqdW5ndGVzdHNlY3JldHNrZXkwMTA1MDY0MTQwNmtpbWphZWp1bmd0ZXN0c2VjcmV0c2tleTAxMDUwNjQxNDA2a2ltamFlanVuZ3Rlc3RzZWNyZXRza2V5MDEwNTA2NDE0MDY=
 #  secret: kimjaejungtestsecretskey01050641406  * 4
