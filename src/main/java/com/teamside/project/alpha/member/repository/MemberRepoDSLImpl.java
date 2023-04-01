@@ -1,6 +1,7 @@
 package com.teamside.project.alpha.member.repository;
 
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.teamside.project.alpha.common.util.CryptUtils;
@@ -66,7 +67,7 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
                                         jpaQueryFactory
                                                 .select(groupMemberMapping.mid)
                                                 .from(groupMemberMapping)
-                                                .where(groupMemberMapping.groupId.eq(groupId),
+                                                .where(checkGroupId(groupId),
                                                         groupMemberMapping.status
                                                                 .in(GroupMemberStatus.JOIN,
                                                                         GroupMemberStatus.EXILE))
@@ -92,11 +93,12 @@ public class MemberRepoDSLImpl implements MemberRepoDSL {
         return result;
     }
 
-    private List<String> getBlocksMid() {
-        return jpaQueryFactory.select(memberBlock.targetMember.mid)
-                .from(memberBlock)
-                .where(memberBlock.mid.eq(CryptUtils.getMid()))
-                .fetch();
+    private BooleanExpression checkGroupId(String groupId) {
+        if (groupId == null) {
+            return null;
+        } else {
+            return groupMemberMapping.groupId.eq(groupId);
+        }
     }
 
 
