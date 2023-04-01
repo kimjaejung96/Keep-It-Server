@@ -19,7 +19,6 @@ public interface GroupService {
     void leaveGroup(String groupId);
     GroupDto.ResponseMyGroupDto selectMyGroups(MyGroupType type);
     void editFavorite(String groupId) throws CustomException;
-    void inviteMember(String groupId, String memberId) throws CustomException;
     GroupDto.ResponseSearchGroupDto searchGroup(Long lastGroupSeq, Long pageSize, String search);
     void updateOrd(GroupDto.RequestUpdateOrdDto request) throws CustomException;
     List<GroupDto.SearchGroupDto> statGroups(String referralType, String category);
