@@ -73,7 +73,7 @@ public class MemberController {
         return new ResponseEntity<>(new ResponseObject(ApiExceptionCode.OK), HttpStatus.CREATED);
     }
     @PostMapping("/search")
-    public ResponseEntity<ResponseObject> search(@RequestParam String name,
+    public ResponseEntity<ResponseObject> search(@RequestParam(required = false) String name,
                                                  @RequestParam(required = false) String groupId) {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
         List<MemberDto.InviteMemberList> names = memberService.search(name, groupId);
