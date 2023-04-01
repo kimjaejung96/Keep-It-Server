@@ -29,7 +29,16 @@ public class InviteController {
                                                        @RequestParam InviteType inviteType,
                                                        @RequestParam(required = false) String mid) throws CustomRuntimeException {
         ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
-        inviteService.inviteMember(groupId, inviteType, mid);
+        responseObject.setBody(inviteService.inviteMember(groupId, inviteType, mid));
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
+    @GetMapping("/{inviteId}/groups/{groupId}")
+    public ResponseEntity<ResponseObject> getInvite(@PathVariable String inviteId,
+                                                    @PathVariable String groupId) {
+
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        responseObject.setBody(inviteService.getInvite(inviteId, groupId));
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 

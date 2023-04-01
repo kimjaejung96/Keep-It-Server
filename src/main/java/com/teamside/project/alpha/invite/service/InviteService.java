@@ -6,4 +6,6 @@ import com.teamside.project.alpha.invite.model.dto.InviteDto;
 
 public interface InviteService {
     InviteDto inviteMember(String groupId, InviteType inviteType, String mid) throws CustomRuntimeException;
+
+    InviteDto.InviteInfo getInvite(String inviteId, String groupId);
 }

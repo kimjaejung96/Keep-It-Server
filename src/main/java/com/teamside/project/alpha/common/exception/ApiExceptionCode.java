@@ -48,6 +48,8 @@ public enum ApiExceptionCode {
     NOTICE_NOT_FOUND(825, "공지사항을 찾을 수 없습니다."),
     GROUP_CHECK_FORBIDDEN(826, "그룹 접근 권한이 없습니다."),
 
+    INVITE_NOT_EXIST(827, "초대장이 존재하지 않습니다."),
+
 
     FORBIDDEN_NAME(995, "이름에 금지된 단어가 포함되어 있습니다."),
     IMAGE_CONTENT_TYPE_INVALID(996, "이미지 확장자가 올바르지 않습니다"),

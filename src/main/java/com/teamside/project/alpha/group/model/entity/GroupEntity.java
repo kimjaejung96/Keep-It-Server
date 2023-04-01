@@ -337,4 +337,12 @@ public class GroupEntity extends TimeEntity {
             throw new CustomRuntimeException(ApiExceptionCode.DELETED_GROUP);
         }
     }
+
+    public Long getParticipantCount() {
+        Long cnt = this.getGroupMemberMappingEntity().stream()
+                .filter(i -> i.getStatus().equals(GroupMemberStatus.JOIN))
+                .count();
+
+        return cnt;
+    }
 }

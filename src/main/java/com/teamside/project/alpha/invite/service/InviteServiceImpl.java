@@ -56,4 +56,21 @@ public class InviteServiceImpl implements InviteService {
         return new InviteDto(invitation, inviter.getName(), group.getName());
     }
 
+    @Override
+    @Transactional
+    public InviteDto.InviteInfo getInvite(String inviteId, String groupId) {
+        GroupEntity group = groupRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+
+        InvitationEntity invitationEntity = inviteRepository.findById(inviteId)
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.INVITE_NOT_EXIST));
+
+        MemberEntity inviter = memberRepo.findByMid(invitationEntity.getMid())
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+
+        MemberEntity member = memberRepo.findByMid(CryptUtils.getMid())
+                .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
+
+        return new InviteDto.InviteInfo(invitationEntity, inviter.getName(), member.getName(), group);
+    }
 }

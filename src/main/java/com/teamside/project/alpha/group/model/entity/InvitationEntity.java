@@ -8,10 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "MEMBER")
+@Table(name = "INVITE")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InvitationEntity extends CreateDtEntity {
@@ -33,11 +34,15 @@ public class InvitationEntity extends CreateDtEntity {
     @Column(name = "TARGET_MID", columnDefinition = "char(36)")
     private String targetMid;
 
+    @Column(name = "EXPIRE_DT", columnDefinition = "DATETIME")
+    private LocalDateTime expireTime;
+
     public InvitationEntity(String groupId, InviteType inviteType, String targetMid) {
         this.inviteId = UUID.randomUUID().toString();
         this.mid = CryptUtils.getMid();
         this.groupId = groupId;
         this.inviteType = inviteType;
         this.targetMid = targetMid;
+        this.expireTime = LocalDateTime.now().plusDays(3);
     }
 }
