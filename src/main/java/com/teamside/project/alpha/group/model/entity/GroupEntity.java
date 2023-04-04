@@ -345,4 +345,33 @@ public class GroupEntity extends TimeEntity {
 
         return cnt;
     }
+
+    public void inviteJoinPossible(GroupEntity group) {
+        // group status
+        this.checkGroupStatus();
+
+        // already join
+        Optional<GroupMemberMappingEntity> groupMemberMapping = group.getGroupMemberMappingEntity().stream()
+                .filter(g -> g.getMid().equals(CryptUtils.getMid()))
+                .findAny();
+
+        if (groupMemberMapping.isPresent()) {
+            GroupMemberStatus status = groupMemberMapping.get().getStatus();
+
+            if (status.equals(GroupMemberStatus.JOIN)) {
+                throw new CustomRuntimeException(ApiExceptionCode.ALREADY_JOINED_GROUP);
+            } else if (status.equals(GroupMemberStatus.EXILE)) {
+                throw new CustomRuntimeException(ApiExceptionCode.EXILED_GROUP);
+            }
+        }
+
+        // memberQuantity
+        long joinMemberCount = group.getGroupMemberMappingEntity().stream()
+                .filter(g -> g.getStatus().equals(GroupMemberStatus.JOIN))
+                .count();
+
+        if (joinMemberCount >= this.memberQuantity) {
+            throw new CustomRuntimeException(ApiExceptionCode.MEMBER_QUANTITY_IS_FULL);
+        }
+    }
 }

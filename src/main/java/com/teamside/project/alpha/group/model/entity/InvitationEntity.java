@@ -1,5 +1,8 @@
 package com.teamside.project.alpha.group.model.entity;
 
+import com.teamside.project.alpha.common.exception.ApiExceptionCode;
+import com.teamside.project.alpha.common.exception.CustomException;
+import com.teamside.project.alpha.common.exception.CustomRuntimeException;
 import com.teamside.project.alpha.common.model.entity.entitiy.CreateDtEntity;
 import com.teamside.project.alpha.common.util.CryptUtils;
 import com.teamside.project.alpha.group.model.enumurate.InviteType;
@@ -44,5 +47,15 @@ public class InvitationEntity extends CreateDtEntity {
         this.inviteType = inviteType;
         this.targetMid = targetMid;
         this.expireTime = LocalDateTime.now().plusDays(3);
+    }
+
+    public void checkInvitation(String groupId){
+        if (LocalDateTime.now().isAfter(this.expireTime)) {
+            throw new CustomRuntimeException(ApiExceptionCode.INVITE_EXPIRED);
+        }
+
+        if (!this.groupId.equals(groupId)) {
+            throw new CustomRuntimeException(ApiExceptionCode.INVITE_IS_NOT_MATCH);
+        }
     }
 }

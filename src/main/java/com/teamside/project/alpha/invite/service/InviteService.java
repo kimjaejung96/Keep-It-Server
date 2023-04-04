@@ -8,4 +8,6 @@ public interface InviteService {
     InviteDto inviteMember(String groupId, InviteType inviteType, String mid) throws CustomRuntimeException;
 
     InviteDto.InviteInfo getInvite(String inviteId, String groupId);
+
+    void inviteJoin(String inviteId, String groupId);
 }
