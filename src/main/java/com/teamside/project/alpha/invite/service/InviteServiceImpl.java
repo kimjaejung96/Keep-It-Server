@@ -6,6 +6,7 @@ import com.teamside.project.alpha.common.msg.MsgService;
 import com.teamside.project.alpha.common.msg.enumurate.MQExchange;
 import com.teamside.project.alpha.common.msg.enumurate.MQRoutingKey;
 import com.teamside.project.alpha.common.util.CryptUtils;
+import com.teamside.project.alpha.common.util.TransactionUtils;
 import com.teamside.project.alpha.group.model.entity.GroupEntity;
 import com.teamside.project.alpha.group.model.entity.InvitationEntity;
 import com.teamside.project.alpha.group.model.enumurate.InviteType;
@@ -28,6 +29,7 @@ public class InviteServiceImpl implements InviteService {
     private final GroupRepository groupRepository;
     private final MemberRepo memberRepo;
     private final MsgService msgService;
+    private final TransactionUtils transactionUtils;
 
     @Override
     @Transactional
@@ -72,5 +74,32 @@ public class InviteServiceImpl implements InviteService {
                 .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.MEMBER_NOT_FOUND));
 
         return new InviteDto.InviteInfo(invitationEntity, inviter.getName(), member.getName(), group);
+    }
+
+    @Override
+    @Transactional
+    public void inviteJoin(String inviteId, String groupId) {
+        String mid = CryptUtils.getMid();
+
+        transactionUtils.runTransaction(() -> {
+            InvitationEntity invitation = inviteRepository.findById(inviteId)
+                    .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.INVITE_NOT_EXIST));
+
+            // check expire and groupId
+            invitation.checkInvitation(groupId);
+
+            GroupEntity group = groupRepository.findByGroupId(groupId)
+                    .orElseThrow(() -> new CustomRuntimeException(ApiExceptionCode.GROUP_NOT_FOUND));
+
+            // check already join / delete / memberQuantity
+            group.inviteJoinPossible(group);
+
+            group.addMember(mid);
+        });
+
+        Map<String, String> data = new HashMap<>();
+        data.put("senderMid", mid);
+        data.put("groupId", groupId);
+        msgService.publishMsg(MQExchange.KPS_EXCHANGE, MQRoutingKey.GROUP_JOIN, data);
     }
 }

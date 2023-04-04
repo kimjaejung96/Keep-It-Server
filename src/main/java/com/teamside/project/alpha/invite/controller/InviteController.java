@@ -42,4 +42,13 @@ public class InviteController {
         return new ResponseEntity<>(responseObject, HttpStatus.OK);
     }
 
+    @PostMapping("/{inviteId}/groups/{groupId}/join")
+    public ResponseEntity<ResponseObject> inviteJoin(@PathVariable String inviteId,
+                                                     @PathVariable String groupId) {
+
+        ResponseObject responseObject = new ResponseObject(ApiExceptionCode.OK);
+        inviteService.inviteJoin(inviteId, groupId);
+        return new ResponseEntity<>(responseObject, HttpStatus.OK);
+    }
+
 }
